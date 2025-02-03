@@ -1,0 +1,109 @@
+<div class="main-container">
+  <!-- Hero Section -->
+  <section class="hero" @fadeIn>
+    <div class="hero-content">
+      <h1>مرحبًا بكم في متجرنا الإلكتروني</h1>
+      <p>اكتشف أحدث المنتجات بأسعار مميزة</p>
+      <button mat-raised-button color="accent" routerLink="/products">
+        تصفح المنتجات
+      </button>
+    </div>
+  </section>
+
+  <!-- Categories Grid -->
+  <section class="categories">
+    <h2 class="section-title" @slideIn>الفئات</h2>
+    <div class="categories-grid" @staggerAnimation>
+      <mat-card
+        *ngFor="let category of categories | async"
+        class="category-card"
+        @slideIn
+      >
+        <i [class]="category.icon"></i>
+        <mat-card-header>
+          <mat-card-title>{{ category.name }}</mat-card-title>
+        </mat-card-header>
+        <mat-card-actions>
+          <button
+            mat-button
+            [routerLink]="['/products']"
+            [queryParams]="{ category: category.id }"
+          >
+            تصفح
+          </button>
+        </mat-card-actions>
+      </mat-card>
+    </div>
+  </section>
+
+  <!-- Featured Products -->
+  <section class="featured-products">
+    <h2 class="section-title" @slideIn>منتجات مميزة</h2>
+    <div class="products-grid" @staggerAnimation>
+      <mat-card
+        *ngFor="let product of featuredProducts | async"
+        class="product-card"
+        @slideIn
+      >
+        <img mat-card-image [src]="product.image" [alt]="product.name" />
+        <mat-card-header>
+          <mat-card-title>{{ product.name }}</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <p>{{ product.description }}</p>
+          <p class="price">{{ product.price | currency : "EGP " }}</p>
+        </mat-card-content>
+        <mat-card-actions>
+          <button mat-raised-button color="primary">أضف إلى السلة</button>
+        </mat-card-actions>
+      </mat-card>
+    </div>
+  </section>
+
+  <!-- Best Sellers Section -->
+  <section class="featured-products">
+    <h2 class="section-title" @slideIn>المنتجات الأكثر مبيعًا</h2>
+    <div class="products-grid" @staggerAnimation>
+      <mat-card
+        *ngFor="let product of featuredProducts | async"
+        class="product-card"
+        @slideIn
+      >
+        <img mat-card-image [src]="product.image" [alt]="product.name" />
+        <mat-card-header>
+          <mat-card-title>{{ product.name }}</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <p>{{ product.description }}</p>
+          <p class="price">{{ product.price | currency : "EGP " }}</p>
+        </mat-card-content>
+        <mat-card-actions>
+          <button mat-raised-button color="primary">أضف إلى السلة</button>
+        </mat-card-actions>
+      </mat-card>
+    </div>
+  </section>
+
+  <!-- Newsletter Section -->
+  <section class="newsletter">
+    <div class="newsletter-content">
+      <h2>اشترك في نشرتنا الإخبارية</h2>
+      <p>احصل على آخر العروض والتحديثات مباشرة إلى بريدك</p>
+      <div class="newsletter-form">
+        <input type="email" placeholder="ادخل بريدك الإلكتروني" />
+        <button mat-raised-button color="accent">اشتراك</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Call-to-Action -->
+  <section class="cta">
+    <div class="cta-content" @fadeIn>
+      <h2>هل أنت مستعد للتسوق؟</h2>
+      <p>أنشئ حسابك الآن واحصل على تخفيضات حصرية.</p>
+      <button mat-raised-button color="accent" routerLink="/signup">
+        أنشئ حسابك
+      </button>
+    </div>
+  </section>
+</div>

@@ -1,0 +1,82 @@
+<mat-toolbar color="primary" class="header" @fadeIn>
+  <div class="header-left">
+    <a routerLink="/" class="logo">
+      <img src="/assets/images/aqrablogo.png" alt="logo" />
+    </a>
+    <button
+      mat-icon-button
+      class="mobile-menu"
+      (click)="toggleMenu()"
+      #mobileMenuButton
+    >
+      <mat-icon>menu</mat-icon>
+    </button>
+  </div>
+
+  <nav class="desktop-nav">
+    <a mat-button routerLink="/" routerLinkActive="active">الرئيسية</a>
+    <a mat-button routerLink="/products" routerLinkActive="active">المنتجات</a>
+    <a mat-button routerLink="/blogs" routerLinkActive="active">المنشورات</a>
+  </nav>
+
+  <div class="desktop-search search-bar">
+    <input type="text" placeholder="ابحث عن منتج..." />
+    <mat-icon>search</mat-icon>
+  </div>
+
+  <button
+    mat-icon-button
+    routerLink="/cart"
+    [@bounce]="cartItemCount"
+    class="desktop-cart"
+  >
+    <mat-icon matBadgeColor="accent">shopping_cart</mat-icon>
+  </button>
+
+  <div class="desktop-user-actions user-actions">
+    <a mat-button routerLink="/login">تسجيل الدخول</a>
+    <a mat-button routerLink="/register">إنشاء حساب</a>
+  </div>
+</mat-toolbar>
+
+<div class="mobile-nav" *ngIf="isMenuOpen" #mobileNav>
+  <nav>
+    <a
+      mat-button
+      routerLink="/"
+      routerLinkActive="active"
+      (click)="toggleMenu()"
+      >الرئيسية</a
+    >
+    <a
+      mat-button
+      routerLink="/products"
+      routerLinkActive="active"
+      (click)="toggleMenu()"
+      >المنتجات</a
+    >
+    <a
+      mat-button
+      routerLink="/blogs"
+      routerLinkActive="active"
+      (click)="toggleMenu()"
+      >المنشورات</a
+    >
+    <div class="search-bar">
+      <input type="text" placeholder="ابحث عن منتج..." />
+      <mat-icon>search</mat-icon>
+    </div>
+    <button
+      mat-icon-button
+      routerLink="/cart"
+      [@bounce]="cartItemCount"
+      (click)="toggleMenu()"
+    >
+      <mat-icon matBadgeColor="accent">shopping_cart</mat-icon>
+    </button>
+    <div class="user-actions">
+      <a mat-button routerLink="/login" (click)="toggleMenu()">تسجيل الدخول</a>
+      <a mat-button routerLink="/register" (click)="toggleMenu()">إنشاء حساب</a>
+    </div>
+  </nav>
+</div>

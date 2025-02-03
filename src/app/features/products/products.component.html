@@ -1,0 +1,91 @@
+<div class="main-container">
+  <div class="loading-overlay" *ngIf="loading">
+    <mat-spinner diameter="60"></mat-spinner>
+    <p>جاري التحميل...</p>
+  </div>
+  <ng-container *ngIf="!loading">
+    <div class="products-page">
+      <!-- Filters Sidebar -->
+      <aside class="filters-sidebar">
+        <h2>الفلاتر</h2>
+
+        <!-- Category Filter -->
+        <div class="filter-section">
+          <h3>الفئة</h3>
+          <div
+            *ngFor="let category of categories$ | async"
+            class="filter-option"
+          >
+            <mat-checkbox
+              [checked]="filters.category === category"
+              (change)="
+                filters.category = $event.checked ? category : '';
+                updateFilters()
+              "
+            >
+              {{ category }}
+            </mat-checkbox>
+          </div>
+        </div>
+
+        <!-- Price Filter -->
+        <div class="filter-section">
+          <h3>السعر</h3>
+          <div class="price-range">
+            <mat-slider
+              min="0"
+              max="10000"
+              step="100"
+              [(ngModel)]="filters.minPrice"
+              (change)="updateFilters()"
+            >
+            </mat-slider>
+            <mat-slider
+              min="0"
+              max="10000"
+              step="100"
+              [(ngModel)]="filters.maxPrice"
+              (change)="updateFilters()"
+            >
+            </mat-slider>
+          </div>
+          <div class="price-labels">
+            <span>الحد الأدنى: {{ filters.minPrice | currency : "EGP " }}</span>
+            <span>الحد الأقصى: {{ filters.maxPrice | currency : "EGP " }}</span>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Products Grid -->
+      <main class="products-grid">
+        <div
+          *ngFor="let product of filteredProducts$ | async"
+          class="product-card"
+        >
+          <mat-card>
+            <img mat-card-image [src]="product.image" [alt]="product.name" />
+            <mat-card-header>
+              <mat-card-title>{{ product.name }}</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+              <p>{{ product.description }}</p>
+              <p class="price">{{ product.price | currency : "EGP " }}</p>
+              <p class="stock">المتبقي: {{ product.stock }}</p>
+            </mat-card-content>
+            <mat-card-actions>
+              <button mat-raised-button color="primary">أضف إلى السلة</button>
+            </mat-card-actions>
+          </mat-card>
+        </div>
+      </main>
+    </div>
+  </ng-container>
+  <div *ngIf="loading" class="skeleton-loader">
+    <div *ngFor="let _ of [1, 2, 3, 4, 5, 6]" class="skeleton-card">
+      <div class="skeleton-image"></div>
+      <div class="skeleton-text"></div>
+      <div class="skeleton-text"></div>
+      <div class="skeleton-button"></div>
+    </div>
+  </div>
+</div>
