@@ -32,21 +32,19 @@
         <div class="filter-section">
           <h3>السعر</h3>
           <div class="price-range">
-            <mat-slider
-              min="0"
-              max="10000"
-              step="100"
-              [(ngModel)]="filters.minPrice"
-              (change)="updateFilters()"
-            >
+            <mat-slider min="0" max="10000" step="100">
+              <input
+                matSliderThumb
+                [(ngModel)]="filters.minPrice"
+                (ngModelChange)="updateFilters()"
+              />
             </mat-slider>
-            <mat-slider
-              min="0"
-              max="10000"
-              step="100"
-              [(ngModel)]="filters.maxPrice"
-              (change)="updateFilters()"
-            >
+            <mat-slider min="0" max="10000" step="100">
+              <input
+                matSliderThumb
+                [(ngModel)]="filters.maxPrice"
+                (ngModelChange)="updateFilters()"
+              />
             </mat-slider>
           </div>
           <div class="price-labels">

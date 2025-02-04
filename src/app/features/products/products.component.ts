@@ -48,10 +48,11 @@ export class ProductsComponent {
   filteredProducts$!: Observable<Product[]>;
 
   ngOnInit() {
+    this.updateFilters();
     this.productsService
       .getProducts()
       .pipe(
-        delay(2000),
+        delay(500),
         tap(() => (this.loading = false))
       )
       .subscribe();
