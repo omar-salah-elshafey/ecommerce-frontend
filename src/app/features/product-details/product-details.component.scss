@@ -1,0 +1,41 @@
+.product-details {
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+
+  .back-button {
+    margin-bottom: 2rem;
+    mat-icon {
+      transform: rotate(180deg);
+    }
+  }
+
+  mat-card {
+    padding: 2rem;
+    mat-card-header {
+      margin-bottom: 1.5rem;
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      margin-bottom: 2rem;
+      .price {
+        color: #e91e63;
+        font-weight: bold;
+        font-size: 1.2rem;
+      }
+      .stock {
+        color: #666;
+        font-weight: bold;
+        font-size: 1.2rem;
+      }
+    }
+    mat-card-content{
+      text-align: center;
+    }
+  }
+
+  .loading-spinner {
+    text-align: center;
+    padding: 4rem 0;
+  }
+}

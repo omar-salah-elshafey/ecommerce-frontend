@@ -47,28 +47,79 @@
 .products-grid {
   flex: 1;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   gap: 2rem;
 }
 
 .product-card {
-  mat-card {
+  text-align: center;
+
+  .card {
+    position: relative;
+    overflow: hidden;
     transition: transform 0.3s ease;
 
     &:hover {
       transform: translateY(-5px);
     }
 
-    .price {
-      color: #e91e63;
-      font-weight: bold;
-      font-size: 1.2rem;
-      margin: 1rem 0;
+    /* Image container */
+    .card-image {
+      position: relative;
+
+      img {
+        width: 100%;
+        display: block;
+      }
+
+      /* Overlay at the bottom */
+      .card-overlay {
+        position: absolute;
+        bottom: 0; /* Stick to the bottom */
+        left: 0;
+        right: 0;
+        background: rgba(0, 0, 0, 0.5); /* Semi-transparent black */
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+        padding: 0.5rem;
+        opacity: 0;
+        transition: opacity 0.3s ease, transform 0.3s ease;
+        transform: translateY(100%); /* Initially hidden outside */
+      }
     }
 
-    .stock {
-      color: #666;
-      font-size: 0.9rem;
+    /* When hovering over the card, reveal the overlay */
+    &:hover .card-image .card-overlay {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Info row: always visible */
+    .card-info {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.5rem 1rem;
+      background: #fff;
+      border-top: 1px solid #eee;
+
+      .name {
+        font-weight: bold;
+      }
+
+      .price {
+        color: #e91e63;
+        font-weight: bold;
+      }
+    }
+    mat-icon{
+      color: #fff;
+      font-size: 24px;
+      transition: 0.3s;
+      &:hover{
+        color: #007bff;
+      }
     }
   }
 }

@@ -18,6 +18,8 @@ import {
 } from 'rxjs';
 import { Product } from '../../shared/models/product';
 import { fadeIn } from '../../shared/animations/animations';
+import { RouterModule } from '@angular/router';
+import { MatIcon } from '@angular/material/icon';
 
 @Component({
   selector: 'app-products',
@@ -29,6 +31,8 @@ import { fadeIn } from '../../shared/animations/animations';
     MatCardModule,
     MatButtonModule,
     MatProgressSpinnerModule,
+    RouterModule,
+    MatIcon,
   ],
   templateUrl: './products.component.html',
   styleUrls: ['./products.component.scss'],

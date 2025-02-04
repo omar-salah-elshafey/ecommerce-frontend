@@ -1,0 +1,36 @@
+<div class="blog-details">
+  <button mat-raised-button routerLink="/blogs" class="back-button">
+    <mat-icon>arrow_back</mat-icon>
+    العودة إلى المدونات
+  </button>
+
+  <ng-container *ngIf="blog$ | async as blog; else loading">
+    <mat-card>
+      <img
+        *ngIf="blog.imageUrl"
+        mat-card-image
+        [src]="blog.imageUrl"
+        [alt]="blog.title"
+      />
+      <mat-card-header>
+        <mat-card-title>{{ blog.title }}</mat-card-title>
+      </mat-card-header>
+
+      <mat-card-content>
+        <div class="meta-info">
+          <span class="author">{{ blog.author }}</span>
+          <span class="date">{{ blog.publishDate | date : "dd/MM/yyyy" }}</span>
+          <span class="read-time">{{ blog.readTime }} دقيقة قراءة</span>
+        </div>
+
+        <div class="content" [innerHTML]="blog.content"></div>
+      </mat-card-content>
+    </mat-card>
+  </ng-container>
+
+  <ng-template #loading>
+    <div class="loading-spinner">
+      <mat-spinner diameter="50"></mat-spinner>
+    </div>
+  </ng-template>
+</div>

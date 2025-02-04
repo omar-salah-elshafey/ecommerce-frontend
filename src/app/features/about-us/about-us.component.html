@@ -1,0 +1,45 @@
+<section class="hero" @fadeIn>
+  <div class="container">
+    <h1>مرحبا بكم في أقرب</h1>
+    <p class="tagline">نسعى لتقديم أفضل تجربة تسوق إلكتروني في الوطن العربي</p>
+  </div>
+</section>
+<div class="main-container">
+  <section class="values" @staggerAnimation>
+    <div class="container">
+      <h2 class="section-title">قيمنا</h2>
+      <div class="values-grid">
+        <div class="value-card" *ngFor="let value of values">
+          <mat-icon>{{ value.icon }}</mat-icon>
+          <h3>{{ value.title }}</h3>
+          <p>{{ value.text }}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="team">
+    <div class="container">
+      <h2 class="section-title">فريقنا</h2>
+      <div class="team-grid">
+        <div class="member-card" *ngFor="let member of team">
+          <img [src]="member.img" [alt]="member.name" />
+          <h3>{{ member.name }}</h3>
+          <p>{{ member.role }}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="timeline">
+    <div class="container">
+      <h2 class="section-title">رحلة النجاح</h2>
+      <div class="timeline-items">
+        <div class="timeline-item" *ngFor="let item of timeline">
+          <div class="year">{{ item.year }}</div>
+          <div class="event">{{ item.event }}</div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>

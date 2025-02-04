@@ -1,1 +1,61 @@
-<p>blogs works!</p>
+<div class="main-container">
+  <div class="blogs-page">
+    <!-- Search -->
+    <div class="search-bar">
+      <mat-form-field appearance="outline">
+        <input
+          matInput
+          placeholder="ابحث في المدونات..."
+          [(ngModel)]="searchQuery"
+          (input)="onSearchChange(searchQuery)"
+        />
+      </mat-form-field>
+    </div>
+
+    <!-- Blogs Grid -->
+    <main class="blogs-grid">
+      <div *ngIf="loading" class="loading-spinner">
+        <mat-spinner diameter="50"></mat-spinner>
+      </div>
+
+      <ng-container *ngIf="!loading">
+        <div
+          *ngFor="let blog of filteredBlogs$ | async"
+          @fadeIn
+          class="blog-card"
+        >
+          <mat-card>
+            <img
+              *ngIf="blog.imageUrl"
+              mat-card-image
+              [src]="blog.imageUrl"
+              [alt]="blog.title"
+            />
+            <mat-card-header>
+              <mat-card-title>{{ blog.title }}</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+              <div class="meta-info">
+                <span class="author">{{ blog.author }}</span>
+                <span class="date">{{
+                  blog.publishDate | date : "dd/MM/yyyy"
+                }}</span>
+                <span class="read-time">{{ blog.readTime }} دقيقة قراءة</span>
+              </div>
+              <p class="excerpt">{{ blog.content | slice : 0 : 30 }}...</p>
+            </mat-card-content>
+            <mat-card-actions>
+              <button
+                mat-raised-button
+                color="primary"
+                [routerLink]="['/blogs', blog.id]"
+              >
+                اقرأ المزيد
+              </button>
+            </mat-card-actions>
+          </mat-card>
+        </div>
+      </ng-container>
+    </main>
+  </div>
+</div>

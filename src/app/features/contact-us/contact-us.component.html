@@ -1,0 +1,108 @@
+<div class="main-container">
+  <section class="contact-header">
+    <div class="container">
+      <h1>تواصل معنا</h1>
+      <p>
+        نحن هنا للإجابة على استفساراتك. تواصل معنا عبر النموذج أو المعلومات
+        أدناه
+      </p>
+    </div>
+  </section>
+
+  <div class="contact-container">
+    <div class="contact-info">
+      <div class="info-card">
+        <mat-icon>location_on</mat-icon>
+        <h3>العنوان</h3>
+        <p>قرية ميت ضافر، مدينة دكرنس، محافظة الدقهلية</p>
+      </div>
+
+      <div class="info-card">
+        <mat-icon>phone</mat-icon>
+        <h3>الهاتف</h3>
+        <p dir="ltr">+20 101 234 5678</p>
+        <!-- LTR for numbers -->
+      </div>
+
+      <div class="info-card">
+        <mat-icon>email</mat-icon>
+        <h3>البريد الإلكتروني</h3>
+        <p>info&#64;aqrra.com</p>
+      </div>
+
+      <div class="social-icons">
+        <a href="#" class="social-link">
+          <i class="fab fa-x"></i>
+        </a>
+        <a href="#" class="social-link">
+          <i class="fab fa-instagram"></i>
+        </a>
+        <a href="#" class="social-link">
+          <i class="fab fa-facebook"></i>
+        </a>
+        <a href="#" class="social-link">
+          <i class="fab fa-linkedin"></i>
+        </a>
+      </div>
+    </div>
+
+    <form
+      [formGroup]="contactForm"
+      (ngSubmit)="submitForm()"
+      class="contact-form"
+    >
+      <mat-form-field appearance="outline">
+        <mat-label>الاسم بالكامل</mat-label>
+        <input matInput formControlName="name" required />
+        <mat-error *ngIf="contactForm.get('name')?.hasError('required')">
+          هذا الحقل مطلوب
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>البريد الإلكتروني</mat-label>
+        <input matInput formControlName="email" type="email" required />
+        <mat-error *ngIf="contactForm.get('email')?.hasError('email')">
+          بريد إلكتروني غير صالح
+        </mat-error>
+        <mat-error *ngIf="contactForm.get('email')?.hasError('required')">
+          هذا الحقل مطلوب
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>الرسالة</mat-label>
+        <textarea
+          matInput
+          formControlName="message"
+          rows="5"
+          required
+        ></textarea>
+        <mat-error *ngIf="contactForm.get('message')?.hasError('required')">
+          هذا الحقل مطلوب
+        </mat-error>
+      </mat-form-field>
+
+      <button
+        mat-raised-button
+        color="primary"
+        type="submit"
+        [disabled]="!contactForm.valid"
+      >
+        إرسال الرسالة
+      </button>
+    </form>
+  </div>
+
+  <div class="map-container">
+    <iframe
+      src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d6834.121688963372!2d31.544086493645693!3d31.080234486361142!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x14f77ed1bf16b83d%3A0x1567309356aef9ce!2sMit%20Dafir%2C%20Mit%20Dafer%2C%20Dekernes%2C%20Dakahlia%20Governorate!5e0!3m2!1sen!2seg!4v1738675286284!5m2!1sen!2seg"
+      width="100%"
+      height="450"
+      style="border: 0"
+      allowfullscreen=""
+      loading="lazy"
+      referrerpolicy="no-referrer-when-downgrade"
+    ></iframe>
+  </div>
+</div>

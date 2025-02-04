@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, map, of } from 'rxjs';
+import { BehaviorSubject, Observable, delay, map, of } from 'rxjs';
 import { Product } from '../../../shared/models/product';
 
 @Injectable({ providedIn: 'root' })
@@ -112,5 +112,10 @@ export class ProductsService {
         })
       )
     );
+  }
+
+  getProductById(id: number): Observable<Product | undefined> {
+    const blog = this.productsSubject.value.find((b) => b.id === id);
+    return of(blog).pipe(delay(200));
   }
 }
