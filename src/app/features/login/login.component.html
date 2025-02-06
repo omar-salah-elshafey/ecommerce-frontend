@@ -1,48 +1,61 @@
 <div class="login-container" dir="rtl">
-  <h1 class="form-title">تسجيل الدخول</h1>
+  <div class="loading-overlay" *ngIf="isLoading">
+    <mat-spinner diameter="60"></mat-spinner>
+    <p>جاري التحميل...</p>
+  </div>
+  <ng-container *ngIf="!isLoading">
+    <h1 class="form-title">تسجيل الدخول</h1>
 
-  <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
-    <mat-form-field appearance="outline">
-      <mat-label>البريد الإلكتروني</mat-label>
-      <input matInput formControlName="emailOrUserName" type="text" required />
-      <mat-error *ngIf="loginForm.get('emailOrUserName')?.hasError('required')">
-        هذا الحقل مطلوب
-      </mat-error>
-    </mat-form-field>
-    <div class="forgot-password">
-      <a routerLink="/forgot-password">هل نسيت كلمة المرور؟</a>
-    </div>
-    <mat-form-field appearance="outline">
-      <mat-label>كلمة المرور</mat-label>
-      <input
-        matInput
-        [type]="hidePassword ? 'password' : 'text'"
-        formControlName="password"
-        required
-      />
-      <mat-icon
-        matSuffix
-        class="password-toggle-icon"
-        (click)="togglePasswordVisibility()"
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+      <mat-form-field appearance="outline">
+        <mat-label>البريد الإلكتروني أو اسم المستخدم</mat-label>
+        <input
+          matInput
+          formControlName="emailOrUserName"
+          type="text"
+          required
+          appTrimInput
+        />
+        <mat-error
+          *ngIf="loginForm.get('emailOrUserName')?.hasError('required')"
+        >
+          هذا الحقل مطلوب
+        </mat-error>
+      </mat-form-field>
+      <div class="register-link">
+        <a routerLink="/reset-password-request">هل نسيت كلمة المرور؟</a>
+      </div>
+      <mat-form-field appearance="outline">
+        <mat-label>كلمة المرور</mat-label>
+        <input
+          matInput
+          [type]="hidePassword ? 'password' : 'text'"
+          formControlName="password"
+          required
+          appTrimInput
+        />
+        <mat-icon matSuffix (click)="togglePasswordVisibility()">
+          {{ hidePassword ? "visibility" : "visibility_off" }}
+        </mat-icon>
+        <mat-error *ngIf="loginForm.get('password')?.hasError('required')">
+          هذا الحقل مطلوب
+        </mat-error>
+      </mat-form-field>
+
+      <button
+        mat-raised-button
+        color="primary"
+        type="submit"
+        [disabled]="loginForm.invalid"
       >
-        {{ hidePassword ? "visibility" : "visibility_off" }}
-      </mat-icon>
-      <mat-error *ngIf="loginForm.get('password')?.hasError('required')">
-        هذا الحقل مطلوب
-      </mat-error>
-    </mat-form-field>
-
-    <button
-      mat-raised-button
-      color="primary"
-      type="submit"
-      [disabled]="loginForm.invalid"
-    >
-      تسجيل الدخول
-    </button>
-    <div class="register-link">
-      <p><a routerLink="/confirm-email">لم يتم تأكيد البريد الإلكتروني؟</a></p>
-      <p>ليس لديك حساب؟ <a routerLink="/register">أنشئ حساب جديد</a></p>
-    </div>
-  </form>
+        تسجيل الدخول
+      </button>
+      <div class="register-link">
+        <p>
+          <a routerLink="/confirm-email">لم يتم تأكيد البريد الإلكتروني؟</a>
+        </p>
+        <p>ليس لديك حساب؟ <a routerLink="/register">أنشئ حساب جديد</a></p>
+      </div>
+    </form>
+  </ng-container>
 </div>

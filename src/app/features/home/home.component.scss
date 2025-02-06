@@ -35,7 +35,7 @@
     display: block;
     width: 80px;
     height: 3px;
-    background: #007bff;
+    background: #000;
     margin: 0.5rem auto 0;
   }
 }
@@ -60,13 +60,13 @@
     }
 
     &:hover i {
-      color: #007bff;
+      color: #000;
       transform: scale(1.1);
     }
 
     i {
       font-size: 4rem;
-      color: #555;
+      color: #5b5959;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -98,7 +98,7 @@
   }
 
   .price {
-    color: #e91e63;
+    color: #000;
     font-weight: bold;
     font-size: 1.2rem;
     margin-top: 1rem;

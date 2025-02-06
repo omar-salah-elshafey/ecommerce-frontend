@@ -8,10 +8,12 @@ import {
 } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIcon } from '@angular/material/icon';
+import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { Router, RouterModule } from '@angular/router';
+import { AuthService } from '../../core/services/auth/auth.service';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-login',
@@ -22,7 +24,9 @@ import { Router, RouterModule } from '@angular/router';
     MatInputModule,
     RouterModule,
     MatButtonModule,
-    MatIcon,
+    MatIconModule,
+    MatProgressSpinnerModule,
+    MatSnackBarModule,
   ],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
@@ -31,8 +35,10 @@ export class LoginComponent implements OnInit {
   private fb = inject(FormBuilder);
   private snackBar = inject(MatSnackBar);
   private router = inject(Router);
+  private authService = inject(AuthService);
   loginForm!: FormGroup;
   hidePassword: boolean = true;
+  isLoading: boolean = false;
 
   togglePasswordVisibility(): void {
     this.hidePassword = !this.hidePassword;
@@ -44,14 +50,36 @@ export class LoginComponent implements OnInit {
     });
   }
   onSubmit() {
-    if (this.loginForm.valid) {
-      // API call will be added here
-      console.log(this.loginForm.value);
-      this.snackBar.open('تم تسجيل الدخول بنجاح', 'إغلاق', {
+    if (this.loginForm.invalid) {
+      this.snackBar.open('يرجى تصحيح الأخطاء قبل الإرسال', 'إغلاق', {
         duration: 3000,
         direction: 'rtl',
+        verticalPosition: 'top',
       });
-      this.router.navigate(['/']);
+      return;
     }
+    console.log(this.loginForm.value);
+    this.isLoading = true;
+    this.authService.login(this.loginForm.value).subscribe({
+      next: (response) => {
+        this.snackBar.open('تم تسجيل الدخول بنجاح.', 'إغلاق', {
+          duration: 3000,
+          direction: 'rtl',
+          verticalPosition: 'top',
+        });
+        console.log(response);
+        this.isLoading = false;
+        this.router.navigate(['/home']);
+      },
+      error: (error) => {
+        this.isLoading = false;
+        console.error('Login error:', error);
+        this.snackBar.open(error.error!.error, 'إغلاق', {
+          duration: 3000,
+          direction: 'rtl',
+          verticalPosition: 'top',
+        });
+      },
+    });
   }
 }

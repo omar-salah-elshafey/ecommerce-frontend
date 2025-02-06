@@ -9,6 +9,10 @@ import { ProductDetailsComponent } from './features/product-details/product-deta
 import { ContactUsComponent } from './features/contact-us/contact-us.component';
 import { RegisterComponent } from './features/register/register.component';
 import { LoginComponent } from './features/login/login.component';
+import { WishlistComponent } from './features/wishlist/wishlist.component';
+import { EmailConfirmationComponent } from './features/email-confirmation/email-confirmation.component';
+import { ResetPasswordRequestComponent } from './features/reset-password/reset-password-request/reset-password-request.component';
+import { ResetPasswordComponent } from './features/reset-password/reset-password/reset-password.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -20,6 +24,10 @@ export const routes: Routes = [
   { path: 'about-us', component: AboutUsComponent },
   { path: 'contact-us', component: ContactUsComponent },
   { path: 'register', component: RegisterComponent },
+  { path: 'confirm-email', component: EmailConfirmationComponent },
   { path: 'login', component: LoginComponent },
+  { path: 'reset-password-request', component: ResetPasswordRequestComponent },
+  { path: 'reset-password', component: ResetPasswordComponent },
+  { path: 'wishlist', component: WishlistComponent },
   { path: '**', redirectTo: '' },
 ];

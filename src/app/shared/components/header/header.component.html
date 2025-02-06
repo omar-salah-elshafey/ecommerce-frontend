@@ -37,9 +37,14 @@
     <mat-icon matBadgeColor="accent">shopping_cart</mat-icon>
   </button>
 
-  <div class="desktop-user-actions user-actions">
-    <a mat-button routerLink="/login">تسجيل الدخول</a>
-    <a mat-button routerLink="/register">إنشاء حساب</a>
+  <div class="user-actions">
+    @if (isLoggedIn) {
+      <a mat-button routerLink="/profile">الملف الشخصي</a> <!-- Profile -->
+      <button mat-button (click)="logout()">تسجيل الخروج</button> <!-- Logout -->
+    } @else {
+      <a mat-button routerLink="/login">تسجيل الدخول</a> <!-- Login -->
+      <a mat-button routerLink="/register">إنشاء حساب</a> <!-- Register -->
+    }
   </div>
 </mat-toolbar>
 

@@ -78,7 +78,7 @@
         bottom: 0; /* Stick to the bottom */
         left: 0;
         right: 0;
-        background: rgba(0, 0, 0, 0.5); /* Semi-transparent black */
+        background: rgba(109, 182, 241, 0.5); /* Semi-transparent black */
         display: flex;
         justify-content: center;
         gap: 1rem;
@@ -109,7 +109,7 @@
       }
 
       .price {
-        color: #e91e63;
+        color: #000;
         font-weight: bold;
       }
     }

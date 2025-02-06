@@ -32,7 +32,7 @@
     }
 
     &:hover mat-icon {
-      color: #007bff;
+      color: #000;
       transform: scale(1.1);
     }
 
@@ -40,7 +40,7 @@
       font-size: 3rem;
       width: auto;
       height: auto;
-      color: #222;
+      color: #5b5959;
       transition: color 0.3s, transform 0.3s;
     }
   }
@@ -82,13 +82,13 @@
       top: 0;
       width: 20px;
       height: 20px;
-      background: #007bff;
+      background: #000;
       border-radius: 50%;
     }
 
     .year {
       font-weight: bold;
-      color: #007bff;
+      color: #000;
     }
   }
 }

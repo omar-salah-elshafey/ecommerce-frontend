@@ -5,7 +5,7 @@
   padding: 4rem 1rem;
 
   h1 {
-    color: #007bff;
+    color: #000;
     margin-bottom: 1rem;
   }
 }
@@ -26,12 +26,12 @@
     margin-bottom: 2rem;
 
     mat-icon {
-      color: #007bff;
+      color: #000;
       font-size: 2.5rem;
     }
 
     h3 {
-      color: #007bff;
+      color: #000;
       margin: 0.5rem 0;
     }
 
@@ -49,12 +49,12 @@
   margin: 1rem 0;
 
   .social-link {
-    color: #007bff;
+    color: #5b5959;
     font-size: 2rem;
-    transition: color 0.3s;
+    transition: 0.3s;
 
     &:hover {
-      color: #e91e63;
+      color: #000;
     }
   }
 }

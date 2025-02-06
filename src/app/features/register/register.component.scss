@@ -1,3 +1,4 @@
+@use "sass:color";
 .register-container {
   max-width: 800px;
   margin: 2rem auto;
@@ -39,6 +40,16 @@
       padding: 1rem;
       font-size: 1.1rem;
       margin-top: 1rem;
+    }
+    mat-icon {
+      cursor: pointer;
+      color: #5b5959;
+      transition: color 0.3s ease;
+      border: none;
+
+      &:hover {
+        color: color.adjust(#000, $lightness: -10%);
+      }
     }
   }
 

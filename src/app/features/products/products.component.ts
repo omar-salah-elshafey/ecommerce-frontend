@@ -20,6 +20,7 @@ import { Product } from '../../shared/models/product';
 import { fadeIn } from '../../shared/animations/animations';
 import { RouterModule } from '@angular/router';
 import { MatIcon } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-products',
@@ -33,6 +34,7 @@ import { MatIcon } from '@angular/material/icon';
     MatProgressSpinnerModule,
     RouterModule,
     MatIcon,
+    MatTooltipModule,
   ],
   templateUrl: './products.component.html',
   styleUrls: ['./products.component.scss'],
@@ -50,6 +52,7 @@ export class ProductsComponent {
   // Categories and products streams
   categories$ = this.productsService.getCategories();
   filteredProducts$!: Observable<Product[]>;
+  wishlist: Set<number> = new Set();
 
   ngOnInit() {
     this.updateFilters();
@@ -64,5 +67,17 @@ export class ProductsComponent {
 
   updateFilters() {
     this.filteredProducts$ = this.productsService.filterProducts(this.filters);
+  }
+
+  toggleWishlist(product: any) {
+    if (this.wishlist.has(product.id)) {
+      this.wishlist.delete(product.id);
+    } else {
+      this.wishlist.add(product.id);
+    }
+  }
+
+  isInWishlist(product: any): boolean {
+    return this.wishlist.has(product.id);
   }
 }

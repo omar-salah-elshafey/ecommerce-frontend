@@ -73,6 +73,8 @@
                   color="primary"
                   [routerLink]="['/products', product.id]"
                   matTooltip="عرض التفاصيل"
+                  matTooltipPosition="above"
+                  matTooltipShowDelay="100"
                 >
                   <mat-icon>visibility</mat-icon>
                 </button>
@@ -80,8 +82,22 @@
                   mat-icon-button
                   color="primary"
                   matTooltip="أضف إلى السلة"
+                  matTooltipPosition="above"
+                  matTooltipShowDelay="100"
                 >
                   <mat-icon>add_shopping_cart</mat-icon>
+                </button>
+                <button
+                  mat-icon-button
+                  color="warn"
+                  matTooltip="أضف إلى المفضلة"
+                  matTooltipPosition="above"
+                  matTooltipShowDelay="100"
+                  (click)="toggleWishlist(product)"
+                >
+                  <mat-icon>{{
+                    isInWishlist(product) ? "favorite" : "favorite_border"
+                  }}</mat-icon>
                 </button>
               </div>
             </div>

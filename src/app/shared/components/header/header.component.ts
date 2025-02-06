@@ -1,4 +1,11 @@
-import { Component, ElementRef, HostListener, inject, ViewChild } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  HostListener,
+  inject,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
@@ -6,6 +13,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatBadgeModule } from '@angular/material/badge';
 import { bounce, fadeIn } from '../../animations/animations';
 import { CommonModule } from '@angular/common';
+import { AuthService } from '../../../core/services/auth/auth.service';
 
 @Component({
   selector: 'app-header',
@@ -22,9 +30,26 @@ import { CommonModule } from '@angular/common';
   styleUrls: ['./header.component.scss'],
   animations: [fadeIn, bounce],
 })
-export class HeaderComponent {
+export class HeaderComponent implements OnInit {
   isMenuOpen = false;
   cartItemCount: number = 0;
+  isLoggedIn: boolean = false;
+  constructor(private authService: AuthService) {}
+
+  ngOnInit(): void {
+    this.isLoggedIn = this.authService.isLoggedIn();
+  }
+
+  logout() {
+    this.authService.logout().subscribe({
+      next: (response) => {
+        console.log('Logout successful', response!);
+      },
+      error: (error) => {
+        console.error('Logout failed:', error!);
+      },
+    });
+  }
 
   @ViewChild('mobileNav', { read: ElementRef }) mobileNav!: ElementRef;
   @ViewChild('mobileMenuButton', { read: ElementRef })

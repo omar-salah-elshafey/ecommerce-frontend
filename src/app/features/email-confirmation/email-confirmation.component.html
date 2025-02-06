@@ -1,0 +1,61 @@
+<!-- confirm-email.component.html -->
+<div class="confirm-email-container">
+  <div class="loading-overlay" *ngIf="loading">
+    <mat-spinner diameter="60"></mat-spinner>
+    <p>جاري التحميل...</p>
+  </div>
+  <ng-container *ngIf="!loading">
+    <h1 class="title">تفعيل الحساب</h1>
+
+    <form
+      [formGroup]="confirmEmailForm"
+      (ngSubmit)="onSubmit()"
+      class="confirm-form"
+    >
+      <!-- Email Input -->
+      <mat-form-field appearance="outline">
+        <mat-label>البريد الإلكتروني</mat-label>
+        <input matInput formControlName="Email" type="email" required />
+        <mat-error *ngIf="confirmEmailForm.get('Email')?.hasError('required')">
+          هذا الحقل مطلوب
+        </mat-error>
+        <mat-error *ngIf="confirmEmailForm.get('Email')?.hasError('email')">
+          بريد إلكتروني غير صالح
+        </mat-error>
+      </mat-form-field>
+
+      <!-- Confirmation Code -->
+      <mat-form-field appearance="outline">
+        <mat-label>رمز التفعيل</mat-label>
+        <input matInput formControlName="Token" type="text" required />
+        <mat-error *ngIf="confirmEmailForm.get('Token')?.hasError('required')">
+          هذا الحقل مطلوب
+        </mat-error>
+      </mat-form-field>
+
+      <!-- Error Message -->
+      <div class="error-message" *ngIf="errorMessage">
+        <mat-icon>error</mat-icon>
+        {{ errorMessage }}
+      </div>
+
+      <!-- Submit Button -->
+      <button
+        mat-raised-button
+        color="primary"
+        type="submit"
+        [disabled]="confirmEmailForm.invalid || loading"
+      >
+        <mat-spinner *ngIf="loading" diameter="20"></mat-spinner>
+        <span *ngIf="!loading">تفعيل الحساب</span>
+      </button>
+
+      <!-- Resend Link -->
+      <div class="resend-link" *ngIf="showResendLink">
+        <a (click)="resendConfirmationEmail()" [class.disabled]="loading">
+          إعادة إرسال رمز التفعيل
+        </a>
+      </div>
+    </form>
+  </ng-container>
+</div>

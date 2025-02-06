@@ -14,6 +14,11 @@ body {
   text-align: right;
   font-family: "Tajawal", sans-serif;
 }
+app-root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
 main {
   flex-grow: 1;
 }
@@ -51,45 +56,6 @@ main {
   p {
     font-size: 1.2rem;
     color: #2c3e50;
-  }
-}
-
-.skeleton-loader {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 2rem;
-  padding: 2rem;
-
-  .skeleton-card {
-    background: #f5f5f5;
-    border-radius: 8px;
-    padding: 1rem;
-    animation: pulse 1.5s infinite;
-  }
-
-  .skeleton-image {
-    height: 200px;
-    background: #e0e0e0;
-    border-radius: 4px;
-    margin-bottom: 1rem;
-  }
-
-  .skeleton-text {
-    height: 20px;
-    background: #e0e0e0;
-    margin-bottom: 0.5rem;
-    border-radius: 4px;
-
-    &:last-child {
-      width: 60%;
-    }
-  }
-
-  .skeleton-button {
-    height: 40px;
-    background: #e0e0e0;
-    margin-top: 1rem;
-    border-radius: 4px;
   }
 }
 
