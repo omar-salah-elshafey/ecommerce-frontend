@@ -14,93 +14,80 @@
   </div>
 
   <nav class="desktop-nav">
-    <a mat-button routerLink="/" routerLinkActive="active">الرئيسية</a>
-    <a mat-button routerLink="/products" routerLinkActive="active">المنتجات</a>
-    <a mat-button routerLink="/blogs" routerLinkActive="active">المنشورات</a>
-    <a mat-button routerLink="/about-us" routerLinkActive="active">من نحن</a>
-    <a mat-button routerLink="/contact-us" routerLinkActive="active"
-      >اتصل بنا</a
+    <a mat-button routerLink="/">الرئيسية</a>
+    <a mat-button routerLink="/products">المنتجات</a>
+    <a mat-button routerLink="/blogs">المنشورات</a>
+    <a mat-button routerLink="/about-us">من نحن</a>
+    <a mat-button routerLink="/contact-us">اتصل بنا</a>
+    <button
+      mat-icon-button
+      routerLink="/cart"
+      [@bounce]="cartItemCount"
+      class="desktop-cart"
     >
+      <mat-icon matBadgeColor="accent">shopping_bag</mat-icon>
+    </button>
+    <button class="desktop-cart" mat-icon-button routerLink="/wishlist">
+      <mat-icon matBadgeColor="accent">favorite</mat-icon>
+    </button>
   </nav>
 
-  <div class="desktop-search search-bar">
-    <input type="text" placeholder="ابحث عن منتج..." />
-    <mat-icon>search</mat-icon>
-  </div>
+  <div class="desktop-user-actions user-actions">
+    <ng-container *ngIf="authService.isLoggedIn$ | async; else guestActions">
+      <button mat-button routerLink="/profile">
+        <mat-icon>person</mat-icon>
+        {{ (authService.currentUser$ | async)?.firstName }}
+      </button>
+      <button mat-button (click)="logout()">
+        <mat-icon class="logout">logout</mat-icon>
+        تسجيل الخروج
+      </button>
+    </ng-container>
 
-  <button
-    mat-icon-button
-    routerLink="/cart"
-    [@bounce]="cartItemCount"
-    class="desktop-cart"
-  >
-    <mat-icon matBadgeColor="accent">shopping_cart</mat-icon>
-  </button>
-
-  <div class="user-actions">
-    @if (isLoggedIn) {
-      <a mat-button routerLink="/profile">الملف الشخصي</a> <!-- Profile -->
-      <button mat-button (click)="logout()">تسجيل الخروج</button> <!-- Logout -->
-    } @else {
-      <a mat-button routerLink="/login">تسجيل الدخول</a> <!-- Login -->
-      <a mat-button routerLink="/register">إنشاء حساب</a> <!-- Register -->
-    }
+    <ng-template #guestActions>
+      <a mat-button routerLink="/login">تسجيل الدخول</a>
+      <a mat-button routerLink="/register">إنشاء حساب</a>
+    </ng-template>
   </div>
 </mat-toolbar>
 
-<div class="mobile-nav" *ngIf="isMenuOpen" #mobileNav>
+<div  class="mobile-nav" *ngIf="isMenuOpen" #mobileNav>
   <nav>
+    <a mat-button routerLink="/" (click)="toggleMenu()">الرئيسية</a>
+    <a mat-button routerLink="/products" (click)="toggleMenu()">المنتجات</a>
+    <a mat-button routerLink="/blogs" (click)="toggleMenu()">المنشورات</a>
+    <a mat-button routerLink="/about-us" (click)="toggleMenu()">من نحن</a>
+    <a mat-button routerLink="/contact-us" (click)="toggleMenu()">اتصل بنا</a>
     <a
-      mat-button
-      routerLink="/"
-      routerLinkActive="active"
-      (click)="toggleMenu()"
-      >الرئيسية</a
-    >
-    <a
-      mat-button
-      routerLink="/products"
-      routerLinkActive="active"
-      (click)="toggleMenu()"
-      >المنتجات</a
-    >
-    <a
-      mat-button
-      routerLink="/blogs"
-      routerLinkActive="active"
-      (click)="toggleMenu()"
-      >المنشورات</a
-    >
-    <a
-      mat-button
-      routerLink="/about-us"
-      routerLinkActive="active"
-      (click)="toggleMenu()"
-      >من نحن</a
-    >
-    <a
-      mat-button
-      routerLink="/contact-us"
-      routerLinkActive="active"
-      (click)="toggleMenu()"
-      >اتصل بنا</a
-    >
-
-    <div class="search-bar">
-      <input type="text" placeholder="ابحث عن منتج..." />
-      <mat-icon>search</mat-icon>
-    </div>
-    <button
       mat-icon-button
       routerLink="/cart"
       [@bounce]="cartItemCount"
       (click)="toggleMenu()"
     >
-      <mat-icon matBadgeColor="accent">shopping_cart</mat-icon>
-    </button>
+      <mat-icon matBadgeColor="accent">shopping_bag</mat-icon>
+    </a>
+    <a (click)="toggleMenu()" mat-icon-button routerLink="/wishlist">
+      <mat-icon matBadgeColor="accent">favorite</mat-icon>
+    </a>
     <div class="user-actions">
-      <a mat-button routerLink="/login" (click)="toggleMenu()">تسجيل الدخول</a>
-      <a mat-button routerLink="/register" (click)="toggleMenu()">إنشاء حساب</a>
+      <ng-container *ngIf="authService.isLoggedIn$ | async; else mobileGuest">
+        <a mat-button routerLink="/profile" (click)="toggleMenu()">
+          <mat-icon>person</mat-icon>
+          {{ (authService.currentUser$ | async)?.firstName }}
+        </a>
+        <a mat-button (click)="logout(); toggleMenu()">
+          <mat-icon class="logout">logout</mat-icon> تسجيل الخروج
+        </a>
+      </ng-container>
+
+      <ng-template #mobileGuest>
+        <a mat-button routerLink="/login" (click)="toggleMenu()"
+          >تسجيل الدخول</a
+        >
+        <a mat-button routerLink="/register" (click)="toggleMenu()"
+          >إنشاء حساب</a
+        >
+      </ng-template>
     </div>
   </nav>
 </div>

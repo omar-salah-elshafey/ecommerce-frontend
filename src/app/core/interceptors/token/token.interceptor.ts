@@ -1,5 +1,5 @@
 import { HttpInterceptorFn } from '@angular/common/http';
-import { inject } from '@angular/core';
+import { inject, Injector } from '@angular/core';
 import { Router } from '@angular/router';
 import {
   catchError,
@@ -9,19 +9,18 @@ import {
   filter,
   take,
   EMPTY,
+  tap,
 } from 'rxjs';
 import { AuthService } from '../../services/auth/auth.service';
+import { CookieService } from 'ngx-cookie-service';
 let isRefreshing = false;
 const refreshTokenSubject = new BehaviorSubject<string | null>(null);
-import { CookieService } from 'ngx-cookie-service';
 
 export const tokenInterceptor: HttpInterceptorFn = (req, next) => {
-  const authService = inject(AuthService);
+  const injector = inject(Injector);
+  // const authService = inject(AuthService);
   const router = inject(Router);
   const cookieService = inject(CookieService);
-  if (req.url.includes('/auth/')) {
-    return next(req);
-  }
 
   const accessToken = cookieService.get('accessToken');
   const refreshToken = cookieService.get('refreshToken');
@@ -39,22 +38,29 @@ export const tokenInterceptor: HttpInterceptorFn = (req, next) => {
         if (!isRefreshing) {
           isRefreshing = true;
           refreshTokenSubject.next(null);
-
+          const authService = injector.get(AuthService);
           return authService.refreshAccessToken(refreshToken).pipe(
-            switchMap(({ accessToken, refreshToken }) => {
-              authService.setTokens(accessToken, refreshToken);
+            switchMap((newTokens) => {
+              console.log('Token successfully refreshed:', newTokens);
+              authService.setTokens(
+                newTokens.accessToken,
+                newTokens.refreshToken
+              );
               isRefreshing = false;
-              refreshTokenSubject.next(accessToken);
+              refreshTokenSubject.next(newTokens.accessToken);
               return next(
                 req.clone({
-                  setHeaders: { Authorization: `Bearer ${accessToken}` },
+                  setHeaders: {
+                    Authorization: `Bearer ${newTokens.accessToken}`,
+                  },
                 })
               );
             }),
-            catchError((err) => {
-              authService.logout();
-              router.navigate(['/login']);
-              return EMPTY;
+            catchError(() => {
+              return authService.logout().pipe(
+                tap(() => router.navigate(['/login'])),
+                switchMap(() => EMPTY)
+              );
             })
           );
         } else {

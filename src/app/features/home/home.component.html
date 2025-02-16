@@ -10,7 +10,7 @@
 </section>
 <div class="main-container">
   <!-- Categories Grid -->
-  <section class="categories">
+  <!-- <section class="categories">
     <h2 class="section-title" @slideIn>الفئات</h2>
     <div class="categories-grid" @staggerAnimation>
       <mat-card
@@ -33,55 +33,46 @@
         </mat-card-actions>
       </mat-card>
     </div>
-  </section>
+  </section> -->
 
   <!-- Featured Products -->
   <section class="featured-products">
-    <h2 class="section-title" @slideIn>منتجات مميزة</h2>
-    <div class="products-grid" @staggerAnimation>
-      <mat-card
-        *ngFor="let product of featuredProducts | async"
-        class="product-card"
-        @slideIn
-      >
-        <img mat-card-image [src]="product.image" [alt]="product.name" />
-        <mat-card-header>
-          <mat-card-title>{{ product.name }}</mat-card-title>
-        </mat-card-header>
-        <mat-card-content>
-          <p>{{ product.description }}</p>
-          <p class="price">{{ product.price | currency : "EGP " }}</p>
-        </mat-card-content>
-        <mat-card-actions>
-          <button mat-raised-button color="primary">أضف إلى السلة</button>
-        </mat-card-actions>
-      </mat-card>
-    </div>
-  </section>
+  <h2 class="section-title">منتجات مميزة</h2>
+  <div class="products-grid">
+    <mat-card *ngFor="let product of featuredProducts$ | async" class="product-card">
+      <img [src]="product.mainImageUrl" [alt]="product.name" class="product-image">
+      <mat-card-content>
+        <h3 class="product-name">{{ product.name }}</h3>
+        <p class="product-price">{{ product.price | currency:'EGP ' }}</p>
+      </mat-card-content>
+      <mat-card-actions>
+        <button mat-raised-button color="primary" [routerLink]="['/products', product.id]">
+          عرض التفاصيل
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+</section>
 
   <!-- Best Sellers Section -->
   <section class="featured-products">
-    <h2 class="section-title" @slideIn>المنتجات الأكثر مبيعًا</h2>
-    <div class="products-grid" @staggerAnimation>
-      <mat-card
-        *ngFor="let product of featuredProducts | async"
-        class="product-card"
-        @slideIn
-      >
-        <img mat-card-image [src]="product.image" [alt]="product.name" />
-        <mat-card-header>
-          <mat-card-title>{{ product.name }}</mat-card-title>
-        </mat-card-header>
-        <mat-card-content>
-          <p>{{ product.description }}</p>
-          <p class="price">{{ product.price | currency : "EGP " }}</p>
-        </mat-card-content>
-        <mat-card-actions>
-          <button mat-raised-button color="primary">أضف إلى السلة</button>
-        </mat-card-actions>
-      </mat-card>
-    </div>
-  </section>
+  <h2 class="section-title">الأكثر مبيعًا</h2>
+  <div class="products-grid">
+    <mat-card *ngFor="let product of bestSellers$ | async" class="product-card">
+      <img [src]="product.mainImageUrl" [alt]="product.name" class="product-image">
+      <mat-card-content>
+        <h3 class="product-name">{{ product.name }}</h3>
+        <p class="product-price">{{ product.price | currency:'EGP ' }}</p>
+        <p class="sales-count">تم بيع {{ product.salesCount }} وحدة</p>
+      </mat-card-content>
+      <mat-card-actions>
+        <button mat-raised-button color="primary" [routerLink]="['/products', product.id]">
+          عرض التفاصيل
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+</section>
 
   <!-- Newsletter Section -->
   <section class="newsletter">

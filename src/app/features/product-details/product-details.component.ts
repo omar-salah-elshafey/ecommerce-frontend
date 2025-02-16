@@ -8,6 +8,8 @@ import { Product } from '../../shared/models/product';
 import { Observable, switchMap } from 'rxjs';
 import { MatCardModule } from '@angular/material/card';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { ProductDto } from '../../core/models/product';
+import { ProductService } from '../../core/services/product/product.service';
 
 @Component({
   selector: 'app-product-details',
@@ -23,14 +25,24 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
   styleUrls: ['./product-details.component.scss'],
 })
 export class ProductDetailsComponent {
+  product!: ProductDto;
+  selectedImage!: string;
+  loading = true;
   private route = inject(ActivatedRoute);
-  private productsService = inject(ProductsService);
-
-  product$!: Observable<Product | undefined>;
+  private productService = inject(ProductService);
 
   ngOnInit() {
-    this.product$ = this.route.params.pipe(
-      switchMap((params) => this.productsService.getProductById(+params['id']))
-    );
+    const productId = this.route.snapshot.paramMap.get('id');
+    if (productId) {
+      this.productService.getProductById(productId).subscribe((product) => {
+        this.product = product;
+        this.selectedImage = product.mainImageUrl;
+        this.loading = false;
+      });
+    }
+  }
+
+  selectImage(imageUrl: string) {
+    this.selectedImage = imageUrl;
   }
 }

@@ -1,0 +1,77 @@
+.profile-container {
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 1rem;
+
+  mat-card {
+    padding: 2rem;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
+    mat-card-header {
+      margin-bottom: 2rem;
+      mat-card-title {
+        font-size: 1.5rem;
+        color: #333;
+      }
+    }
+
+    mat-divider {
+      margin: 2rem 0;
+    }
+
+    mat-list {
+      mat-list-item {
+        padding: 1rem 0;
+        border-bottom: 1px solid #eee;
+
+        [matListItemTitle] {
+          color: #666;
+          font-size: 0.9rem;
+          margin-bottom: 0.5rem;
+        }
+
+        [matListItemLine] {
+          font-size: 1.1rem;
+          color: #333;
+        }
+      }
+    }
+  }
+}
+
+.loading-overlay {
+  text-align: center;
+  padding: 4rem;
+  color: #333;
+
+  p {
+    margin-top: 1rem;
+  }
+}
+
+.error-message {
+  text-align: center;
+  padding: 2rem;
+  color: #f44336;
+
+  mat-icon {
+    font-size: 3rem;
+    width: auto;
+    height: auto;
+    margin-bottom: 1rem;
+  }
+
+  button {
+    margin-top: 1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .profile-container {
+    padding: 0.5rem;
+
+    mat-card {
+      padding: 1rem;
+    }
+  }
+}

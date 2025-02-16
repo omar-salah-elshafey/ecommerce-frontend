@@ -78,7 +78,7 @@
         bottom: 0; /* Stick to the bottom */
         left: 0;
         right: 0;
-        background: rgba(109, 182, 241, 0.5); /* Semi-transparent black */
+        background: rgba(32, 33, 33, 0.5); /* Semi-transparent black */
         display: flex;
         justify-content: center;
         gap: 1rem;
@@ -113,15 +113,21 @@
         font-weight: bold;
       }
     }
-    mat-icon{
+    mat-icon {
       color: #fff;
       font-size: 24px;
       transition: 0.3s;
-      &:hover{
-        color: #007bff;
+      &:hover {
+        color: #393a3a;
       }
     }
   }
+}
+
+.loading-spinner,
+.no-more {
+  text-align: center;
+  padding: 2rem;
 }
 
 /* Responsive Design */

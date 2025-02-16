@@ -1,15 +1,18 @@
 <div class="main-container">
-  <div class="loading-overlay" *ngIf="loading">
+  <div class="loading-overlay" *ngIf="isLoading">
     <mat-spinner diameter="60"></mat-spinner>
     <p>جاري التحميل...</p>
   </div>
-  <ng-container *ngIf="!loading">
+  <div class="search-bar">
+    <input type="text" placeholder="ابحث عن منتج..." />
+    <mat-icon>search</mat-icon>
+  </div>
+  <ng-container *ngIf="!isLoading">
     <div class="products-page">
       <!-- Filters Sidebar -->
-      <aside class="filters-sidebar">
+      <!-- <aside class="filters-sidebar">
         <h2>الفلاتر</h2>
 
-        <!-- Category Filter -->
         <div class="filter-section">
           <h3>الفئة</h3>
           <div
@@ -28,7 +31,6 @@
           </div>
         </div>
 
-        <!-- Price Filter -->
         <div class="filter-section">
           <h3>السعر</h3>
           <div class="price-range">
@@ -56,17 +58,18 @@
             <span>الحد الأقصى: {{ filters.maxPrice | currency : "EGP " }}</span>
           </div>
         </div>
-      </aside>
+      </aside> -->
 
       <!-- Products Grid -->
       <main class="products-grid">
-        <div
-          *ngFor="let product of filteredProducts$ | async"
-          class="product-card"
-        >
+        <div *ngFor="let product of products" class="product-card">
           <mat-card class="card">
             <div class="card-image">
-              <img mat-card-image [src]="product.image" [alt]="product.name" />
+              <img
+                mat-card-image
+                [src]="product.mainImageUrl"
+                [alt]="product.name"
+              />
               <div class="card-overlay">
                 <button
                   mat-icon-button
@@ -111,4 +114,5 @@
       </main>
     </div>
   </ng-container>
+  <div *ngIf="!hasMore" class="no-more">No more products to load</div>
 </div>

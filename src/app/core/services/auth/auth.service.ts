@@ -1,12 +1,21 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { CookieService } from 'ngx-cookie-service';
-import { BehaviorSubject, catchError, Observable, tap, throwError } from 'rxjs';
+import {
+  BehaviorSubject,
+  catchError,
+  finalize,
+  Observable,
+  of,
+  tap,
+  throwError,
+} from 'rxjs';
 import {
   AuthResponseModel,
   RegistrationDto,
   LoginDto,
 } from '../../models/auth';
+import { UserProfileService } from '../userProfile/user-profile.service';
 
 @Injectable({
   providedIn: 'root',
@@ -16,7 +25,47 @@ export class AuthService {
   private accessTokenSubject = new BehaviorSubject<string | null>(null);
   private http = inject(HttpClient);
   private cookieService = inject(CookieService);
-  constructor() {}
+  private userProfileService = inject(UserProfileService);
+  private isLoggedInSubject = new BehaviorSubject<boolean>(false);
+  private currentUserSubject = new BehaviorSubject<any>(null);
+  isLoggedIn$ = this.isLoggedInSubject.asObservable();
+  currentUser$ = this.currentUserSubject.asObservable();
+  constructor() {
+    this.initializeAuthState();
+  }
+
+  private initializeAuthState() {
+    const refreshToken = this.cookieService.get('refreshToken');
+    if (refreshToken) {
+      const accessToken = this.cookieService.get('accessToken');
+      if (!accessToken) {
+        this.refreshAccessToken(refreshToken).subscribe({
+          next: (response) => {
+            this.isLoggedInSubject.next(true);
+            this.loadCurrentUser().subscribe({
+              error: () => this.clearAuthentication(),
+            });
+          },
+          error: () => {
+            this.clearAuthentication();
+          },
+        });
+      } else {
+        this.accessTokenSubject.next(accessToken);
+        this.isLoggedInSubject.next(true);
+        this.loadCurrentUser().subscribe({
+          error: () => this.clearAuthentication(),
+        });
+      }
+    }
+  }
+
+  private loadCurrentUser(): Observable<any> {
+    return this.userProfileService.getCurrentUserProfile().pipe(
+      tap((user) => this.currentUserSubject.next(user)),
+      catchError(() => of(null))
+    );
+  }
 
   registerUser(
     registrationData: RegistrationDto
@@ -40,7 +89,7 @@ export class AuthService {
   login(userData: LoginDto): Observable<AuthResponseModel> {
     return this.http.post(`${this.baseUrl}/login`, userData).pipe(
       tap((response: any) => {
-        this.setTokens(response.accessToken, response.refreshToken);
+        this.handleAuthentication(response);
       }),
       catchError((error) => {
         console.error('Error while logging in: ', error);
@@ -49,22 +98,16 @@ export class AuthService {
     );
   }
 
-  isLoggedIn() {
-    return this.cookieService.check('refreshToken');
-  }
-
   logout(): Observable<any> {
     const refreshToken = this.cookieService.get('refreshToken');
     return this.http
       .post(`${this.baseUrl}/logout?refreshToken=${refreshToken}`, {})
       .pipe(
         tap(() => {
-          this.cookieService.delete('accessToken', '/');
-          this.cookieService.delete('refreshToken', '/');
-          this.accessTokenSubject.next(null);
+          this.clearAuthentication();
         }),
         catchError((error) => {
-          console.error('Error during logout:', error);
+          this.clearAuthentication();
           return throwError(() => new error(error));
         })
       );
@@ -74,6 +117,9 @@ export class AuthService {
     return this.http
       .get<any>(`${this.baseUrl}/refreshtoken?refreshToken=${refreshToken}`)
       .pipe(
+        tap((response) =>
+          this.setTokens(response.accessToken, response.refreshToken)
+        ),
         catchError((error) => {
           console.error('Token refresh failed:', error);
           return throwError(() => new error(error));
@@ -103,5 +149,23 @@ export class AuthService {
       'Strict'
     );
     this.accessTokenSubject.next(accessToken);
+    this.isLoggedInSubject.next(true);
+  }
+
+  getAccessToken(): string | null {
+    return this.cookieService.get('accessToken') || null;
+  }
+
+  private handleAuthentication(response: AuthResponseModel) {
+    this.setTokens(response.accessToken, response.refreshToken);
+    this.loadCurrentUser().subscribe();
+  }
+  
+  private clearAuthentication() {
+    this.cookieService.delete('accessToken', '/');
+    this.cookieService.delete('refreshToken', '/');
+    this.accessTokenSubject.next(null);
+    this.isLoggedInSubject.next(false);
+    this.currentUserSubject.next(null);
   }
 }

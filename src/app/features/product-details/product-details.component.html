@@ -1,32 +1,38 @@
-<div class="product-details">
-  <button mat-raised-button routerLink="/products" class="back-button">
-    <mat-icon>arrow_back</mat-icon>
-    العودة إلى المنتجات
-  </button>
+<!-- product-details.component.html -->
+<div *ngIf="loading" class="loading-spinner">
+  <mat-spinner diameter="60"></mat-spinner>
+</div>
 
-  <ng-container *ngIf="product$ | async as product; else loading">
-    <mat-card>
-      <img
-        *ngIf="product.image"
-        mat-card-image
-        [src]="product.image"
-        [alt]="product.name"
-      />
-      <mat-card-header>
-        <mat-card-title>
-          <p>{{product.name}}</p>
-          <p class="price">{{ product.price | currency : "EGP " }}</p>
-          <p class="stock">المتبقي: {{ product.stock }}</p>
-        </mat-card-title>
-      </mat-card-header>
-
-      <mat-card-content>{{ product.description }} </mat-card-content>
-    </mat-card>
-  </ng-container>
-
-  <ng-template #loading>
-    <div class="loading-spinner">
-      <mat-spinner diameter="50"></mat-spinner>
+<div *ngIf="!loading" class="product-container">
+  <div class="gallery-section">
+    <div class="main-image">
+      <img [src]="selectedImage" [alt]="product.name" />
     </div>
-  </ng-template>
+    <div class="thumbnail-grid">
+      <div
+        *ngFor="let image of product.images"
+        class="thumbnail"
+        [class.selected]="image.imageUrl === selectedImage"
+        (click)="selectImage(image.imageUrl)"
+      >
+        <img [src]="image.imageUrl" [alt]="product.name + ' thumbnail'" />
+      </div>
+    </div>
+  </div>
+
+  <div class="product-info">
+    <h1>{{ product.name }}</h1>
+    <p class="price">{{ product.price | currency : "EGP " }}</p>
+    <p class="description">{{ product.description }}</p>
+
+    <div class="stock-info">
+      <mat-icon>inventory_2</mat-icon>
+      <span>In Stock: {{ product.stock }}</span>
+    </div>
+
+    <button mat-raised-button color="primary" class="add-to-cart">
+      <mat-icon>add_shopping_cart</mat-icon>
+      Add to Cart
+    </button>
+  </div>
 </div>
