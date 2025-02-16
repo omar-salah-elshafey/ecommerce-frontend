@@ -3,14 +3,14 @@
   <div class="hero-content">
     <h1>مرحبًا بكم في متجرنا الإلكتروني</h1>
     <p>اكتشف أحدث المنتجات بأسعار مميزة</p>
-    <button mat-raised-button color="accent" routerLink="/products">
+    <button mat-raised-button color="primary" routerLink="/products">
       تصفح المنتجات
     </button>
   </div>
 </section>
 <div class="main-container">
   <!-- Categories Grid -->
-  <section class="categories">
+  <!-- <section class="categories">
     <h2 class="section-title" @slideIn>الفئات</h2>
     <div class="categories-grid" @staggerAnimation>
       <mat-card
@@ -33,27 +33,33 @@
         </mat-card-actions>
       </mat-card>
     </div>
-  </section>
+  </section> -->
 
   <!-- Featured Products -->
   <section class="featured-products">
-    <h2 class="section-title" @slideIn>منتجات مميزة</h2>
-    <div class="products-grid" @staggerAnimation>
+    <h2 class="section-title">منتجات مميزة</h2>
+    <div class="products-grid">
       <mat-card
-        *ngFor="let product of featuredProducts | async"
+        *ngFor="let product of featuredProducts$ | async"
         class="product-card"
-        @slideIn
       >
-        <img mat-card-image [src]="product.image" [alt]="product.name" />
-        <mat-card-header>
-          <mat-card-title>{{ product.name }}</mat-card-title>
-        </mat-card-header>
+        <img
+          [src]="product.mainImageUrl"
+          [alt]="product.name"
+          class="product-image"
+        />
         <mat-card-content>
-          <p>{{ product.description }}</p>
-          <p class="price">{{ product.price | currency : "EGP " }}</p>
+          <h3 class="product-name">{{ product.name }}</h3>
+          <p class="product-price">{{ product.price | currency : "EGP " }}</p>
         </mat-card-content>
         <mat-card-actions>
-          <button mat-raised-button color="primary">أضف إلى السلة</button>
+          <button
+            mat-raised-button
+            color="primary"
+            [routerLink]="['/products', product.id]"
+          >
+            عرض التفاصيل
+          </button>
         </mat-card-actions>
       </mat-card>
     </div>
@@ -61,23 +67,30 @@
 
   <!-- Best Sellers Section -->
   <section class="featured-products">
-    <h2 class="section-title" @slideIn>المنتجات الأكثر مبيعًا</h2>
-    <div class="products-grid" @staggerAnimation>
+    <h2 class="section-title">الأكثر مبيعًا</h2>
+    <div class="products-grid">
       <mat-card
-        *ngFor="let product of featuredProducts | async"
+        *ngFor="let product of bestSellers$ | async"
         class="product-card"
-        @slideIn
       >
-        <img mat-card-image [src]="product.image" [alt]="product.name" />
-        <mat-card-header>
-          <mat-card-title>{{ product.name }}</mat-card-title>
-        </mat-card-header>
+        <img
+          [src]="product.mainImageUrl"
+          [alt]="product.name"
+          class="product-image"
+        />
         <mat-card-content>
-          <p>{{ product.description }}</p>
-          <p class="price">{{ product.price | currency : "EGP " }}</p>
+          <h3 class="product-name">{{ product.name }}</h3>
+          <p class="product-price">{{ product.price | currency : "EGP " }}</p>
+          <p class="sales-count">تم بيع {{ product.salesCount }} وحدة</p>
         </mat-card-content>
         <mat-card-actions>
-          <button mat-raised-button color="primary">أضف إلى السلة</button>
+          <button
+            mat-raised-button
+            color="primary"
+            [routerLink]="['/products', product.id]"
+          >
+            عرض التفاصيل
+          </button>
         </mat-card-actions>
       </mat-card>
     </div>
@@ -90,7 +103,7 @@
       <p>احصل على آخر العروض والتحديثات مباشرة إلى بريدك</p>
       <div class="newsletter-form">
         <input type="email" placeholder="ادخل بريدك الإلكتروني" />
-        <button mat-raised-button color="accent">اشتراك</button>
+        <button mat-raised-button color="primary">اشتراك</button>
       </div>
     </div>
   </section>
@@ -100,7 +113,7 @@
     <div class="cta-content" @fadeIn>
       <h2>هل أنت مستعد للتسوق؟</h2>
       <p>أنشئ حسابك الآن واحصل على تخفيضات حصرية.</p>
-      <button mat-raised-button color="accent" routerLink="/signup">
+      <button mat-raised-button color="primary" routerLink="/signup">
         أنشئ حسابك
       </button>
     </div>

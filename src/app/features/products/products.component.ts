@@ -1,26 +1,33 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  HostListener,
+  inject,
+  ViewChild,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatSliderModule } from '@angular/material/slider';
-import { ProductsService } from '../../core/services/mock-data/products.service';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import {
   BehaviorSubject,
+  catchError,
   debounceTime,
-  delay,
-  distinctUntilChanged,
-  Observable,
+  EMPTY,
   switchMap,
   tap,
+  throwError,
 } from 'rxjs';
-import { Product } from '../../shared/models/product';
 import { fadeIn } from '../../shared/animations/animations';
 import { RouterModule } from '@angular/router';
 import { MatIcon } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { ProductDto } from '../../core/models/product';
+import { ProductService } from '../../core/services/product/product.service';
 
 @Component({
   selector: 'app-products',
@@ -41,32 +48,58 @@ import { MatTooltipModule } from '@angular/material/tooltip';
   animations: [fadeIn],
 })
 export class ProductsComponent {
-  private productsService = inject(ProductsService);
-  loading = true;
-  // Filter State
-  filters = {
-    category: '',
-    minPrice: 0,
-    maxPrice: 10000,
-  };
-  // Categories and products streams
-  categories$ = this.productsService.getCategories();
-  filteredProducts$!: Observable<Product[]>;
+  private productService = inject(ProductService);
+  products: ProductDto[] = [];
+  currentPage = 1;
+  pageSize = 1;
+  isLoading = false;
+  hasMore = true;
+  private loadMore$ = new BehaviorSubject<void>(undefined);
+
+  private loadProducts() {
+    if (!this.hasMore || this.isLoading) return EMPTY;
+
+    this.isLoading = true;
+    return this.productService
+      .getAllProducts(this.currentPage, this.pageSize)
+      .pipe(
+        tap((response) => {
+          this.products = [...this.products, ...response.items];
+          console.log(response);
+          this.currentPage++;
+          const totalPages = Math.ceil(response.totalItems / response.pageSize);
+          this.hasMore = this.currentPage <= totalPages;
+          this.isLoading = false;
+        }),
+        catchError((error) => {
+          this.isLoading = false;
+          console.error('Error loading products:', error);
+          return throwError(() => error);
+        })
+      );
+  }
+
+  @HostListener('window:scroll', ['$event'])
+  onScroll() {
+    const threshold = 1000;
+    const position = window.scrollY + window.innerHeight;
+    const height = document.documentElement.scrollHeight;
+
+    if (position > height - threshold && this.hasMore) {
+      this.loadMore$.next();
+    }
+  }
+
   wishlist: Set<number> = new Set();
 
   ngOnInit() {
-    this.updateFilters();
-    this.productsService
-      .getProducts()
+    this.loadMore$
       .pipe(
-        delay(500),
-        tap(() => (this.loading = false))
+        debounceTime(200),
+        switchMap(() => this.loadProducts())
       )
       .subscribe();
-  }
-
-  updateFilters() {
-    this.filteredProducts$ = this.productsService.filterProducts(this.filters);
+    this.loadMore$.next();
   }
 
   toggleWishlist(product: any) {

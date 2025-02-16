@@ -6,24 +6,26 @@ import {
   OnInit,
   ViewChild,
 } from '@angular/core';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatBadgeModule } from '@angular/material/badge';
+import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
 import { bounce, fadeIn } from '../../animations/animations';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../../core/services/auth/auth.service';
+import { distinctUntilChanged, map, of, startWith, switchMap } from 'rxjs';
 
 @Component({
   selector: 'app-header',
   imports: [
     RouterLink,
-    RouterLinkActive,
     MatToolbarModule,
     MatButtonModule,
     MatIconModule,
     MatBadgeModule,
+    MatMenuModule,
     CommonModule,
   ],
   templateUrl: './header.component.html',
@@ -31,13 +33,30 @@ import { AuthService } from '../../../core/services/auth/auth.service';
   animations: [fadeIn, bounce],
 })
 export class HeaderComponent implements OnInit {
+  @ViewChild(MatMenuTrigger) profileMenuTrigger!: MatMenuTrigger;
+  @ViewChild('mobileNav', { read: ElementRef }) mobileNav!: ElementRef;
+  @ViewChild('mobileMenuButton', { read: ElementRef })
+  mobileMenuButton!: ElementRef;
+
   isMenuOpen = false;
   cartItemCount: number = 0;
-  isLoggedIn: boolean = false;
-  constructor(private authService: AuthService) {}
+  authState$ = of({ loading: true });
+
+  constructor(public authService: AuthService, private router: Router) {}
 
   ngOnInit(): void {
-    this.isLoggedIn = this.authService.isLoggedIn();
+    this.authState$ = this.authService.isLoggedIn$.pipe(
+      startWith(null),
+      distinctUntilChanged(),
+      switchMap((isLoggedIn) => {
+        if (isLoggedIn === null) return of({ loading: true });
+        return isLoggedIn
+          ? this.authService.currentUser$.pipe(
+              map((user) => ({ isLoggedIn: true, user, loading: false }))
+            )
+          : of({ isLoggedIn: false, user: null, loading: false });
+      })
+    );
   }
 
   logout() {
@@ -51,26 +70,18 @@ export class HeaderComponent implements OnInit {
     });
   }
 
-  @ViewChild('mobileNav', { read: ElementRef }) mobileNav!: ElementRef;
-  @ViewChild('mobileMenuButton', { read: ElementRef })
-  mobileMenuButton!: ElementRef;
-
   toggleMenu() {
     this.isMenuOpen = !this.isMenuOpen;
   }
 
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: MouseEvent) {
-    if (this.isMenuOpen) {
-      const target = event.target as HTMLElement;
-      if (
-        this.mobileNav &&
-        !this.mobileNav.nativeElement.contains(target) &&
-        this.mobileMenuButton &&
-        !this.mobileMenuButton.nativeElement.contains(target)
-      ) {
-        this.isMenuOpen = false;
-      }
+    if (
+      this.isMenuOpen &&
+      !this.mobileNav.nativeElement.contains(event.target) &&
+      !this.mobileMenuButton.nativeElement.contains(event.target)
+    ) {
+      this.isMenuOpen = false;
     }
   }
 }

@@ -77,7 +77,11 @@ export class EmailConfirmationComponent implements OnInit {
       error: (error: HttpErrorResponse) => {
         console.error(error);
         this.loading = false;
-        this.handleConfirmationError(error);
+        this.snackBar.open(error.error!.error, 'إغلاق', {
+          duration: 3000,
+          direction: 'rtl',
+          verticalPosition: 'top',
+        });
         this.showResendLink = true;
       },
     });
@@ -110,16 +114,4 @@ export class EmailConfirmationComponent implements OnInit {
     });
   }
 
-  private handleConfirmationError(error: HttpErrorResponse) {
-    const errorMessages: { [key: string]: string } = {
-      InvalidCode: 'رمز التفعيل غير صحيح',
-      ExpiredCode: 'انتهت صلاحية رمز التفعيل',
-      AlreadyConfirmed: 'الحساب مفعل مسبقًا',
-      UserNotFound: 'البريد الإلكتروني غير مسجل',
-    };
-
-    this.errorMessage =
-      errorMessages[error.error?.code] ||
-      'فشل تفعيل الحساب، يرجى المحاولة لاحقًا';
-  }
 }

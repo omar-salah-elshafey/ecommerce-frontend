@@ -13,6 +13,7 @@ import { WishlistComponent } from './features/wishlist/wishlist.component';
 import { EmailConfirmationComponent } from './features/email-confirmation/email-confirmation.component';
 import { ResetPasswordRequestComponent } from './features/reset-password/reset-password-request/reset-password-request.component';
 import { ResetPasswordComponent } from './features/reset-password/reset-password/reset-password.component';
+import { ProfileComponent } from './features/profile/profile.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -29,5 +30,6 @@ export const routes: Routes = [
   { path: 'reset-password-request', component: ResetPasswordRequestComponent },
   { path: 'reset-password', component: ResetPasswordComponent },
   { path: 'wishlist', component: WishlistComponent },
+  { path: 'profile', component: ProfileComponent },
   { path: '**', redirectTo: '' },
 ];

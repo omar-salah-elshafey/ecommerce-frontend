@@ -1,32 +1,204 @@
-<div class="product-details">
-  <button mat-raised-button routerLink="/products" class="back-button">
-    <mat-icon>arrow_back</mat-icon>
-    العودة إلى المنتجات
-  </button>
+<div *ngIf="loading" class="loading-overlay">
+  <mat-spinner diameter="60"></mat-spinner>
+</div>
 
-  <ng-container *ngIf="product$ | async as product; else loading">
-    <mat-card>
-      <img
-        *ngIf="product.image"
-        mat-card-image
-        [src]="product.image"
-        [alt]="product.name"
-      />
-      <mat-card-header>
-        <mat-card-title>
-          <p>{{product.name}}</p>
-          <p class="price">{{ product.price | currency : "EGP " }}</p>
-          <p class="stock">المتبقي: {{ product.stock }}</p>
-        </mat-card-title>
-      </mat-card-header>
-
-      <mat-card-content>{{ product.description }} </mat-card-content>
-    </mat-card>
-  </ng-container>
-
-  <ng-template #loading>
-    <div class="loading-spinner">
-      <mat-spinner diameter="50"></mat-spinner>
+<div *ngIf="!loading" class="product-container">
+  <div class="gallery-section">
+    <div class="main-image">
+      <img [src]="selectedImage" [alt]="product.name" />
     </div>
-  </ng-template>
+    <mat-tab-group (selectedIndexChange)="onSlideChange($event)">
+      <mat-tab *ngFor="let image of product.images">
+        <ng-template mat-tab-label>
+          <img
+            [src]="image.imageUrl"
+            [alt]="product.name + ' thumbnail'"
+            class="thumbnail"
+          />
+        </ng-template>
+      </mat-tab>
+    </mat-tab-group>
+  </div>
+
+  <div class="product-info">
+    <h1>{{ product.name }}</h1>
+    <p class="price" dir="rtl">{{ product.price | currency : "EGP " }}</p>
+    <p class="description">{{ product.description }}</p>
+
+    <div class="stock-info">
+      <mat-icon [ngClass]="{ 'out-stock': product.stock === 0 }"
+        >inventory_2</mat-icon
+      >
+      <span *ngIf="product.stock > 0">متوفر</span>
+      <span *ngIf="product.stock === 0">غير متوفر</span>
+    </div>
+
+    <div class="quantity-selector">
+      <label for="quantity">الكمية:</label>
+      <div class="quantity-control">
+        <button
+          mat-icon-button
+          (click)="decreaseQuantity()"
+          [disabled]="quantity <= 1"
+        >
+          <mat-icon>remove</mat-icon>
+        </button>
+        <span id="quantity" class="quantity-value">{{ quantity }}</span>
+        <button
+          mat-icon-button
+          (click)="increaseQuantity()"
+          [disabled]="
+            quantity >= product.stock ||
+            product.stock == 0 ||
+            quantity == product.maxOrderQuantity
+          "
+        >
+          <mat-icon>add</mat-icon>
+        </button>
+      </div>
+    </div>
+
+    <mat-card-actions>
+      <button
+        mat-icon-button
+        color="primary"
+        matTooltip="أضف إلى السلة"
+        matTooltipPosition="above"
+        matTooltipShowDelay="100"
+        [disabled]="product.stock == 0"
+      >
+        <mat-icon>add_shopping_cart</mat-icon>
+      </button>
+      <button
+        mat-icon-button
+        color="warn"
+        matTooltip="أضف إلى المفضلة"
+        matTooltipPosition="above"
+        matTooltipShowDelay="100"
+        (click)="toggleWishlist(product)"
+      >
+        <mat-icon>{{
+          isInWishlist(product) ? "favorite" : "favorite_border"
+        }}</mat-icon>
+      </button>
+    </mat-card-actions>
+  </div>
+
+  <section class="add-review-section" *ngIf="authService.isLoggedIn$ | async">
+    <h2>أضف تقييمك</h2>
+    <form [formGroup]="reviewForm" (ngSubmit)="submitReview()">
+      <div class="rating-stars">
+        <button
+          type="button"
+          *ngFor="let star of [1, 2, 3, 4, 5]; let i = index"
+          (click)="setRating(i + 1)"
+          (mouseenter)="hoverRating = i + 1"
+          (mouseleave)="hoverRating = selectedRating"
+          class="star-button"
+        >
+          <mat-icon class="star-icon">
+            {{ hoverRating >= i + 1 ? "star" : "star_outline" }}
+          </mat-icon>
+        </button>
+        <span
+          class="required"
+          *ngIf="
+            reviewForm.get('rating')?.hasError('required') && reviewForm.touched
+          "
+        >
+          * مطلوب
+        </span>
+      </div>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>اكتب تعليقك...</mat-label>
+        <textarea
+          matInput
+          formControlName="comment"
+          placeholder="اكتب تعليقك..."
+          rows="4"
+        ></textarea>
+        <mat-error *ngIf="reviewForm.get('comment')?.hasError('required')">
+          التعليق مطلوب
+        </mat-error>
+        <mat-error *ngIf="reviewForm.get('comment')?.hasError('minlength')">
+          يجب أن يحتوي التعليق على الأقل على 10 أحرف
+        </mat-error>
+      </mat-form-field>
+
+      <button
+        mat-raised-button
+        color="primary"
+        type="submit"
+        [disabled]="reviewForm.invalid || isSubmitting"
+      >
+        <span *ngIf="!isSubmitting">إرسال التقييم</span>
+        <mat-spinner *ngIf="isSubmitting" diameter="24"></mat-spinner>
+      </button>
+    </form>
+  </section>
+
+  <section class="reviews-section">
+    <h2>التقييمات والمراجعات</h2>
+    <div class="rating-summary">
+      <div class="average-rating">
+        <div class="rating">
+          <span class="average-number">{{ averageRating.toFixed(1) }}</span>
+          <span class="total-reviews">({{ totalReviews }} تقييمات)</span>
+        </div>
+        <div class="stars">
+          <mat-icon
+            *ngFor="let icon of getStarIcons(averageRating)"
+            class="gold-star"
+            [ngClass]="{ 'half-star': icon === 'star_half' }"
+          >
+            {{ icon }}
+          </mat-icon>
+        </div>
+      </div>
+    </div>
+
+    <div class="reviews-list">
+      <div *ngFor="let review of reviews" class="review-card">
+        <div class="review-header">
+          <div class="head">
+            <span class="user-name">{{ review.userName }}</span>
+            <span class="review-date">
+              {{ review.createdAt | date : "mediumDate" }}
+            </span>
+          </div>
+          <div class="review-stars">
+            <mat-icon
+              *ngFor="let filled of getStarArray(review.rating)"
+              class="gold-star"
+            >
+              {{ filled ? "star" : "star_outline" }}
+            </mat-icon>
+          </div>
+        </div>
+        <p class="review-comment">{{ review.comment }}</p>
+        <div
+          class="review-actions"
+          *ngIf="authService.currentUserName === review.userName"
+        >
+          <button mat-button color="primary" (click)="editReview(review)">
+            تعديل
+          </button>
+          <button mat-button color="warn" (click)="deleteReview(review)">
+            حذف
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <button
+      *ngIf="hasMoreReviews"
+      mat-raised-button
+      color="primary"
+      (click)="loadReviews()"
+      class="load-more"
+    >
+      عرض المزيد
+    </button>
+  </section>
 </div>
