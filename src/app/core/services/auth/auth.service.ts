@@ -166,6 +166,7 @@ export class AuthService {
     this.loadCurrentUser().subscribe();
   }
 
+
   private clearAuthentication() {
     this.cookieService.delete('accessToken', '/');
     this.cookieService.delete('refreshToken', '/');
