@@ -125,16 +125,28 @@
           يجب أن يحتوي التعليق على الأقل على 10 أحرف
         </mat-error>
       </mat-form-field>
-
-      <button
-        mat-raised-button
-        color="primary"
-        type="submit"
-        [disabled]="reviewForm.invalid || isSubmitting"
-      >
-        <span *ngIf="!isSubmitting">إرسال التقييم</span>
-        <mat-spinner *ngIf="isSubmitting" diameter="24"></mat-spinner>
-      </button>
+      <div class="actions">
+        <button
+          mat-raised-button
+          color="primary"
+          type="submit"
+          [disabled]="reviewForm.invalid || isSubmitting"
+        >
+          <span *ngIf="!isSubmitting">
+            {{ editingReview ? "تحديث التقييم" : "إرسال التقييم" }}
+          </span>
+          <mat-spinner *ngIf="isSubmitting" diameter="24"></mat-spinner>
+        </button>
+        <button
+          mat-raised-button
+          color="warn"
+          type="button"
+          (click)="cancelEditReview()"
+          *ngIf="editingReview"
+        >
+          إلغاء
+        </button>
+      </div>
     </form>
   </section>
 
