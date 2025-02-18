@@ -66,6 +66,7 @@
         matTooltipPosition="above"
         matTooltipShowDelay="100"
         [disabled]="product.stock == 0"
+        (click)="addToCart(product)"
       >
         <mat-icon>add_shopping_cart</mat-icon>
       </button>

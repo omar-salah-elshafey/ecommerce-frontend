@@ -15,6 +15,7 @@ export interface ProductDto {
   isFeatured: boolean;
   salesCount: number;
   categoryId: string;
+  categoryName: string;
   images: ProductImage[];
   mainImageUrl: string;
 }

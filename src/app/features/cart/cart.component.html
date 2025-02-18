@@ -1,1 +1,102 @@
-<p>cart works!</p>
+<div *ngIf="isLoading" class="loading-overlay">
+  <mat-spinner diameter="60"></mat-spinner>
+</div>
+<div class="cart-container" *ngIf="!isLoading">
+  <div *ngIf="cartItems.length === 0" class="empty-state">
+    <mat-icon class="empty-icon">shopping_cart</mat-icon>
+    <p class="empty-text">لا توجد عناصر في السلة حالياً</p>
+    <button mat-raised-button color="primary" routerLink="/products">
+      تصفح المنتجات
+    </button>
+  </div>
+
+  <div *ngIf="cartItems.length > 0" class="cart-items">
+    <mat-card *ngFor="let item of cartItems" class="cart-item">
+      <div class="item-content">
+        <img
+          [src]="getImageUrl(item.imageUrl)"
+          [alt]="item.name"
+          class="product-image"
+        />
+
+        <div class="product-info">
+          <h3 class="product-name">{{ item.name }}</h3>
+          <p class="product-price">
+            سعر الوحدة: {{ item.productPrice | currency : "EGP " }}
+          </p>
+          <div class="quantity-selector">
+            <label for="quantity">الكمية:</label>
+            <div class="quantity-control">
+              <button mat-icon-button (click)="decreaseQuantity(item)">
+                <mat-icon>remove</mat-icon>
+              </button>
+              <span id="quantity" class="quantity-value">{{
+                item.quantity
+              }}</span>
+              <button
+                mat-icon-button
+                (click)="increaseQuantity(item)"
+                [disabled]="
+                  item.quantity >= item.stock ||
+                  item.stock == 0 ||
+                  item.quantity == item.maxOrderQuantity
+                "
+              >
+                <mat-icon>add</mat-icon>
+              </button>
+            </div>
+          </div>
+          <p class="product-price">
+            السعر الكلي: {{ item.totalPrice | currency : "EGP " }}
+          </p>
+        </div>
+
+        <mat-card-actions>
+          <button
+            mat-icon-button
+            color="warn"
+            (click)="removeFromCart(item.productId)"
+            matTooltip="إزالة من السلة"
+            matTooltipPosition="left"
+          >
+            <mat-icon>delete</mat-icon>
+          </button>
+          <button
+            mat-icon-button
+            color="warn"
+            matTooltip="أضف إلى المفضلة"
+            matTooltipPosition="above"
+            matTooltipShowDelay="100"
+            (click)="toggleWishlist(item.productId)"
+          >
+            <mat-icon>{{
+              isInWishlist(item.productId) ? "favorite" : "favorite_border"
+            }}</mat-icon>
+          </button>
+          <button
+            mat-icon-button
+            color="primary"
+            matTooltip="عرض التفاصيل"
+            matTooltipPosition="above"
+            matTooltipShowDelay="100"
+            [routerLink]="['/products', item.productId]"
+          >
+            <mat-icon>visibility</mat-icon>
+          </button>
+        </mat-card-actions>
+      </div>
+    </mat-card>
+  </div>
+
+  <div *ngIf="cartItems.length > 0" class="cart-summary">
+    <div class="summary-details">
+      <span class="summary-label">المجموع الكلي:</span>
+      <span class="summary-value">
+        {{ cart.totalCartPrice | currency : "EGP " }}
+      </span>
+    </div>
+    <button mat-raised-button color="primary" routerLink="/checkout">
+      إتمام الشراء
+    </button>
+  </div>
+</div>

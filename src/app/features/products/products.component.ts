@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, HostListener, inject } from '@angular/core';
+import { Component, HostListener, inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -21,6 +21,10 @@ import { MatIcon } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ProductDto } from '../../core/models/product';
 import { ProductService } from '../../core/services/product/product.service';
+import { WishlistService } from '../../core/services/wishlist/wishlist.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { CartService } from '../../core/services/cart/cart.service';
+import { CartItemChangeDto } from '../../core/models/cart';
 
 @Component({
   selector: 'app-products',
@@ -40,8 +44,11 @@ import { ProductService } from '../../core/services/product/product.service';
   styleUrls: ['./products.component.scss'],
   animations: [fadeIn],
 })
-export class ProductsComponent {
+export class ProductsComponent implements OnInit {
   private productService = inject(ProductService);
+  private wishlistService = inject(WishlistService);
+  private cartService = inject(CartService);
+  private snackBar = inject(MatSnackBar);
   products: ProductDto[] = [];
   currentPage = 1;
   pageSize = 1;
@@ -93,17 +100,91 @@ export class ProductsComponent {
       )
       .subscribe();
     this.loadMore$.next();
+    this.loadWishlist();
   }
 
-  toggleWishlist(product: any) {
-    if (this.wishlist.has(product.id)) {
-      this.wishlist.delete(product.id);
+  wishlistItems: string[] = [];
+
+  loadWishlist() {
+    this.wishlistService.getWishlist().subscribe({
+      next: (response) => {
+        this.wishlistItems = response.items.map((item) => item.productId);
+      },
+      error: (error) => {
+        console.error('Error loading wishlist:', error);
+      },
+    });
+  }
+
+  toggleWishlist(productId: string) {
+    if (this.isInWishlist(productId)) {
+      this.wishlistService.removeFromWishlist(productId).subscribe({
+        next: () => {
+          this.wishlistItems = this.wishlistItems.filter(
+            (id) => id !== productId
+          );
+          this.snackBar.open('تمت إزالة المنتج من المفضلة', 'إغلاق', {
+            duration: 3000,
+            direction: 'rtl',
+            verticalPosition: 'top',
+          });
+        },
+        error: (error) => {
+          console.error('Error removing from wishlist:', error);
+          this.snackBar.open('حدث خطأ أثناء إزالة المنتج من المفضلة', 'إغلاق', {
+            duration: 3000,
+            direction: 'rtl',
+            verticalPosition: 'top',
+          });
+        },
+      });
     } else {
-      this.wishlist.add(product.id);
+      this.wishlistService.addToWishlist(productId).subscribe({
+        next: () => {
+          this.wishlistItems.push(productId);
+          this.snackBar.open('تمت إضافة المنتج للمفضلة', 'إغلاق', {
+            duration: 3000,
+            direction: 'rtl',
+            verticalPosition: 'top',
+          });
+        },
+        error: (error) => {
+          console.error('Error adding to wishlist:', error);
+          this.snackBar.open('حدث خطأ أثناء إضافة المنتج للمفضلة', 'إغلاق', {
+            duration: 3000,
+            direction: 'rtl',
+            verticalPosition: 'top',
+          });
+        },
+      });
     }
   }
 
-  isInWishlist(product: any): boolean {
-    return this.wishlist.has(product.id);
+  isInWishlist(productId: string): boolean {
+    return this.wishlistItems.includes(productId);
+  }
+
+  addToCart(productId: string) {
+    const item: CartItemChangeDto = {
+      productId: productId,
+      quantity: 1,
+    };
+    this.cartService.addToCart(item).subscribe({
+      next: () => {
+        this.snackBar.open('تمت إضافة المنتج للسلة', 'إغلاق', {
+          duration: 3000,
+          direction: 'rtl',
+          verticalPosition: 'top',
+        });
+      },
+      error: (error) => {
+        console.error('Error adding to wishlist:', error);
+        this.snackBar.open('حدث خطأ أثناء إضافة المنتج للسلة', 'إغلاق', {
+          duration: 3000,
+          direction: 'rtl',
+          verticalPosition: 'top',
+        });
+      },
+    });
   }
 }

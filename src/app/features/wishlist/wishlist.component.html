@@ -1,1 +1,71 @@
-<p>wishlist works!</p>
+<div *ngIf="isLoading" class="loading-overlay">
+  <mat-spinner diameter="60"></mat-spinner>
+</div>
+<div class="wishlist-container" *ngIf="!isLoading">
+  <div *ngIf="wishlistItems.length === 0" class="empty-state">
+    <mat-icon class="empty-icon">favorite_border</mat-icon>
+    <p class="empty-text">لا توجد عناصر في المفضلة حالياً</p>
+    <button mat-raised-button color="primary" routerLink="/products">
+      تصفح المنتجات
+    </button>
+  </div>
+
+  <div *ngIf="wishlistItems.length > 0" class="wishlist-items">
+    <mat-card *ngFor="let item of wishlistItems" class="wishlist-item">
+      <div class="item-content">
+        <img
+          [src]="getImageUrl(item.imageUrl)"
+          [alt]="item.name"
+          class="product-image"
+        />
+
+        <div class="product-info">
+          <h3 class="product-name">{{ item.name }}</h3>
+          <p class="product-price">
+            {{ item.productPrice | currency : "EGP " }}
+          </p>
+          <p class="added-date">
+            <mat-icon>schedule</mat-icon>
+            تم الإضافة في {{ item.addedAt | date : "mediumDate" }}
+          </p>
+        </div>
+
+        <mat-card-actions>
+          <button
+            mat-icon-button
+            color="warn"
+            (click)="removeFromWishlist(item.productId)"
+            matTooltip="إزالة من المفضلة"
+            matTooltipPosition="left"
+          >
+            <mat-icon>delete</mat-icon>
+          </button>
+          <button
+            mat-icon-button
+            color="primary"
+            matTooltip="أضف إلى السلة"
+            matTooltipPosition="above"
+            matTooltipShowDelay="100"
+            [disabled]="item.stock == 0"
+            (click)="addToCart(item.productId)"
+          >
+            <mat-icon>add_shopping_cart</mat-icon>
+          </button>
+          <button
+            mat-icon-button
+            color="primary"
+            matTooltip="عرض التفاصيل"
+            matTooltipPosition="above"
+            matTooltipShowDelay="100"
+            [routerLink]="['/products', item.productId]"
+          >
+            <mat-icon>visibility</mat-icon>
+          </button>
+        </mat-card-actions>
+        <div class="actions">
+
+        </div>
+      </div>
+    </mat-card>
+  </div>
+</div>

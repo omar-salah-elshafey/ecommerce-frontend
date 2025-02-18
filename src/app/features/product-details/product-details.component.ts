@@ -26,6 +26,9 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { AuthService } from '../../core/services/auth/auth.service';
 import { MatInputModule } from '@angular/material/input';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { WishlistService } from '../../core/services/wishlist/wishlist.service';
+import { CartService } from '../../core/services/cart/cart.service';
+import { CartItemChangeDto } from '../../core/models/cart';
 
 @Component({
   selector: 'app-product-details',
@@ -71,6 +74,8 @@ export class ProductDetailsComponent {
   private route = inject(ActivatedRoute);
   private productService = inject(ProductService);
   public authService = inject(AuthService);
+  private wishlistService = inject(WishlistService);
+  private cartService = inject(CartService);
   private snackBar = inject(MatSnackBar);
 
   ngOnInit() {
@@ -82,6 +87,7 @@ export class ProductDetailsComponent {
         this.loading = false;
         this.loadReviews();
         this.initializeReviewForm();
+        this.loadWishlist();
       });
     }
   }
@@ -279,16 +285,89 @@ export class ProductDetailsComponent {
     this.hoverRating = 0;
   }
 
-  wishlist: Set<number> = new Set();
-  toggleWishlist(product: any) {
-    if (this.wishlist.has(product.id)) {
-      this.wishlist.delete(product.id);
+  wishlistItems: string[] = [];
+
+  loadWishlist() {
+    this.wishlistService.getWishlist().subscribe({
+      next: (response) => {
+        this.wishlistItems = response.items.map((item) => item.productId);
+      },
+      error: (error) => {
+        console.error('Error loading wishlist:', error);
+      },
+    });
+  }
+
+  toggleWishlist(product: ProductDto) {
+    if (this.isInWishlist(product)) {
+      this.wishlistService.removeFromWishlist(product.id).subscribe({
+        next: () => {
+          this.wishlistItems = this.wishlistItems.filter(
+            (id) => id !== product.id
+          );
+          this.snackBar.open('تمت إزالة المنتج من المفضلة', 'إغلاق', {
+            duration: 3000,
+            direction: 'rtl',
+            verticalPosition: 'top',
+          });
+        },
+        error: (error) => {
+          console.error('Error removing from wishlist:', error);
+          this.snackBar.open('حدث خطأ أثناء إزالة المنتج من المفضلة', 'إغلاق', {
+            duration: 3000,
+            direction: 'rtl',
+            verticalPosition: 'top',
+          });
+        },
+      });
     } else {
-      this.wishlist.add(product.id);
+      this.wishlistService.addToWishlist(product.id).subscribe({
+        next: () => {
+          this.wishlistItems.push(product.id);
+          this.snackBar.open('تمت إضافة المنتج للمفضلة', 'إغلاق', {
+            duration: 3000,
+            direction: 'rtl',
+            verticalPosition: 'top',
+          });
+        },
+        error: (error) => {
+          console.error('Error adding to wishlist:', error);
+          this.snackBar.open('حدث خطأ أثناء إضافة المنتج للمفضلة', 'إغلاق', {
+            duration: 3000,
+            direction: 'rtl',
+            verticalPosition: 'top',
+          });
+        },
+      });
     }
   }
 
-  isInWishlist(product: any): boolean {
-    return this.wishlist.has(product.id);
+  isInWishlist(product: ProductDto): boolean {
+    return this.wishlistItems.includes(product.id);
+  }
+
+  addToCart(product: ProductDto) {
+    const item: CartItemChangeDto = {
+      productId: product.id,
+      quantity: this.quantity,
+    };
+    this.cartService.addToCart(item).subscribe({
+      next: () => {
+        this.snackBar.open('تمت إضافة المنتج للسلة', 'إغلاق', {
+          duration: 3000,
+          direction: 'rtl',
+          verticalPosition: 'top',
+        });
+        this.quantity = 1;
+      },
+      error: (error) => {
+        console.error('Error adding to wishlist:', error);
+        this.snackBar.open('حدث خطأ أثناء إضافة المنتج للسلة', 'إغلاق', {
+          duration: 3000,
+          direction: 'rtl',
+          verticalPosition: 'top',
+        });
+      },
+    });
   }
 }

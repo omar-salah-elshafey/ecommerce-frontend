@@ -88,6 +88,7 @@
                   matTooltipPosition="above"
                   matTooltipShowDelay="100"
                   *ngIf="product.stock > 0"
+                  (click)="addToCart(product.id)"
                 >
                   <mat-icon>add_shopping_cart</mat-icon>
                 </button>
@@ -97,10 +98,10 @@
                   matTooltip="أضف إلى المفضلة"
                   matTooltipPosition="above"
                   matTooltipShowDelay="100"
-                  (click)="toggleWishlist(product)"
+                  (click)="toggleWishlist(product.id)"
                 >
                   <mat-icon>{{
-                    isInWishlist(product) ? "favorite" : "favorite_border"
+                    isInWishlist(product.id) ? "favorite" : "favorite_border"
                   }}</mat-icon>
                 </button>
               </div>
