@@ -1,0 +1,40 @@
+/* place-order.component.scss */
+.checkout-container {
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 2rem;
+  direction: rtl;
+
+  .form-title {
+    text-align: center;
+    color: #007bff;
+    margin-bottom: 2rem;
+    font-size: 1.8rem;
+  }
+
+  .checkout-form {
+    background: #fff;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+
+    .form-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    button[type="submit"] {
+      width: 100%;
+      padding: 1rem;
+      font-size: 1.1rem;
+      margin-top: 1rem;
+    }
+  }
+}
+
+.mat-select-arrow {
+  margin-right: auto;
+  margin-left: 0 !important;
+}
