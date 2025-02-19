@@ -38,4 +38,8 @@ export class CartService {
       .delete<CartDto>(`${this.apiUrl}/remove-from-cart/${productId}`, {})
       .pipe(tap((cart) => this.cartSubject.next(cart)));
   }
+
+  clearCart(): void {
+    this.cartSubject.next(null);
+  }
 }

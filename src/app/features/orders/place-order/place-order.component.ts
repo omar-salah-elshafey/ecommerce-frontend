@@ -14,6 +14,8 @@ import { CityDto, GovernorateDto } from '../../../core/models/order';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
+import { Router } from '@angular/router';
+import { CartService } from '../../../core/services/cart/cart.service';
 
 @Component({
   selector: 'app-place-order',
@@ -33,6 +35,8 @@ export class PlaceOrderComponent implements OnInit {
   private snackBar = inject(MatSnackBar);
   private orderService = inject(OrdersService);
   private fb = inject(FormBuilder);
+  private router = inject(Router);
+  private cartService = inject(CartService);
   checkoutForm!: FormGroup;
   governorates: GovernorateDto[] = [];
   cities: CityDto[] = [];
@@ -88,7 +92,7 @@ export class PlaceOrderComponent implements OnInit {
       return;
     }
     this.orderService.placeOrder(this.checkoutForm.value).subscribe({
-      next: () => {
+      next: (order) => {
         this.isLoading = false;
         this.snackBar.open('تم تقديم الطلب بنجاح', 'إغلاق', {
           duration: 3000,
@@ -96,6 +100,8 @@ export class PlaceOrderComponent implements OnInit {
           direction: 'rtl',
         });
         this.checkoutForm.reset();
+        this.cartService.clearCart();
+        this.router.navigate(['/orders', order.id]);
       },
       error: (error) => {
         this.isLoading = false;
