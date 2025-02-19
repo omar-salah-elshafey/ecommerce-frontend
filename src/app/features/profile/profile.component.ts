@@ -7,6 +7,9 @@ import { MatListModule } from '@angular/material/list';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
+import { MatDividerModule } from '@angular/material/divider';
+import { RouterModule } from '@angular/router';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-profile',
@@ -16,6 +19,9 @@ import { MatIconModule } from '@angular/material/icon';
     MatCardModule,
     MatListModule,
     MatIconModule,
+    MatButtonModule,
+    MatDividerModule,
+    RouterModule,
   ],
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.scss'],
@@ -32,10 +38,8 @@ export class ProfileComponent implements OnInit {
   getCurrentUserProfile() {
     this.userProfileService.getCurrentUserProfile().subscribe({
       next: (profile) => {
-        console.log('this is from the response: ', profile);
         this.userProfile = profile;
         this.loading = false;
-        console.log('this is from the frontend: ', this.userProfile);
       },
       error: (error) => {
         this.loading = false;

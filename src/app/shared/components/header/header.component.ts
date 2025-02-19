@@ -16,6 +16,7 @@ import { bounce, fadeIn } from '../../animations/animations';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../../core/services/auth/auth.service';
 import { distinctUntilChanged, map, of, startWith, switchMap } from 'rxjs';
+import { CartService } from '../../../core/services/cart/cart.service';
 
 @Component({
   selector: 'app-header',
@@ -42,7 +43,11 @@ export class HeaderComponent implements OnInit {
   cartItemCount: number = 0;
   authState$ = of({ loading: true });
 
-  constructor(public authService: AuthService, private router: Router) {}
+  constructor(
+    public authService: AuthService,
+    private router: Router,
+    private cartService: CartService
+  ) {}
 
   ngOnInit(): void {
     this.authState$ = this.authService.isLoggedIn$.pipe(
@@ -57,6 +62,17 @@ export class HeaderComponent implements OnInit {
           : of({ isLoggedIn: false, user: null, loading: false });
       })
     );
+
+    this.cartService.cart$.subscribe((cart) => {
+      if (cart && cart.items) {
+        this.cartItemCount = cart.items.reduce(
+          (total, item) => total + item.quantity,
+          0
+        );
+      } else {
+        this.cartItemCount = 0;
+      }
+    });
   }
 
   logout() {

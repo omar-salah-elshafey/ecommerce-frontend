@@ -41,6 +41,7 @@ export class CartComponent implements OnInit {
   private snackBar = inject(MatSnackBar);
   private wishlistService = inject(WishlistService);
   isLoading = false;
+  totalPrice = 0;
 
   ngOnInit(): void {
     this.loadCart();
@@ -54,6 +55,8 @@ export class CartComponent implements OnInit {
         this.isLoading = false;
         this.cart = response;
         this.cartItems = response.items;
+        this.totalPrice = response.totalCartPrice;
+        console.log('price: ', this.totalPrice)
       },
       error: (error) => {
         this.isLoading = false;
@@ -99,6 +102,7 @@ export class CartComponent implements OnInit {
       next: (response) => {
         this.isLoading = false;
         this.cartItems = response.items;
+        this.totalPrice = response.totalCartPrice;
         this.snackBar.open('تم تحديث العنصر', 'إغلاق', {
           duration: 3000,
           direction: 'rtl',

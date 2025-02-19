@@ -15,6 +15,10 @@ import { ResetPasswordRequestComponent } from './features/reset-password/reset-p
 import { ResetPasswordComponent } from './features/reset-password/reset-password/reset-password.component';
 import { ProfileComponent } from './features/profile/profile.component';
 import { PlaceOrderComponent } from './features/orders/place-order/place-order.component';
+import { OrdersHistoryComponent } from './features/orders/orders-history/orders-history.component';
+import { OrderDetailsComponent } from './features/orders/order-details/order-details.component';
+import { authGuard } from './core/guards/auth/auth.guard';
+import { guestGuard } from './core/guards/guest/guest.guard';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -25,13 +29,39 @@ export const routes: Routes = [
   { path: 'blogs/:id', component: BlogDetailsComponent },
   { path: 'about-us', component: AboutUsComponent },
   { path: 'contact-us', component: ContactUsComponent },
-  { path: 'register', component: RegisterComponent },
-  { path: 'confirm-email', component: EmailConfirmationComponent },
-  { path: 'login', component: LoginComponent },
-  { path: 'reset-password-request', component: ResetPasswordRequestComponent },
-  { path: 'reset-password', component: ResetPasswordComponent },
+  { path: 'register', component: RegisterComponent, canActivate: [guestGuard] },
+  {
+    path: 'confirm-email',
+    component: EmailConfirmationComponent,
+    canActivate: [guestGuard],
+  },
+  { path: 'login', component: LoginComponent, canActivate: [guestGuard] },
+  {
+    path: 'reset-password-request',
+    component: ResetPasswordRequestComponent,
+    canActivate: [guestGuard],
+  },
+  {
+    path: 'reset-password',
+    component: ResetPasswordComponent,
+    canActivate: [guestGuard],
+  },
   { path: 'wishlist', component: WishlistComponent },
-  { path: 'checkout', component: PlaceOrderComponent },
-  { path: 'profile', component: ProfileComponent },
+  {
+    path: 'checkout',
+    component: PlaceOrderComponent,
+    canActivate: [authGuard],
+  },
+  { path: 'profile', component: ProfileComponent, canActivate: [authGuard] },
+  {
+    path: 'order-history',
+    component: OrdersHistoryComponent,
+    canActivate: [authGuard],
+  },
+  {
+    path: 'orders/:id',
+    component: OrderDetailsComponent,
+    canActivate: [authGuard],
+  },
   { path: '**', redirectTo: '' },
 ];

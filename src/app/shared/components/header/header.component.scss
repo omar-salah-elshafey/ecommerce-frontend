@@ -62,6 +62,10 @@
     }
   }
 }
+::ng-deep .mat-badge-content {
+  top: 10px !important;
+  right: 10px !important;
+}
 
 /* Media queries for responsiveness */
 @media (max-width: 815px) {

@@ -1,0 +1,71 @@
+<div *ngIf="isLoading" class="loading-overlay">
+  <mat-spinner diameter="60"></mat-spinner>
+</div>
+<div class="order-container" *ngIf="!isLoading">
+  <div *ngIf="orderItems.length > 0" class="order-items">
+    <mat-card *ngFor="let item of orderItems" class="order-item">
+      <div class="item-content">
+        <img
+          [src]="getImageUrl(item.imageUrl)"
+          [alt]="item.name"
+          class="product-image"
+        />
+
+        <div class="product-info">
+          <h3 class="product-name">{{ item.name }}</h3>
+          <p class="product-price">
+            سعر الوحدة: {{ item.snapShotPrice | currency : "EGP " }}
+          </p>
+          <div class="quantity">
+            <label>الكمية:</label>
+            <span class="quantity-value">{{ item.quantity }}</span>
+          </div>
+          <p class="product-price">
+            السعر الكلي:
+            {{ item.snapShotPrice * item.quantity | currency : "EGP " }}
+          </p>
+        </div>
+
+        <mat-card-actions>
+          <button
+            mat-icon-button
+            color="primary"
+            matTooltip="عرض التفاصيل"
+            matTooltipPosition="above"
+            matTooltipShowDelay="100"
+            [routerLink]="['/products', item.productId]"
+          >
+            <mat-icon>visibility</mat-icon>
+          </button>
+        </mat-card-actions>
+      </div>
+    </mat-card>
+  </div>
+
+  <div class="order-summary">
+    <div class="summary-details">
+      <span class="summary-label">المجموع الكلي:</span>
+      <span class="summary-value">
+        {{ order.totalAmount | currency : "EGP " }}
+      </span>
+    </div>
+
+    <p class="order-status">
+      <mat-icon [ngStyle]="{ color: getStatusColor(order.status) }">
+        {{ getStatusIcon(order.status) }}
+      </mat-icon>
+      <span>{{ translateOrderStatus(order.status) }}</span>
+    </p>
+
+    <button
+      mat-raised-button
+      color="warn"
+      matTooltip="إلغاء الطلب"
+      matTooltipPosition="above"
+      *ngIf="canCancelOrder(order)"
+      (click)="cancelOrder(order)"
+    >
+      إلغاء الطلب؟
+    </button>
+  </div>
+</div>

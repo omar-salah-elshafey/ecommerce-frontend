@@ -22,6 +22,9 @@
     <button
       mat-icon-button
       routerLink="/cart"
+      [matBadge]="cartItemCount"
+      matBadgeColor="accent"
+      matBadgePosition="above before"
       [@bounce]="cartItemCount"
       class="desktop-cart"
     >
@@ -51,7 +54,7 @@
   </div>
 </mat-toolbar>
 
-<div  class="mobile-nav" *ngIf="isMenuOpen" #mobileNav>
+<div class="mobile-nav" *ngIf="isMenuOpen" #mobileNav>
   <nav>
     <a mat-button routerLink="/" (click)="toggleMenu()">الرئيسية</a>
     <a mat-button routerLink="/products" (click)="toggleMenu()">المنتجات</a>
@@ -62,6 +65,8 @@
       mat-icon-button
       routerLink="/cart"
       [@bounce]="cartItemCount"
+      [matBadge]="cartItemCount"
+      matBadgeColor="accent"
       (click)="toggleMenu()"
     >
       <mat-icon matBadgeColor="accent">shopping_bag</mat-icon>

@@ -1,6 +1,6 @@
 .profile-container {
   max-width: 800px;
-  margin: 2rem auto;
+  margin: 0 auto;
   padding: 1rem;
 
   mat-card {
@@ -9,6 +9,8 @@
 
     mat-card-header {
       margin-bottom: 2rem;
+      display: flex;
+      justify-content: center;
       mat-card-title {
         font-size: 1.5rem;
         color: #333;
@@ -21,31 +23,26 @@
 
     mat-list {
       mat-list-item {
-        padding: 1rem 0;
         border-bottom: 1px solid #eee;
+        display: flex;
 
-        [matListItemTitle] {
+        .title {
           color: #666;
           font-size: 0.9rem;
-          margin-bottom: 0.5rem;
         }
 
-        [matListItemLine] {
+        .value {
           font-size: 1.1rem;
           color: #333;
         }
       }
     }
-  }
-}
 
-.loading-overlay {
-  text-align: center;
-  padding: 4rem;
-  color: #333;
-
-  p {
-    margin-top: 1rem;
+    mat-card-actions{
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+    }
   }
 }
 
@@ -72,6 +69,10 @@
 
     mat-card {
       padding: 1rem;
+    }
+
+    mat-card-actions{
+      flex-direction: column;
     }
   }
 }

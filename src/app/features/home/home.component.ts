@@ -2,7 +2,6 @@ import { Component, inject, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { RouterLink } from '@angular/router';
-import { MockDataService } from '../../core/services/mock-data/mock-data.service';
 import { AsyncPipe, CommonModule } from '@angular/common';
 import {
   fadeIn,
@@ -33,7 +32,6 @@ import { Observable } from 'rxjs';
   animations: [fadeIn, slideIn, staggerAnimation],
 })
 export class HomeComponent implements OnInit {
-
   private productService = inject(ProductService);
   featuredProducts$!: Observable<ProductDto[]>;
   bestSellers$!: Observable<ProductDto[]>;
@@ -49,9 +47,4 @@ export class HomeComponent implements OnInit {
     this.loadFeaturedProducts();
     this.loadBestSellers();
   }
-
-  private mockDataService = inject(MockDataService);
-
-  categories = this.mockDataService.getCategories();
-  featuredProducts = this.mockDataService.getFeaturedProducts();
 }

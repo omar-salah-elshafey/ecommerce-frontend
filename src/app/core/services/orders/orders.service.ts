@@ -47,6 +47,9 @@ export class OrdersService {
   }
 
   cancelOrder(orderId: string): Observable<OrderDto> {
-    return this.http.put<OrderDto>(`${this.apiUrl}cancel-order/${orderId}`, {});
+    return this.http.put<OrderDto>(
+      `${this.apiUrl}/cancel-order/${orderId}`,
+      {}
+    );
   }
 }

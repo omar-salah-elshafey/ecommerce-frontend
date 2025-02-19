@@ -32,6 +32,8 @@ export interface OrderDto {
 export interface OrderItemDto {
   id: string;
   productId: string;
+  name: string;
+  imageUrl: string;
   quantity: number;
   snapShotPrice: number;
 }
@@ -43,14 +45,6 @@ export enum OrderStatus {
   Delivered,
   Cancelled,
 }
-
-export const OrderStatusLabels: { [key in OrderStatus]: string } = {
-  [OrderStatus.Pending]: 'قيد الانتظار',
-  [OrderStatus.Processing]: 'جاري التجهيز',
-  [OrderStatus.Shipped]: 'تم الشحن',
-  [OrderStatus.Delivered]: 'تم التسليم',
-  [OrderStatus.Cancelled]: 'ملغى',
-};
 
 export interface UpdateOrderStatusDto {
   orderId: string;

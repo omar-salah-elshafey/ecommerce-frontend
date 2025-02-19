@@ -58,7 +58,6 @@ export class LoginComponent implements OnInit {
       });
       return;
     }
-    console.log(this.loginForm.value);
     this.isLoading = true;
     this.authService.login(this.loginForm.value).subscribe({
       next: (response) => {

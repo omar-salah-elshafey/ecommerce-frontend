@@ -18,7 +18,6 @@ const refreshTokenSubject = new BehaviorSubject<string | null>(null);
 
 export const tokenInterceptor: HttpInterceptorFn = (req, next) => {
   const injector = inject(Injector);
-  const authService = inject(AuthService);
   const router = inject(Router);
   const cookieService = inject(CookieService);
 
@@ -38,16 +37,13 @@ export const tokenInterceptor: HttpInterceptorFn = (req, next) => {
         if (!isRefreshing) {
           isRefreshing = true;
           refreshTokenSubject.next(null);
-          // const authService = injector.get(AuthService);
+          const authService = injector.get(AuthService);
           return authService.refreshAccessToken(refreshToken).pipe(
-            switchMap((newTokens) => {
-              console.log('Token successfully refreshed:', newTokens);
-              authService.setTokens(
-                newTokens.accessToken,
-                newTokens.refreshToken
-              );
+            tap((newTokens) => {
               isRefreshing = false;
               refreshTokenSubject.next(newTokens.accessToken);
+            }),
+            switchMap((newTokens) => {
               return next(
                 req.clone({
                   setHeaders: {
@@ -56,11 +52,14 @@ export const tokenInterceptor: HttpInterceptorFn = (req, next) => {
                 })
               );
             }),
-            catchError(() => {
-              return authService.logout().pipe(
-                tap(() => router.navigate(['/login'])),
-                switchMap(() => EMPTY)
-              );
+            catchError((refreshError) => {
+              console.error('Token refresh failed:', refreshError);
+              isRefreshing = false;
+              refreshTokenSubject.next(null);
+              authService.logout().subscribe(() => {
+                router.navigate(['/login']);
+              });
+              return throwError(() => refreshError);
             })
           );
         } else {

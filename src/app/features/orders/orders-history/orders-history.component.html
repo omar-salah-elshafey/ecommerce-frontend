@@ -1,0 +1,68 @@
+<div *ngIf="isLoading" class="loading-overlay">
+  <mat-spinner diameter="60"></mat-spinner>
+</div>
+<div class="orders-history-container" *ngIf="!isLoading">
+  <div *ngIf="ordersHistory.length === 0" class="empty-state">
+    <mat-icon class="empty-icon">inventory_2</mat-icon>
+    <p class="empty-text">سجل الطلبات الخاص بك فارغ حالياً</p>
+    <button mat-raised-button color="primary" routerLink="/products">
+      تصفح المنتجات
+    </button>
+  </div>
+
+  <div *ngIf="ordersHistory.length > 0" class="orders-history-items">
+    <div class="filter-buttons">
+      <button
+        mat-raised-button
+        color="primary"
+        (click)="onFilterChange('all')"
+        [disabled]="filter === 'all'"
+      >
+        عرض جميع الطلبات
+      </button>
+      <button
+        mat-raised-button
+        color="primary"
+        (click)="onFilterChange('inProgress')"
+        [disabled]="filter === 'inProgress'"
+      >
+        عرض الطلبات قيد التنفيذ
+      </button>
+    </div>
+    <mat-card *ngFor="let item of ordersHistory" class="orders-history-item">
+      <div class="order-content">
+        <div class="order-info">
+          <h3 class="order-id">
+            رقم الطلب: <span>{{ item.id }}</span>
+          </h3>
+
+          <p class="order-price">
+            السعر الكلي: {{ item.totalAmount | currency : "EGP " }}
+          </p>
+          <p class="order-date">
+            <mat-icon>schedule</mat-icon>
+            تم الطلب في {{ item.orderDate | date : "mediumDate" }}
+          </p>
+          <p class="order-status">
+            <mat-icon [ngStyle]="{ color: getStatusColor(item.status) }">
+              {{ getStatusIcon(item.status) }}
+            </mat-icon>
+            <span>{{ translateOrderStatus(item.status) }}</span>
+          </p>
+        </div>
+        <mat-card-actions>
+          <button
+            mat-icon-button
+            color="primary"
+            matTooltip="عرض التفاصيل"
+            matTooltipPosition="above"
+            matTooltipShowDelay="100"
+            [routerLink]="['/orders', item.id]"
+          >
+            <mat-icon>visibility</mat-icon>
+          </button>
+        </mat-card-actions>
+      </div>
+    </mat-card>
+  </div>
+</div>

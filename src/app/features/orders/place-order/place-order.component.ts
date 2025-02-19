@@ -87,15 +87,15 @@ export class PlaceOrderComponent implements OnInit {
       });
       return;
     }
-    console.log(this.checkoutForm.value);
     this.orderService.placeOrder(this.checkoutForm.value).subscribe({
-      next: (response) => {
+      next: () => {
         this.isLoading = false;
         this.snackBar.open('تم تقديم الطلب بنجاح', 'إغلاق', {
           duration: 3000,
           verticalPosition: 'top',
           direction: 'rtl',
         });
+        this.checkoutForm.reset();
       },
       error: (error) => {
         this.isLoading = false;

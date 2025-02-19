@@ -1,66 +1,68 @@
-<!-- profile.component.html -->
-<div class="profile-container" dir="rtl">
+<div class="profile-container">
   <mat-card *ngIf="!loading && !error">
     <mat-card-header>
       <mat-card-title>الملف الشخصي</mat-card-title>
     </mat-card-header>
 
     <mat-card-content>
-      <!-- Personal Information -->
       <mat-list>
         <mat-list-item>
-          <span matListItemTitle>الاسم الأول</span>
-          <span matListItemLine>{{ userProfile.firstName }}</span>
+          <span class="title">الاسم: </span>
+          <span class="value"
+            >{{ userProfile.firstName }} {{ userProfile.lastName }}</span
+          >
         </mat-list-item>
 
         <mat-list-item>
-          <span matListItemTitle>الاسم الأخير</span>
-          <span matListItemLine>{{ userProfile.lastName }}</span>
-        </mat-list-item>
-
-        <mat-list-item>
-          <span matListItemTitle>الجنس</span>
-          <span matListItemLine>{{ translateGender(userProfile.gender) }}</span>
+          <span class="title">النوع: </span>
+          <span class="value">{{ translateGender(userProfile.gender) }}</span>
         </mat-list-item>
       </mat-list>
 
-      <!-- Family Information -->
       <mat-divider></mat-divider>
       <mat-list>
         <mat-list-item>
-          <span matListItemTitle>الحالة الاجتماعية</span>
-          <span matListItemLine>{{ translateMaritalStatus(userProfile.maritalStatus) }}</span>
+          <span class="title">الحالة الاجتماعية: </span>
+          <span class="value">{{
+            translateMaritalStatus(userProfile.maritalStatus)
+          }}</span>
         </mat-list-item>
 
         <mat-list-item *ngIf="userProfile.childrenCount > 0">
-          <span matListItemTitle>عدد الأطفال</span>
-          <span matListItemLine>{{ userProfile.childrenCount }}</span>
+          <span class="title">عدد الأطفال: </span>
+          <span class="value">{{ userProfile.childrenCount }}</span>
         </mat-list-item>
       </mat-list>
 
-      <!-- Account Information -->
       <mat-divider></mat-divider>
       <mat-list>
         <mat-list-item>
-          <span matListItemTitle>اسم المستخدم</span>
-          <span matListItemLine>{{ userProfile.userName }}</span>
+          <span class="title">اسم المستخدم: </span>
+          <span class="value">{{ userProfile.userName }}</span>
         </mat-list-item>
 
         <mat-list-item>
-          <span matListItemTitle>البريد الإلكتروني</span>
-          <span matListItemLine>{{ userProfile.email }}</span>
+          <span class="title">البريد الإلكتروني: </span>
+          <span class="value">{{ userProfile.email }}</span>
         </mat-list-item>
       </mat-list>
+      <mat-card-actions>
+        <button
+          mat-raised-button
+          color="primary"
+          [routerLink]="['/order-history']"
+        >
+          عرض تاريخ الطلبات
+        </button>
+      </mat-card-actions>
     </mat-card-content>
   </mat-card>
 
-  <!-- Loading State -->
   <div *ngIf="loading" class="loading-overlay">
     <mat-spinner diameter="50"></mat-spinner>
     <p>جاري تحميل البيانات...</p>
   </div>
 
-  <!-- Error State -->
   <div *ngIf="error" class="error-message">
     <mat-icon>error</mat-icon>
     {{ error }}
