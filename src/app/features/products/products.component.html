@@ -1,4 +1,4 @@
-<div class="main-container">
+<div class="products-container">
   <div class="loading-overlay" *ngIf="isLoading">
     <mat-spinner diameter="60"></mat-spinner>
     <p>جاري التحميل...</p>
@@ -10,28 +10,23 @@
   <ng-container *ngIf="!isLoading">
     <div class="products-page">
       <!-- Filters Sidebar -->
-      <!-- <aside class="filters-sidebar">
+      <aside class="filters-sidebar">
         <h2>الفلاتر</h2>
 
         <div class="filter-section">
           <h3>الفئة</h3>
-          <div
-            *ngFor="let category of categories$ | async"
-            class="filter-option"
-          >
-            <mat-checkbox
-              [checked]="filters.category === category"
-              (change)="
-                filters.category = $event.checked ? category : '';
-                updateFilters()
+          <div *ngFor="let category of categories" class="filter-option">
+            <app-category-tree
+              [category]="category"
+              [selectedCategoryIds]="selectedCategoryIds"
+              (categorySelectionChange)="
+                onCategoryCheckboxChange($event.categoryId, $event.selected)
               "
-            >
-              {{ category }}
-            </mat-checkbox>
+            ></app-category-tree>
           </div>
         </div>
 
-        <div class="filter-section">
+        <!-- <div class="filter-section">
           <h3>السعر</h3>
           <div class="price-range">
             <mat-slider
@@ -57,11 +52,15 @@
             <span>الحد الأدنى: {{ filters.minPrice | currency : "EGP " }}</span>
             <span>الحد الأقصى: {{ filters.maxPrice | currency : "EGP " }}</span>
           </div>
-        </div>
-      </aside> -->
+        </div> -->
+      </aside>
 
+      <div *ngIf="products.length === 0" class="empty-state">
+        <mat-icon class="empty-icon">search_off</mat-icon>
+        <p class="empty-text">لا توجد منتجات</p>
+      </div>
       <!-- Products Grid -->
-      <main class="products-grid">
+      <main class="products-grid" *ngIf="products.length != 0">
         <div *ngFor="let product of products" class="product-card">
           <mat-card class="card">
             <div class="card-image">
@@ -117,5 +116,5 @@
       </main>
     </div>
   </ng-container>
-  <div *ngIf="!hasMore" class="no-more">No more products to load</div>
+  <div *ngIf="!hasMore && products.length != 0" class="no-more">No more products to load</div>
 </div>

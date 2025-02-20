@@ -17,14 +17,18 @@ import {
 } from 'rxjs';
 import { fadeIn } from '../../shared/animations/animations';
 import { RouterModule } from '@angular/router';
-import { MatIcon } from '@angular/material/icon';
+import { MatIcon, MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ProductDto } from '../../core/models/product';
 import { ProductService } from '../../core/services/product/product.service';
 import { WishlistService } from '../../core/services/wishlist/wishlist.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatTreeModule } from '@angular/material/tree';
 import { CartService } from '../../core/services/cart/cart.service';
 import { CartItemChangeDto } from '../../core/models/cart';
+import { CategoryService } from '../../core/services/category/category.service';
+import { CategoryDto } from '../../core/models/category';
+import { CategoryTreeComponent } from './category-tree/category-tree.component';
 
 @Component({
   selector: 'app-products',
@@ -37,8 +41,10 @@ import { CartItemChangeDto } from '../../core/models/cart';
     MatButtonModule,
     MatProgressSpinnerModule,
     RouterModule,
-    MatIcon,
+    MatIconModule,
     MatTooltipModule,
+    MatTreeModule,
+    CategoryTreeComponent,
   ],
   templateUrl: './products.component.html',
   styleUrls: ['./products.component.scss'],
@@ -48,13 +54,16 @@ export class ProductsComponent implements OnInit {
   private productService = inject(ProductService);
   private wishlistService = inject(WishlistService);
   private cartService = inject(CartService);
+  private categoryService = inject(CategoryService);
   private snackBar = inject(MatSnackBar);
   products: ProductDto[] = [];
   currentPage = 1;
-  pageSize = 1;
+  pageSize = 20;
   isLoading = false;
   hasMore = true;
   private loadMore$ = new BehaviorSubject<void>(undefined);
+  categories: CategoryDto[] = [];
+  selectedCategoryIds: string[] = [];
 
   private loadProducts() {
     if (!this.hasMore || this.isLoading) return EMPTY;
@@ -65,7 +74,6 @@ export class ProductsComponent implements OnInit {
       .pipe(
         tap((response) => {
           this.products = [...this.products, ...response.items];
-          console.log(response);
           this.currentPage++;
           const totalPages = Math.ceil(response.totalItems / response.pageSize);
           this.hasMore = this.currentPage <= totalPages;
@@ -81,7 +89,7 @@ export class ProductsComponent implements OnInit {
 
   @HostListener('window:scroll', ['$event'])
   onScroll() {
-    const threshold = 1000;
+    const threshold = 600;
     const position = window.scrollY + window.innerHeight;
     const height = document.documentElement.scrollHeight;
 
@@ -93,14 +101,92 @@ export class ProductsComponent implements OnInit {
   wishlist: Set<number> = new Set();
 
   ngOnInit() {
-    this.loadMore$
+    const savedFilters = sessionStorage.getItem('selectedCategoryIds');
+    if (savedFilters) {
+      this.selectedCategoryIds = JSON.parse(savedFilters);
+      // Reset product list and pagination state, then load filtered products
+      this.products = [];
+      this.currentPage = 1;
+      this.hasMore = true;
+      this.loadProductsByFilter();
+    } else {
+      // No saved filters: load all products using infinite scroll logic
+      this.loadMore$
+        .pipe(
+          debounceTime(200),
+          switchMap(() => this.loadProducts())
+        )
+        .subscribe();
+      this.loadMore$.next();
+    }
+    this.loadWishlist();
+    this.getcategoties();
+  }
+
+  getcategoties() {
+    this.categoryService.getAllCategories().subscribe({
+      next: (categories) => {
+        this.categories = categories;
+      },
+      error: (error) => {
+        console.error('Error loading categories:', error);
+      },
+    });
+  }
+
+  loadProductsByFilter() {
+    this.isLoading = true;
+    let productObservable;
+    if (this.selectedCategoryIds.length > 0) {
+      productObservable = this.productService.getProductsByCategoryIds(
+        this.selectedCategoryIds,
+        this.currentPage,
+        this.pageSize
+      );
+    } else {
+      productObservable = this.productService.getAllProducts(
+        this.currentPage,
+        this.pageSize
+      );
+    }
+    productObservable
       .pipe(
-        debounceTime(200),
-        switchMap(() => this.loadProducts())
+        tap((response) => {
+          // Reset or append products based on your UX (here we append)
+          this.products = [...this.products, ...response.items];
+          this.currentPage++;
+          const totalPages = Math.ceil(response.totalItems / response.pageSize);
+          this.hasMore = this.currentPage <= totalPages;
+          this.isLoading = false;
+        }),
+        catchError((error) => {
+          this.isLoading = false;
+          console.error('Error loading filtered products:', error);
+          return throwError(() => error);
+        })
       )
       .subscribe();
-    this.loadMore$.next();
-    this.loadWishlist();
+  }
+
+  onCategoryCheckboxChange(categoryId: string, isChecked: boolean) {
+    if (isChecked) {
+      if (!this.selectedCategoryIds.includes(categoryId)) {
+        this.selectedCategoryIds.push(categoryId);
+      }
+    } else {
+      this.selectedCategoryIds = this.selectedCategoryIds.filter(
+        (id) => id !== categoryId
+      );
+    }
+    sessionStorage.setItem(
+      'selectedCategoryIds',
+      JSON.stringify(this.selectedCategoryIds)
+    );
+    // Reset products and pagination when filters change
+    this.products = [];
+    this.currentPage = 1;
+    this.hasMore = true;
+    this.loadProductsByFilter();
   }
 
   wishlistItems: string[] = [];

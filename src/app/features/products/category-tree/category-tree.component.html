@@ -1,0 +1,14 @@
+<div class="category-item">
+  <mat-checkbox (change)="onCheckboxChange($event)" [checked]="selectedCategoryIds.includes(category.id)">
+    {{ category.name }}
+  </mat-checkbox>
+  <div class="sub-categories" *ngIf="category.subCategories?.length">
+    <ng-container *ngFor="let sub of category.subCategories">
+      <app-category-tree
+        [category]="sub"
+        [selectedCategoryIds]="selectedCategoryIds"
+        (categorySelectionChange)="childSelectionChanged($event)">
+      </app-category-tree>
+    </ng-container>
+  </div>
+</div>

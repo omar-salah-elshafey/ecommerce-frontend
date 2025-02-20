@@ -84,6 +84,7 @@ export class ProductDetailsComponent {
       this.productService.getProductById(productId).subscribe((product) => {
         this.product = product;
         this.selectedImage = product.mainImageUrl;
+        console.log('Product:', product);
         this.loading = false;
         this.loadReviews();
         this.initializeReviewForm();

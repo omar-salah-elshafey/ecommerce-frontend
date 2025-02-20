@@ -56,7 +56,6 @@ export class CartComponent implements OnInit {
         this.cart = response;
         this.cartItems = response.items;
         this.totalPrice = response.totalCartPrice;
-        console.log('price: ', this.totalPrice)
       },
       error: (error) => {
         this.isLoading = false;

@@ -25,6 +25,14 @@
     <p class="price" dir="rtl">{{ product.price | currency : "EGP " }}</p>
     <p class="description">{{ product.description }}</p>
 
+    <p *ngIf="product.categoryName" class="category">
+      <strong>الفئة:</strong> {{ product.categoryName }}
+    </p>
+
+    <p *ngIf="product.sku" class="sku" dir="ltr">
+      <strong>SKU:</strong> {{ product.sku }}
+    </p>
+
     <div class="stock-info">
       <mat-icon [ngClass]="{ 'out-stock': product.stock === 0 }"
         >inventory_2</mat-icon

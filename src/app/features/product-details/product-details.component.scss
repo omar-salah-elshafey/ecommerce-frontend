@@ -64,6 +64,14 @@
     }
   }
 
+  .category,
+  .sku {
+    font-size: 1.1rem;
+    color: #555;
+    margin-bottom: 1.5rem;
+    text-align: right;
+  }
+
   .quantity-selector {
     display: flex;
     align-items: center;

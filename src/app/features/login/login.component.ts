@@ -61,12 +61,6 @@ export class LoginComponent implements OnInit {
     this.isLoading = true;
     this.authService.login(this.loginForm.value).subscribe({
       next: (response) => {
-        this.snackBar.open('تم تسجيل الدخول بنجاح.', 'إغلاق', {
-          duration: 3000,
-          direction: 'rtl',
-          verticalPosition: 'top',
-        });
-        console.log(response);
         this.isLoading = false;
         this.router.navigate(['/home']);
       },

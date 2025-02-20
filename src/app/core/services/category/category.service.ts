@@ -1,9 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { map } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { Category } from '../../../shared/models/category';
 import { PaginatedResponse } from '../../models/pagination';
+import { CategoryDto } from '../../models/category';
 
 @Injectable({
   providedIn: 'root',
@@ -13,14 +13,7 @@ export class CategoryService {
 
   constructor(private http: HttpClient) {}
 
-  getAllCategories(pageNumber: number, pageSize: number) {
-    return this.http
-      .get<PaginatedResponse<Category>>(`${this.apiUrl}get-all-categories`, {
-        params: {
-          pageNumber: pageNumber.toString(),
-          pageSize: pageSize.toString(),
-        },
-      })
-      .pipe(map((response) => response.items));
+  getAllCategories(): Observable<CategoryDto[]> {
+    return this.http.get<CategoryDto[]>(`${this.apiUrl}get-all-categories`);
   }
 }

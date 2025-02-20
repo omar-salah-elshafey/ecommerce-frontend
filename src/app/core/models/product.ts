@@ -11,7 +11,7 @@ export interface ProductDto {
   price: number;
   stock: number;
   maxOrderQuantity: number;
-  SKU: string;
+  sku: string;
   isFeatured: boolean;
   salesCount: number;
   categoryId: string;
