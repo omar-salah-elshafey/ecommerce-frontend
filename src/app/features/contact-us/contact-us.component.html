@@ -50,8 +50,8 @@
     >
       <mat-form-field appearance="outline">
         <mat-label>الاسم بالكامل</mat-label>
-        <input matInput formControlName="name" required />
-        <mat-error *ngIf="contactForm.get('name')?.hasError('required')">
+        <input matInput formControlName="fullName" required />
+        <mat-error *ngIf="contactForm.get('fullName')?.hasError('required')">
           هذا الحقل مطلوب
         </mat-error>
       </mat-form-field>

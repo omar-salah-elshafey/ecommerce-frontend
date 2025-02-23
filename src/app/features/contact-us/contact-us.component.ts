@@ -11,6 +11,9 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { RouterModule } from '@angular/router';
+import { ContactUsService } from '../../core/services/contact-us/contact-us.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { SendMessageDto } from '../../core/models/contact-us';
 
 @Component({
   selector: 'app-contact-us',
@@ -28,16 +31,48 @@ import { RouterModule } from '@angular/router';
 })
 export class ContactUsComponent {
   contactForm = new FormGroup({
-    name: new FormControl('', [Validators.required]),
+    fullName: new FormControl('', [Validators.required]),
     email: new FormControl('', [Validators.required, Validators.email]),
     message: new FormControl('', [Validators.required]),
   });
+  isLoading = false;
+
+  constructor(
+    private contactService: ContactUsService,
+    private snackBar: MatSnackBar
+  ) {}
 
   submitForm() {
-    if (this.contactForm.valid) {
-      console.log('Form submitted:', this.contactForm.value);
-      this.contactForm.reset();
-      // Add your API call here
-    }
+    if (this.contactForm.invalid) return;
+
+    this.isLoading = true;
+    const formValue = this.contactForm.value;
+
+    const messageDto: SendMessageDto = {
+      fullName: formValue.fullName!,
+      email: formValue.email!,
+      message: formValue.message!,
+    };
+
+    this.contactService.sendMessage(messageDto).subscribe({
+      next: () => {
+        this.isLoading = false;
+        this.snackBar.open('تم إرسال الرسالة بنجاح', 'إغلاق', {
+          duration: 3000,
+          direction: 'rtl',
+          verticalPosition: 'top',
+        });
+        this.contactForm.reset();
+      },
+      error: (error) => {
+        this.isLoading = false;
+        console.error('Error sending message:', error);
+        this.snackBar.open('حدث خطأ أثناء إرسال الرسالة', 'إغلاق', {
+          duration: 3000,
+          direction: 'rtl',
+          verticalPosition: 'top',
+        });
+      },
+    });
   }
 }
