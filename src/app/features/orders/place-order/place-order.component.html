@@ -1,9 +1,11 @@
 <div *ngIf="isLoading" class="loading-overlay">
   <mat-spinner diameter="60"></mat-spinner>
 </div>
+
 <div class="checkout-container" *ngIf="!isLoading">
   <h1 class="form-title">إتمام الطلب</h1>
 
+  <!-- New Address Form -->
   <form
     [formGroup]="checkoutForm"
     (ngSubmit)="placeOrder()"
@@ -25,55 +27,102 @@
       </mat-form-field>
     </div>
 
-    <div class="form-row">
-      <mat-form-field appearance="outline">
-        <mat-label>المحافظة</mat-label>
-        <mat-select
-          formControlName="governorateId"
-          (selectionChange)="onGovernorateChange($event.value)"
-          required
-        >
-          <mat-option *ngFor="let gov of governorates" [value]="gov.id">
-            {{ gov.name }}
-          </mat-option>
-        </mat-select>
-        <mat-error
-          *ngIf="checkoutForm.get('governorateId')?.hasError('required')"
-        >
-          هذا الحقل مطلوب
-        </mat-error>
-      </mat-form-field>
-
-      <mat-form-field appearance="outline">
-        <mat-label>المدينة</mat-label>
-        <mat-select formControlName="cityId" required>
-          <mat-option *ngFor="let city of cities" [value]="city.id">
-            {{ city.name }}
-          </mat-option>
-        </mat-select>
-        <mat-error *ngIf="checkoutForm.get('cityId')?.hasError('required')">
-          هذا الحقل مطلوب
-        </mat-error>
-      </mat-form-field>
+    <!-- Address Type Toggle -->
+    <div class="address-type-toggle">
+      <button
+        mat-stroked-button
+        type="button"
+        (click)="toggleAddressType()"
+        color="primary"
+      >
+        {{ useExistingAddress ? "استخدام عنوان جديد" : "اختيار عنوان محفوظ" }}
+      </button>
     </div>
 
-    <div class="form-row">
-      <mat-form-field appearance="outline">
-        <mat-label>المنطقة/الشارع</mat-label>
-        <input matInput formControlName="region" required appTrimInput />
-        <mat-error *ngIf="checkoutForm.get('region')?.hasError('required')">
-          هذا الحقل مطلوب
-        </mat-error>
-      </mat-form-field>
+    <!-- Saved Addresses -->
+    <div *ngIf="useExistingAddress" class="saved-addresses">
+      <h2 class="section-title">العناوين المحفوظة</h2>
+
+      <mat-radio-group
+        [(ngModel)]="selectedAddressId"
+        [ngModelOptions]="{ standalone: true }"
+        class="address-list"
+      >
+        <mat-radio-button
+          *ngFor="let address of addresses"
+          [value]="address.id"
+          class="address-card"
+        >
+          <div class="address-content">
+            <h3>{{ address.governorate }} - {{ address.city }}</h3>
+            <p class="region">{{ address.region }}</p>
+          </div>
+        </mat-radio-button>
+
+        <div *ngIf="addresses.length === 0" class="no-addresses">
+          <mat-icon>location_off</mat-icon>
+          <p>لا توجد عناوين محفوظة</p>
+        </div>
+      </mat-radio-group>
     </div>
 
-    <button
-      mat-raised-button
-      color="primary"
-      type="submit"
-      [disabled]="checkoutForm.invalid"
-    >
-      تأكيد الطلب
-    </button>
+    <!-- New Address Fields -->
+    <div *ngIf="!useExistingAddress">
+      <div class="form-row">
+        <mat-form-field appearance="outline">
+          <mat-label>المحافظة</mat-label>
+          <mat-select
+            formControlName="governorateId"
+            (selectionChange)="onGovernorateChange($event.value)"
+            required
+          >
+            <mat-option *ngFor="let gov of governorates" [value]="gov.id">
+              {{ gov.name }}
+            </mat-option>
+          </mat-select>
+          <mat-error
+            *ngIf="checkoutForm.get('governorateId')?.hasError('required')"
+          >
+            هذا الحقل مطلوب
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>المدينة</mat-label>
+          <mat-select formControlName="cityId" required>
+            <mat-option *ngFor="let city of cities" [value]="city.id">
+              {{ city.name }}
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="checkoutForm.get('cityId')?.hasError('required')">
+            هذا الحقل مطلوب
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="form-row">
+        <mat-form-field appearance="outline">
+          <mat-label>المنطقة/الشارع</mat-label>
+          <input matInput formControlName="region" required appTrimInput />
+          <mat-error *ngIf="checkoutForm.get('region')?.hasError('required')">
+            هذا الحقل مطلوب
+          </mat-error>
+        </mat-form-field>
+      </div>
+    </div>
   </form>
+
+  <!-- Submit Button -->
+  <button
+    mat-raised-button
+    color="primary"
+    (click)="placeOrder()"
+    [disabled]="useExistingAddress ? !selectedAddressId : checkoutForm.invalid"
+    class="submit-button"
+  >
+    تأكيد الطلب
+    <mat-icon *ngIf="isLoading" class="spinner-icon">
+      <mat-spinner diameter="24"></mat-spinner>
+    </mat-icon>
+  </button>
 </div>

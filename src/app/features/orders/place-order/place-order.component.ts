@@ -7,15 +7,23 @@ import { OrdersService } from '../../../core/services/orders/orders.service';
 import {
   FormBuilder,
   FormGroup,
+  FormsModule,
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { CityDto, GovernorateDto } from '../../../core/models/order';
+import {
+  AddressDto,
+  CityDto,
+  CreateOrderDto,
+  GovernorateDto,
+} from '../../../core/models/order';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { Router } from '@angular/router';
 import { CartService } from '../../../core/services/cart/cart.service';
+import { MatIconModule } from '@angular/material/icon';
+import { MatRadioModule } from '@angular/material/radio';
 
 @Component({
   selector: 'app-place-order',
@@ -27,6 +35,9 @@ import { CartService } from '../../../core/services/cart/cart.service';
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
+    MatIconModule,
+    FormsModule,
+    MatRadioModule,
   ],
   templateUrl: './place-order.component.html',
   styleUrl: './place-order.component.scss',
@@ -42,10 +53,14 @@ export class PlaceOrderComponent implements OnInit {
   cities: CityDto[] = [];
   selectedGovernorateId: string | null = null;
   isLoading = false;
+  addresses: AddressDto[] = [];
+  selectedAddressId?: string;
+  useExistingAddress = false;
 
   ngOnInit(): void {
     this.initializeForm();
     this.loadGovernorates();
+    this.loadUserAddresses();
   }
 
   initializeForm(): void {
@@ -63,6 +78,42 @@ export class PlaceOrderComponent implements OnInit {
     });
   }
 
+  private loadUserAddresses() {
+    this.orderService.getUserAddresses().subscribe({
+      next: (addresses) => (this.addresses = addresses),
+      error: (err) => console.error('Failed to load addresses', err),
+    });
+  }
+
+  toggleAddressType() {
+    this.useExistingAddress = !this.useExistingAddress;
+    this.checkoutForm.reset();
+
+    if (this.useExistingAddress) {
+      this.checkoutForm.get('governorateId')?.clearValidators();
+      this.checkoutForm.get('cityId')?.clearValidators();
+      this.checkoutForm.get('region')?.clearValidators();
+    } else {
+      this.checkoutForm
+        .get('governorateId')
+        ?.setValidators([Validators.required]);
+      this.checkoutForm.get('cityId')?.setValidators([Validators.required]);
+      this.checkoutForm.get('region')?.setValidators([Validators.required]);
+    }
+
+    this.checkoutForm.get('governorateId')?.updateValueAndValidity();
+    this.checkoutForm.get('cityId')?.updateValueAndValidity();
+    this.checkoutForm.get('region')?.updateValueAndValidity();
+
+    if (!this.useExistingAddress) {
+      this.selectedAddressId = undefined;
+    }
+  }
+
+  onAddressSelect(addressId: string) {
+    this.selectedAddressId = addressId;
+  }
+
   loadGovernorates(): void {
     this.orderService.getGovernorates().subscribe((data) => {
       this.governorates = data;
@@ -71,7 +122,7 @@ export class PlaceOrderComponent implements OnInit {
 
   onGovernorateChange(governorateId: string): void {
     this.selectedGovernorateId = governorateId;
-    this.checkoutForm.get('city')?.reset();
+    this.checkoutForm.get('cityId')?.reset();
     this.cities = [];
 
     if (governorateId) {
@@ -84,6 +135,8 @@ export class PlaceOrderComponent implements OnInit {
   placeOrder(): void {
     this.isLoading = true;
     if (this.checkoutForm.invalid) {
+      console.error('Invalid form data:', this.checkoutForm.value);
+      this.isLoading = false;
       this.snackBar.open('يرجى تصحيح الأخطاء قبل الإرسال', 'إغلاق', {
         duration: 3000,
         direction: 'rtl',
@@ -91,7 +144,16 @@ export class PlaceOrderComponent implements OnInit {
       });
       return;
     }
-    this.orderService.placeOrder(this.checkoutForm.value).subscribe({
+    const orderData: CreateOrderDto = {
+      phoneNumber: this.checkoutForm.value.phoneNumber,
+      addressId: this.selectedAddressId,
+      governorateId: this.useExistingAddress
+        ? null
+        : this.checkoutForm.value.governorateId,
+      cityId: this.useExistingAddress ? null : this.checkoutForm.value.cityId,
+      region: this.useExistingAddress ? null : this.checkoutForm.value.region,
+    };
+    this.orderService.placeOrder(orderData).subscribe({
       next: (order) => {
         this.isLoading = false;
         this.snackBar.open('تم تقديم الطلب بنجاح', 'إغلاق', {

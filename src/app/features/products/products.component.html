@@ -4,9 +4,17 @@
     <p>جاري التحميل...</p>
   </div>
   <div class="search-bar">
-    <input type="text" placeholder="ابحث عن منتج..." />
-    <mat-icon>search</mat-icon>
+    <input
+      type="text"
+      placeholder="ابحث عن منتج..."
+      [(ngModel)]="searchQuery"
+      (keyup.enter)="searchProducts(searchQuery)"
+    />
+    <button mat-icon-button (click)="searchProducts(searchQuery)">
+      <mat-icon>search</mat-icon>
+    </button>
   </div>
+
   <ng-container *ngIf="!isLoading">
     <div class="products-page">
       <!-- Filters Sidebar -->
@@ -116,5 +124,7 @@
       </main>
     </div>
   </ng-container>
-  <div *ngIf="!hasMore && products.length != 0" class="no-more">No more products to load</div>
+  <div *ngIf="!hasMore && products.length != 0" class="no-more">
+    No more products to load
+  </div>
 </div>

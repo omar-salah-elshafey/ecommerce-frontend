@@ -64,6 +64,7 @@ export class ProductsComponent implements OnInit {
   private loadMore$ = new BehaviorSubject<void>(undefined);
   categories: CategoryDto[] = [];
   selectedCategoryIds: string[] = [];
+  searchQuery: string = '';
 
   private loadProducts() {
     if (!this.hasMore || this.isLoading) return EMPTY;
@@ -187,6 +188,37 @@ export class ProductsComponent implements OnInit {
     this.currentPage = 1;
     this.hasMore = true;
     this.loadProductsByFilter();
+  }
+
+  searchProducts(query: string) {
+    this.products = [];
+    this.currentPage = 1;
+    this.hasMore = true;
+
+    if (query.trim() !== '') {
+      this.isLoading = true;
+      this.productService
+        .searchProducts(query, this.currentPage, this.pageSize)
+        .pipe(
+          tap((response) => {
+            this.products = response.items;
+            this.currentPage++;
+            const totalPages = Math.ceil(
+              response.totalItems / response.pageSize
+            );
+            this.hasMore = this.currentPage <= totalPages;
+            this.isLoading = false;
+          }),
+          catchError((error) => {
+            this.isLoading = false;
+            console.error('Error searching products:', error);
+            return throwError(() => error);
+          })
+        )
+        .subscribe();
+    } else {
+      this.loadMore$.next();
+    }
   }
 
   wishlistItems: string[] = [];

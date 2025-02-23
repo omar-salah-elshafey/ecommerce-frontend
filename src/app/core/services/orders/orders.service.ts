@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import {
+  AddressDto,
   CityDto,
   CreateOrderDto,
   GovernorateDto,
@@ -15,6 +16,10 @@ import { Observable } from 'rxjs';
 export class OrdersService {
   private readonly apiUrl = `${environment.apiUrl}/api/Orders`;
   constructor(private http: HttpClient) {}
+
+  getUserAddresses(): Observable<AddressDto[]> {
+    return this.http.get<AddressDto[]>(`${this.apiUrl}/user-addresses`);
+  }
 
   getGovernorates(): Observable<GovernorateDto[]> {
     return this.http.get<GovernorateDto[]>(`${this.apiUrl}/governorates`);

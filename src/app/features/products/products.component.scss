@@ -51,6 +51,7 @@
 
 .products-grid {
   display: grid;
+  align-content: flex-start;
   grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
   gap: 1rem;
 }

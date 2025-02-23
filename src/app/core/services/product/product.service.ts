@@ -119,4 +119,29 @@ export class ProductService {
         }))
       );
   }
+
+  searchProducts(
+    query: string,
+    pageNumber: number,
+    pageSize: number
+  ): Observable<PaginatedResponse<ProductDto>> {
+    return this.http
+      .get<PaginatedResponse<ProductDto>>(`${this.apiUrl}/name/${query}`, {
+        params: {
+          PageNumber: pageNumber.toString(),
+          PageSize: pageSize.toString(),
+        },
+      })
+      .pipe(
+        map((response) => ({
+          ...response,
+          items: response.items.map((product) => ({
+            ...product,
+            mainImageUrl:
+              this.getMainImage(product.images) ||
+              'assets/images/placeholder.png',
+          })),
+        }))
+      );
+  }
 }

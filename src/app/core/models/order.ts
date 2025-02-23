@@ -1,3 +1,10 @@
+export interface AddressDto {
+  id: string;
+  governorate: string;
+  city: string;
+  region: string;
+}
+
 export interface CityDto {
   id: string;
   name: string;
@@ -5,6 +12,7 @@ export interface CityDto {
 
 export interface CreateOrderDto {
   phoneNumber: string;
+  addressId?: string;
   governorateId: string;
   cityId: string;
   region: string;
