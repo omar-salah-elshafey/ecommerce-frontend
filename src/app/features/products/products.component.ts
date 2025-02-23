@@ -296,7 +296,7 @@ export class ProductsComponent implements OnInit {
         });
       },
       error: (error) => {
-        console.error('Error adding to wishlist:', error);
+        console.error('Error adding to Cart:', error);
         this.snackBar.open('حدث خطأ أثناء إضافة المنتج للسلة', 'إغلاق', {
           duration: 3000,
           direction: 'rtl',

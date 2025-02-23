@@ -362,7 +362,7 @@ export class ProductDetailsComponent {
         this.quantity = 1;
       },
       error: (error) => {
-        console.error('Error adding to wishlist:', error);
+        console.error('Error adding to cart:', error);
         this.snackBar.open('حدث خطأ أثناء إضافة المنتج للسلة', 'إغلاق', {
           duration: 3000,
           direction: 'rtl',
