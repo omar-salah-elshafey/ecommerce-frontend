@@ -14,7 +14,7 @@
     <mat-card *ngFor="let item of cartItems" class="cart-item">
       <div class="item-content">
         <img
-          [src]="getImageUrl(item.imageUrl)"
+          [src]="item.imageUrl"
           [alt]="item.name"
           class="product-image"
         />
@@ -27,7 +27,7 @@
           <div class="quantity-selector">
             <label for="quantity">الكمية:</label>
             <div class="quantity-control">
-              <button mat-icon-button (click)="decreaseQuantity(item)">
+              <button [disabled]="!isLoggedIn" mat-icon-button (click)="decreaseQuantity(item)">
                 <mat-icon>remove</mat-icon>
               </button>
               <span id="quantity" class="quantity-value">{{
@@ -37,6 +37,7 @@
                 mat-icon-button
                 (click)="increaseQuantity(item)"
                 [disabled]="
+                  !isLoggedIn ||
                   item.quantity >= item.stock ||
                   item.stock == 0 ||
                   item.quantity == item.maxOrderQuantity
@@ -67,7 +68,7 @@
             matTooltip="أضف إلى المفضلة"
             matTooltipPosition="above"
             matTooltipShowDelay="100"
-            (click)="toggleWishlist(item.productId)"
+            (click)="onWishlistClick(item.productId)"
           >
             <mat-icon>{{
               isInWishlist(item.productId) ? "favorite" : "favorite_border"
@@ -95,8 +96,20 @@
         {{ totalPrice | currency : "EGP " }}
       </span>
     </div>
-    <button mat-raised-button color="primary" routerLink="/checkout">
+    <button
+      *ngIf="isLoggedIn"
+      mat-raised-button
+      color="primary"
+      routerLink="/checkout"
+    >
       إتمام الشراء
     </button>
+    <div class="summary-details" *ngIf="!isLoggedIn">
+      <span class="summary-label">سجل الدخول لإتمام عملية الشراء:</span>
+
+      <button mat-raised-button color="primary" routerLink="/login">
+        انتقل لتسجيل الدخول
+      </button>
+    </div>
   </div>
 </div>

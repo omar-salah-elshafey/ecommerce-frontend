@@ -17,6 +17,7 @@ import { CommonModule } from '@angular/common';
 import { AuthService } from '../../../core/services/auth/auth.service';
 import { distinctUntilChanged, map, of, startWith, switchMap } from 'rxjs';
 import { CartService } from '../../../core/services/cart/cart.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-header',
@@ -46,7 +47,8 @@ export class HeaderComponent implements OnInit {
   constructor(
     public authService: AuthService,
     private router: Router,
-    private cartService: CartService
+    private cartService: CartService,
+    private snackBar: MatSnackBar
   ) {}
 
   ngOnInit(): void {
@@ -77,8 +79,9 @@ export class HeaderComponent implements OnInit {
 
   logout() {
     this.authService.logout().subscribe({
-      next: (response) => {
-        console.log('Logout successful', response!);
+      next: () => {
+        this.router.navigate(['/home']);
+        this.cartService.clearCart();
       },
       error: (error) => {
         console.error('Logout failed:', error!);
@@ -98,6 +101,18 @@ export class HeaderComponent implements OnInit {
       !this.mobileMenuButton.nativeElement.contains(event.target)
     ) {
       this.isMenuOpen = false;
+    }
+  }
+
+  onWishlistClick(): void {
+    if (this.authService.getAccessToken()) {
+      this.router.navigate(['/wishlist']);
+    } else {
+      this.snackBar.open('يجب تسجيل الدخول أولاً', 'إغلاق', {
+        duration: 3000,
+        horizontalPosition: 'center',
+        verticalPosition: 'top',
+      });
     }
   }
 }

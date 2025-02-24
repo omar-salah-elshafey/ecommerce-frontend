@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, Inject, inject, OnInit } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -14,6 +14,7 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../core/services/auth/auth.service';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { CartService } from '../../core/services/cart/cart.service';
 
 @Component({
   selector: 'app-login',
@@ -36,6 +37,7 @@ export class LoginComponent implements OnInit {
   private snackBar = inject(MatSnackBar);
   private router = inject(Router);
   private authService = inject(AuthService);
+  private cartService = inject(CartService);
   loginForm!: FormGroup;
   hidePassword: boolean = true;
   isLoading: boolean = false;
@@ -63,6 +65,12 @@ export class LoginComponent implements OnInit {
       next: (response) => {
         this.isLoading = false;
         this.router.navigate(['/home']);
+        this.cartService.mergeLocalCart().subscribe({
+          next: (mergedCart: any) =>
+            console.log('Local cart merged successfully', mergedCart),
+          error: (err: any) => console.error('Error merging local cart', err),
+        });
+        this.cartService.loadCart();
       },
       error: (error) => {
         this.isLoading = false;

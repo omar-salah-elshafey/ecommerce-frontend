@@ -30,7 +30,7 @@
     >
       <mat-icon matBadgeColor="accent">shopping_bag</mat-icon>
     </button>
-    <button class="desktop-cart" mat-icon-button routerLink="/wishlist">
+    <button class="desktop-cart" mat-icon-button (click)="onWishlistClick()">
       <mat-icon matBadgeColor="accent">favorite</mat-icon>
     </button>
   </nav>
@@ -71,7 +71,7 @@
     >
       <mat-icon matBadgeColor="accent">shopping_bag</mat-icon>
     </a>
-    <a (click)="toggleMenu()" mat-icon-button routerLink="/wishlist">
+    <a (click)="onWishlistClick(); toggleMenu()" mat-icon-button>
       <mat-icon matBadgeColor="accent">favorite</mat-icon>
     </a>
     <div class="user-actions">

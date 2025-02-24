@@ -29,6 +29,7 @@ import { CartItemChangeDto } from '../../core/models/cart';
 import { CategoryService } from '../../core/services/category/category.service';
 import { CategoryDto } from '../../core/models/category';
 import { CategoryTreeComponent } from './category-tree/category-tree.component';
+import { AuthService } from '../../core/services/auth/auth.service';
 
 @Component({
   selector: 'app-products',
@@ -55,6 +56,7 @@ export class ProductsComponent implements OnInit {
   private wishlistService = inject(WishlistService);
   private cartService = inject(CartService);
   private categoryService = inject(CategoryService);
+  private authService = inject(AuthService);
   private snackBar = inject(MatSnackBar);
   products: ProductDto[] = [];
   currentPage = 1;
@@ -120,7 +122,7 @@ export class ProductsComponent implements OnInit {
         .subscribe();
       this.loadMore$.next();
     }
-    this.loadWishlist();
+    if (this.authService.getAccessToken()) this.loadWishlist();
     this.getcategoties();
   }
 
@@ -232,6 +234,18 @@ export class ProductsComponent implements OnInit {
         console.error('Error loading wishlist:', error);
       },
     });
+  }
+
+  onWishlistClick(productId: string): void {
+    if (this.authService.getAccessToken()) {
+      this.toggleWishlist(productId);
+    } else {
+      this.snackBar.open('يجب تسجيل الدخول أولاً', 'إغلاق', {
+        duration: 3000,
+        horizontalPosition: 'center',
+        verticalPosition: 'top',
+      });
+    }
   }
 
   toggleWishlist(productId: string) {

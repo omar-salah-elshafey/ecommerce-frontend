@@ -10,7 +10,6 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { RouterModule } from '@angular/router';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { environment } from '../../environments/environment';
 import { CartService } from '../../core/services/cart/cart.service';
 import { CartItemChangeDto } from '../../core/models/cart';
 
@@ -54,10 +53,6 @@ export class WishlistComponent implements OnInit {
     });
   }
 
-  getImageUrl(imageUrl: string): string {
-    return `${environment.apiUrl}/${imageUrl}`;
-  }
-
   removeFromWishlist(reviewId: string) {
     if (!confirm('هل أنت متأكد من حذف العنصر من المفضلة')) return;
 
@@ -84,27 +79,27 @@ export class WishlistComponent implements OnInit {
     });
   }
 
-    addToCart(productId: string) {
-      const item: CartItemChangeDto = {
-        productId: productId,
-        quantity: 1,
-      };
-      this.cartService.addToCart(item).subscribe({
-        next: () => {
-          this.snackBar.open('تمت إضافة المنتج للسلة', 'إغلاق', {
-            duration: 3000,
-            direction: 'rtl',
-            verticalPosition: 'top',
-          });
-        },
-        error: (error) => {
-          console.error('Error adding to wishlist:', error);
-          this.snackBar.open('حدث خطأ أثناء إضافة المنتج للسلة', 'إغلاق', {
-            duration: 3000,
-            direction: 'rtl',
-            verticalPosition: 'top',
-          });
-        },
-      });
-    }
+  addToCart(productId: string) {
+    const item: CartItemChangeDto = {
+      productId: productId,
+      quantity: 1,
+    };
+    this.cartService.addToCart(item).subscribe({
+      next: () => {
+        this.snackBar.open('تمت إضافة المنتج للسلة', 'إغلاق', {
+          duration: 3000,
+          direction: 'rtl',
+          verticalPosition: 'top',
+        });
+      },
+      error: (error) => {
+        console.error('Error adding to wishlist:', error);
+        this.snackBar.open('حدث خطأ أثناء إضافة المنتج للسلة', 'إغلاق', {
+          duration: 3000,
+          direction: 'rtl',
+          verticalPosition: 'top',
+        });
+      },
+    });
+  }
 }

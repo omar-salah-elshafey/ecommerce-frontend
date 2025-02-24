@@ -46,7 +46,7 @@ export const routes: Routes = [
     component: ResetPasswordComponent,
     canActivate: [guestGuard],
   },
-  { path: 'wishlist', component: WishlistComponent },
+  { path: 'wishlist', component: WishlistComponent, canActivate: [authGuard] },
   {
     path: 'checkout',
     component: PlaceOrderComponent,

@@ -47,7 +47,7 @@
         <button
           mat-icon-button
           (click)="decreaseQuantity()"
-          [disabled]="quantity <= 1"
+          [disabled]="quantity <= 1 || authService.isLoggedIn$"
         >
           <mat-icon>remove</mat-icon>
         </button>
@@ -58,7 +58,8 @@
           [disabled]="
             quantity >= product.stock ||
             product.stock == 0 ||
-            quantity == product.maxOrderQuantity
+            quantity == product.maxOrderQuantity ||
+            authService.isLoggedIn$
           "
         >
           <mat-icon>add</mat-icon>
@@ -84,7 +85,7 @@
         matTooltip="أضف إلى المفضلة"
         matTooltipPosition="above"
         matTooltipShowDelay="100"
-        (click)="toggleWishlist(product)"
+        (click)="onWishlistClick(product)"
       >
         <mat-icon>{{
           isInWishlist(product) ? "favorite" : "favorite_border"

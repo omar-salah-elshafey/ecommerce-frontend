@@ -1,5 +1,5 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { ActivatedRoute, RouterModule } from '@angular/router';
+import { RouterModule } from '@angular/router';
 import { AuthService } from '../../core/services/auth/auth.service';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
@@ -15,9 +15,7 @@ import {
   CartItemChangeDto,
   CartItemsDto,
 } from '../../core/models/cart';
-import { environment } from '../../environments/environment';
 import { WishlistService } from '../../core/services/wishlist/wishlist.service';
-import { ProductDto } from '../../core/models/product';
 
 @Component({
   selector: 'app-cart',
@@ -40,12 +38,14 @@ export class CartComponent implements OnInit {
   private cartService = inject(CartService);
   private snackBar = inject(MatSnackBar);
   private wishlistService = inject(WishlistService);
+  private authService = inject(AuthService);
   isLoading = false;
   totalPrice = 0;
+  isLoggedIn = this.authService.getAccessToken() !== null;
 
   ngOnInit(): void {
     this.loadCart();
-    this.loadWishlist();
+    if (this.authService.getAccessToken()) this.loadWishlist();
   }
 
   loadCart() {
@@ -62,10 +62,6 @@ export class CartComponent implements OnInit {
         console.error(error);
       },
     });
-  }
-
-  getImageUrl(imageUrl: string): string {
-    return `${environment.apiUrl}/${imageUrl}`;
   }
 
   removeFromCart(productId: string) {
@@ -121,6 +117,14 @@ export class CartComponent implements OnInit {
   }
 
   increaseQuantity(item: CartItemsDto) {
+    if (!this.authService.getAccessToken()) {
+      this.snackBar.open('يجب تسجيل الدخول أولاً', 'إغلاق', {
+        duration: 3000,
+        horizontalPosition: 'center',
+        verticalPosition: 'top',
+      });
+      return;
+    }
     if (item.quantity < item.maxOrderQuantity) {
       item.quantity++;
       this.addToCart(item);
@@ -128,6 +132,14 @@ export class CartComponent implements OnInit {
   }
 
   decreaseQuantity(item: CartItemsDto) {
+    if (!this.authService.getAccessToken()) {
+      this.snackBar.open('يجب تسجيل الدخول أولاً', 'إغلاق', {
+        duration: 3000,
+        horizontalPosition: 'center',
+        verticalPosition: 'top',
+      });
+      return;
+    }
     if (item.quantity > 1) {
       item.quantity--;
       this.addToCart(item);
@@ -147,6 +159,18 @@ export class CartComponent implements OnInit {
         console.error('Error loading wishlist:', error);
       },
     });
+  }
+
+  onWishlistClick(productId: string): void {
+    if (this.authService.getAccessToken()) {
+      this.toggleWishlist(productId);
+    } else {
+      this.snackBar.open('يجب تسجيل الدخول أولاً', 'إغلاق', {
+        duration: 3000,
+        horizontalPosition: 'center',
+        verticalPosition: 'top',
+      });
+    }
   }
 
   toggleWishlist(productId: string) {

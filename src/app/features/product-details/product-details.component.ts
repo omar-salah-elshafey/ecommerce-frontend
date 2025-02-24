@@ -88,7 +88,7 @@ export class ProductDetailsComponent {
         this.loading = false;
         this.loadReviews();
         this.initializeReviewForm();
-        this.loadWishlist();
+        if (this.authService.getAccessToken()) this.loadWishlist();
       });
     }
   }
@@ -297,6 +297,18 @@ export class ProductDetailsComponent {
         console.error('Error loading wishlist:', error);
       },
     });
+  }
+
+  onWishlistClick(product: ProductDto): void {
+    if (this.authService.getAccessToken()) {
+      this.toggleWishlist(product);
+    } else {
+      this.snackBar.open('يجب تسجيل الدخول أولاً', 'إغلاق', {
+        duration: 3000,
+        horizontalPosition: 'center',
+        verticalPosition: 'top',
+      });
+    }
   }
 
   toggleWishlist(product: ProductDto) {

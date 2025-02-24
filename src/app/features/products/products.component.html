@@ -105,7 +105,7 @@
                   matTooltip="أضف إلى المفضلة"
                   matTooltipPosition="above"
                   matTooltipShowDelay="100"
-                  (click)="toggleWishlist(product.id)"
+                  (click)="onWishlistClick(product.id)"
                 >
                   <mat-icon>{{
                     isInWishlist(product.id) ? "favorite" : "favorite_border"

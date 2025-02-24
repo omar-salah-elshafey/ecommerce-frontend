@@ -13,11 +13,7 @@
   <div *ngIf="wishlistItems.length > 0" class="wishlist-items">
     <mat-card *ngFor="let item of wishlistItems" class="wishlist-item">
       <div class="item-content">
-        <img
-          [src]="getImageUrl(item.imageUrl)"
-          [alt]="item.name"
-          class="product-image"
-        />
+        <img [src]="item.imageUrl" [alt]="item.name" class="product-image" />
 
         <div class="product-info">
           <h3 class="product-name">{{ item.name }}</h3>
@@ -36,7 +32,7 @@
             color="warn"
             (click)="removeFromWishlist(item.productId)"
             matTooltip="إزالة من المفضلة"
-            matTooltipPosition="left"
+            matTooltipPosition="above"
           >
             <mat-icon>delete</mat-icon>
           </button>
@@ -62,9 +58,6 @@
             <mat-icon>visibility</mat-icon>
           </button>
         </mat-card-actions>
-        <div class="actions">
-
-        </div>
       </div>
     </mat-card>
   </div>
