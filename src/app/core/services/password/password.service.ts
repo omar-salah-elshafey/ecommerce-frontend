@@ -1,24 +1,19 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { catchError, Observable, tap, throwError } from 'rxjs';
+import { environment } from '../../../environments/environment';
+import { ChangePasswordDto, ResetPasswordDto } from '../../models/password';
 
 interface VerifyTokenRequest {
   email: string;
   token: string;
 }
 
-export interface ResetPasswordData {
-  email: string;
-  token: string;
-  newPassword: string;
-  confirmNewPassword: string;
-}
-
 @Injectable({
   providedIn: 'root',
 })
 export class PasswordService {
-  private baseUrl = 'https://localhost:7085/api/PasswordManager/';
+  private baseUrl = `${environment.apiUrl}/api/PasswordManager/`;
 
   constructor(private http: HttpClient) {}
 
@@ -33,20 +28,11 @@ export class PasswordService {
     );
   }
 
-  resetPassword(userData: ResetPasswordData): Observable<any> {
-    console.log('test');
+  resetPassword(userData: ResetPasswordDto): Observable<any> {
     return this.http.put(`${this.baseUrl}reset-password`, userData);
   }
 
-  changePassword(userData: any): Observable<any> {
-    return this.http.put(`${this.baseUrl}change-password`, userData).pipe(
-      tap((response) => {
-        console.log('Changing the Password: ', response);
-      }),
-      catchError((error) => {
-        console.error('Error Changing the Password:', error);
-        return throwError(() => new error(error));
-      })
-    );
+  changePassword(userData: ChangePasswordDto): Observable<any> {
+    return this.http.put(`${this.baseUrl}change-password`, userData);
   }
 }

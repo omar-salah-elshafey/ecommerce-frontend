@@ -1,3 +1,5 @@
+import { MaritalStatus } from './auth';
+
 export interface UserDto {
   firstName: string;
   lastName: string;
@@ -6,5 +8,19 @@ export interface UserDto {
   role: string;
   gender: string;
   maritalStatus: string;
+  hasChildren: boolean;
   childrenCount: number;
+}
+
+export interface UpdateUserDto {
+  firstName: string;
+  lastName: string;
+  maritalStatus: MaritalStatus;
+  hasChildren: boolean;
+  childrenCount: number;
+}
+
+export interface DeleteProfile {
+  userName: string;
+  refreshToken: string;
 }

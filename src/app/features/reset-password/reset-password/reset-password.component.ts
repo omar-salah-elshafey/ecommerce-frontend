@@ -13,7 +13,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { Router, RouterModule } from '@angular/router';
-import { PasswordService, ResetPasswordData } from '../../../core/services/password/password.service';
+import { PasswordService } from '../../../core/services/password/password.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({

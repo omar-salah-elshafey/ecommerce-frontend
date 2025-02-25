@@ -161,11 +161,14 @@ export class AuthService {
     return this.cookieService.get('accessToken') || null;
   }
 
+  updateCurrentUser(newUser: any): void {
+    this.currentUserSubject.next(newUser);
+  }
+
   private handleAuthentication(response: AuthResponseModel) {
     this.setTokens(response.accessToken, response.refreshToken);
     this.loadCurrentUser().subscribe();
   }
-
 
   private clearAuthentication() {
     this.cookieService.delete('accessToken', '/');

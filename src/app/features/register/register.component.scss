@@ -64,7 +64,19 @@
     }
   }
 }
-
+@media (max-width: 480px) {
+  .register-form {
+    .form-row {
+      display: flex !important;
+      flex-direction: column;
+      width: 100%;
+      .children-section{
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+  }
+}
 // RTL Overrides
 .mat-form-field {
   text-align: right !important;
