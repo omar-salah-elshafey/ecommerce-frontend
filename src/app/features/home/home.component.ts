@@ -14,6 +14,9 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSliderModule } from '@angular/material/slider';
 import { Observable } from 'rxjs';
+import { NewsLetterService } from '../../core/services/news-letter/news-letter.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-home',
@@ -26,6 +29,8 @@ import { Observable } from 'rxjs';
     MatIconModule,
     MatTooltipModule,
     MatSliderModule,
+    CommonModule,
+    FormsModule,
   ],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss'],
@@ -33,8 +38,11 @@ import { Observable } from 'rxjs';
 })
 export class HomeComponent implements OnInit {
   private productService = inject(ProductService);
+  private newsLetterService = inject(NewsLetterService);
+  private matSnackBar = inject(MatSnackBar);
   featuredProducts$!: Observable<ProductDto[]>;
   bestSellers$!: Observable<ProductDto[]>;
+  email = '';
   private loadFeaturedProducts() {
     this.featuredProducts$ = this.productService.getFeaturedProducts(1, 8);
   }
@@ -46,5 +54,25 @@ export class HomeComponent implements OnInit {
   ngOnInit(): void {
     this.loadFeaturedProducts();
     this.loadBestSellers();
+  }
+
+  newsLetterSubscribe(email: string) {
+    this.newsLetterService.subscribe(email).subscribe({
+      next: () => {
+        this.email = '';
+        this.matSnackBar.open('تم الاشتراك بنجاح', 'إغلاق', {
+          duration: 3000,
+          verticalPosition: 'top',
+          horizontalPosition: 'center',
+        });
+      },
+      error: (error) => {
+        this.matSnackBar.open(error.error!.error, 'إغلاق', {
+          duration: 3000,
+          verticalPosition: 'top',
+          horizontalPosition: 'center',
+        });
+      },
+    });
   }
 }

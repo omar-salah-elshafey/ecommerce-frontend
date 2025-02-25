@@ -102,8 +102,8 @@
       <h2>اشترك في نشرتنا الإخبارية</h2>
       <p>احصل على آخر العروض والتحديثات مباشرة إلى بريدك</p>
       <div class="newsletter-form">
-        <input type="email" placeholder="ادخل بريدك الإلكتروني" />
-        <button mat-raised-button color="primary">اشتراك</button>
+        <input type="email" placeholder="ادخل بريدك الإلكتروني"  [(ngModel)]="email"/>
+        <button (click)="newsLetterSubscribe(email)" mat-raised-button color="primary">اشتراك</button>
       </div>
     </div>
   </section>

@@ -53,8 +53,18 @@
       <div class="newsletter">
         <h4>النشرة الإخبارية</h4>
         <div class="newsletter-form">
-          <input type="email" placeholder="ادخل بريدك الإلكتروني" />
-          <button mat-raised-button color="primary">اشتراك</button>
+          <input
+            type="email"
+            placeholder="ادخل بريدك الإلكتروني"
+            [(ngModel)]="email"
+          />
+          <button
+            (click)="newsLetterSubscribe(email)"
+            mat-raised-button
+            color="primary"
+          >
+            اشتراك
+          </button>
         </div>
       </div>
     </div>
