@@ -7,17 +7,21 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { BlogsService } from '../../core/services/mock-data/blogs.service';
-import { Blog } from '../../shared/models/blog';
 import {
   BehaviorSubject,
+  catchError,
   combineLatest,
   debounceTime,
   distinctUntilChanged,
   Observable,
+  of,
   switchMap,
+  tap,
 } from 'rxjs';
 import { fadeIn } from '../../shared/animations/animations';
 import { RouterModule } from '@angular/router';
+import { BlogService } from '../../core/services/blog/blog.service';
+import { PostDto } from '../../core/models/blog';
 
 @Component({
   selector: 'app-blogs',
@@ -37,39 +41,47 @@ import { RouterModule } from '@angular/router';
   animations: [fadeIn],
 })
 export class BlogsComponent implements OnInit {
+  private blogService = inject(BlogService);
   private blogsService = inject(BlogsService);
 
-  // State management
-  searchQuery = '';
-  selectedCategories: string[] = [];
-  loading = true;
-
-  // Observables
-  filteredBlogs$!: Observable<Blog[]>;
-
-  // Subjects
-  private searchSubject = new BehaviorSubject<string>('');
-  private categoriesSubject = new BehaviorSubject<string[]>([]);
+  blogs: PostDto[] = [];
+  loading: boolean = true;
+  currentPage: number = 1;
+  pageSize: number = 10;
+  totalItems: number = 0;
+  totalPages: number = 0;
+  hasMore: boolean = true;
 
   ngOnInit() {
-    this.filteredBlogs$ = combineLatest([
-      this.searchSubject.pipe(debounceTime(300), distinctUntilChanged()),
-      this.categoriesSubject,
-    ]).pipe(
-      switchMap(([query, categories]) => this.blogsService.searchBlogs(query))
-    );
-
-    this.blogsService.getBlogs().subscribe(() => (this.loading = false));
+    this.loadPosts();
   }
 
-  onSearchChange(query: string) {
-    this.searchSubject.next(query);
+  loadPosts(): void {
+    this.loading = true;
+    this.blogService
+      .getAllPosts(this.currentPage, this.pageSize)
+      .pipe(
+        tap((response) => {
+          this.blogs = [...this.blogs, ...response.items];
+          this.totalItems = response.totalItems;
+          this.totalPages = Math.ceil(response.totalItems / response.pageSize);
+          this.currentPage++;
+          this.hasMore = this.currentPage <= this.totalPages;
+          this.loading = false;
+          console.log('posts: ', response);
+        }),
+        catchError((error) => {
+          console.error('Error loading blog posts:', error);
+          this.loading = false;
+          return of(null);
+        })
+      )
+      .subscribe();
   }
 
-  onCategoryChange(category: string, checked: boolean) {
-    this.selectedCategories = checked
-      ? [...this.selectedCategories, category]
-      : this.selectedCategories.filter((c) => c !== category);
-    this.categoriesSubject.next(this.selectedCategories);
+  loadMore(): void {
+    if (this.hasMore && !this.loading) {
+      this.loadPosts();
+    }
   }
 }

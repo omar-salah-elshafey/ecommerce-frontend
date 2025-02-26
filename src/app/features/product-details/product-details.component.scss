@@ -3,10 +3,12 @@
   width: 85%;
   max-width: 900px;
   margin: 0 auto;
-  grid-template-columns: 1fr 1fr;
   flex-direction: column;
   gap: 4rem;
   padding: 2rem;
+  @media (max-width: 480px) {
+    width: 100% !important;
+  }
 }
 
 .gallery-section {
@@ -77,6 +79,9 @@
     align-items: center;
     gap: 1rem;
     margin-bottom: 1.5rem;
+    @media (max-width: 400px) {
+      flex-direction: column;
+    }
 
     label {
       font-size: 1.1rem;

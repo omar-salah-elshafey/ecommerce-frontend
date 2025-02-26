@@ -4,10 +4,10 @@ import { ActivatedRoute, RouterModule } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { BlogsService } from '../../core/services/mock-data/blogs.service';
-import { Blog } from '../../shared/models/blog';
 import { Observable, switchMap } from 'rxjs';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { BlogService } from '../../core/services/blog/blog.service';
+import { PostDto } from '../../core/models/blog';
 
 @Component({
   selector: 'app-blog-details',
@@ -25,13 +25,20 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 })
 export class BlogDetailsComponent implements OnInit {
   private route = inject(ActivatedRoute);
-  private blogsService = inject(BlogsService);
+  private blogService = inject(BlogService);
 
-  blog$!: Observable<Blog | undefined>;
+  blog!: PostDto;
+  loading: boolean = true;
 
   ngOnInit() {
-    this.blog$ = this.route.params.pipe(
-      switchMap((params) => this.blogsService.getBlogById(+params['id']))
-    );
+    const postId = this.route.snapshot.paramMap.get('id');
+    if (postId) {
+      this.blogService.getPostById(postId).subscribe({
+        next: (post) => {
+          this.blog = post;
+          this.loading = false;
+        }
+      })
+    }
   }
 }

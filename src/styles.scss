@@ -78,6 +78,25 @@ mat-icon-button {
     }
   }
 }
+
+  .media {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    .blog-image,
+    .blog-video {
+      width: 45%;
+      max-width: 300px;
+      height: auto;
+      border-radius: 10px;
+      margin: 10px 0;
+      @media (max-width: 768px) {
+        width: 100%;
+      }
+    }
+  }
 /* Global Loading Styles */
 .loading-overlay {
   position: fixed;

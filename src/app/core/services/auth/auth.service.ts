@@ -16,12 +16,13 @@ import {
   LoginDto,
 } from '../../models/auth';
 import { UserProfileService } from '../userProfile/user-profile.service';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  private baseUrl = `https://localhost:7085/api/Auth`;
+  private baseUrl = `${environment.apiUrl}/api/Auth`;
   private accessTokenSubject = new BehaviorSubject<string | null>(null);
   private http = inject(HttpClient);
   private cookieService = inject(CookieService);

@@ -18,6 +18,7 @@
       mat-card-title {
         font-size: 1.8rem;
         color: #2c3e50;
+        word-break: break-word;
       }
     }
 
@@ -47,22 +48,8 @@
       line-height: 1.8;
       font-size: 1.1rem;
       color: #444;
-
-      h2,
-      h3 {
-        color: #2c3e50;
-        margin: 1.5rem 0;
-      }
-
-      p {
-        margin-bottom: 1.5rem;
-      }
+      word-break: break-word;
     }
-  }
-
-  .loading-spinner {
-    text-align: center;
-    padding: 4rem 0;
   }
 }
 
