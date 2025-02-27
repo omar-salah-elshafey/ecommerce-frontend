@@ -1,4 +1,4 @@
-import { MaritalStatus } from './auth';
+import { MaritalStatus, Role } from './auth';
 
 export interface UserDto {
   firstName: string;
@@ -23,4 +23,9 @@ export interface UpdateUserDto {
 export interface DeleteProfile {
   userName: string;
   refreshToken: string;
+}
+
+export interface ChangeUserRoleDto {
+  userName: string;
+  role: Role;
 }

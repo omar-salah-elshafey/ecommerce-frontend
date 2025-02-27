@@ -13,6 +13,7 @@ import {
 } from 'rxjs';
 import { AuthService } from '../../services/auth/auth.service';
 import { CookieService } from 'ngx-cookie-service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 let isRefreshing = false;
 const refreshTokenSubject = new BehaviorSubject<string | null>(null);
 
@@ -20,6 +21,7 @@ export const tokenInterceptor: HttpInterceptorFn = (req, next) => {
   const injector = inject(Injector);
   const router = inject(Router);
   const cookieService = inject(CookieService);
+  const snackBar = inject(MatSnackBar);
 
   const accessToken = cookieService.get('accessToken');
   const refreshToken = cookieService.get('refreshToken');
@@ -53,12 +55,20 @@ export const tokenInterceptor: HttpInterceptorFn = (req, next) => {
               );
             }),
             catchError((refreshError) => {
-              console.error('Token refresh failed:', refreshError);
               isRefreshing = false;
               refreshTokenSubject.next(null);
               authService.logout().subscribe(() => {
                 router.navigate(['/login']);
               });
+              snackBar.open(
+                'انتهت صلاحية الجلسة، برجاء إعادة تسجيل الدخول',
+                'إغلاق',
+                {
+                  duration: 3000,
+                  horizontalPosition: 'center',
+                  verticalPosition: 'top',
+                }
+              );
               return throwError(() => refreshError);
             })
           );

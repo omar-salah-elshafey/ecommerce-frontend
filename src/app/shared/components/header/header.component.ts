@@ -18,6 +18,7 @@ import { AuthService } from '../../../core/services/auth/auth.service';
 import { distinctUntilChanged, map, of, startWith, switchMap } from 'rxjs';
 import { CartService } from '../../../core/services/cart/cart.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatDividerModule } from '@angular/material/divider';
 
 @Component({
   selector: 'app-header',
@@ -29,6 +30,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
     MatBadgeModule,
     MatMenuModule,
     CommonModule,
+    MatDividerModule,
   ],
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss'],

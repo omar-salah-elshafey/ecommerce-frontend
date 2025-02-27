@@ -5,6 +5,7 @@ import {
   BehaviorSubject,
   catchError,
   finalize,
+  map,
   Observable,
   of,
   tap,
@@ -73,6 +74,12 @@ export class AuthService {
     return user ? user.userName : null;
   }
 
+  get isAdmin$(): Observable<boolean> {
+    return this.currentUser$.pipe(
+      map((user) => (user ? user.role.toLowerCase() === 'admin' : false))
+    );
+  }
+
   registerUser(
     registrationData: RegistrationDto
   ): Observable<AuthResponseModel> {
@@ -134,12 +141,10 @@ export class AuthService {
   }
 
   setTokens(accessToken: string, refreshToken: string) {
-    const expiresAt = new Date();
-    expiresAt.setMinutes(expiresAt.getMinutes() + 10);
     this.cookieService.set(
       'accessToken',
       accessToken,
-      expiresAt,
+      1,
       '/',
       '',
       true,

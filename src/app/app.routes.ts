@@ -19,6 +19,13 @@ import { OrdersHistoryComponent } from './features/orders/orders-history/orders-
 import { OrderDetailsComponent } from './features/orders/order-details/order-details.component';
 import { authGuard } from './core/guards/auth/auth.guard';
 import { guestGuard } from './core/guards/guest/guest.guard';
+import { DashboardComponent } from './features/dashboard/dashboard.component';
+import { adminGuard } from './core/guards/admin/admin.guard';
+import { ManageProductsComponent } from './features/dashboard/manage-products/manage-products.component';
+import { MainViewComponent } from './features/dashboard/main-view/main-view.component';
+import { CategoriesComponent } from './features/dashboard/categories/categories.component';
+import { OrdersComponent } from './features/dashboard/orders/orders.component';
+import { UsersComponent } from './features/dashboard/users/users.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -62,6 +69,19 @@ export const routes: Routes = [
     path: 'orders/:id',
     component: OrderDetailsComponent,
     canActivate: [authGuard],
+  },
+  {
+    path: 'admin/dashboard',
+    component: DashboardComponent,
+    canActivate: [authGuard, adminGuard],
+    children: [
+      { path: '', component: MainViewComponent },
+      { path: 'categories', component: CategoriesComponent },
+      { path: 'products', component: ManageProductsComponent },
+      { path: 'orders', component: OrdersComponent },
+      { path: 'users', component: UsersComponent },
+      { path: '**', redirectTo: '', pathMatch: 'full' },
+    ],
   },
   { path: '**', redirectTo: '' },
 ];

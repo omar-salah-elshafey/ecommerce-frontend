@@ -1,0 +1,126 @@
+.add-cat-btn-section {
+  display: flex;
+  justify-content: center;
+  margin: 1rem 0;
+}
+
+.add-new-cat-btn {
+  font-size: 1.2rem;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.add-new-cat-btn:hover {
+  cursor: pointer;
+  background-color: #ffffff;
+}
+.actions {
+  padding: 0.2rem;
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  button {
+    cursor: pointer;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+input {
+  width: 100%;
+  font-size: 1rem;
+  padding: 0.4rem 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  transition: border-color 0.2s;
+
+  &:focus {
+    border-color: #3f51b5;
+    outline: none;
+  }
+}
+
+.category-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.category-card {
+  width: calc(33.33% - 16px);
+  min-width: 280px;
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.has-children {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.875rem;
+  color: #666;
+}
+
+.add-category-container {
+  background-color: #ffffff;
+  border: 1px solid #e0e0e0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  padding: 1rem;
+  margin: 1rem 0;
+  transition: box-shadow 0.3s ease;
+
+  &:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  }
+}
+
+.add-category-row {
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+  flex-wrap: wrap;
+  justify-content: center;
+
+}
+
+.input-field {
+  flex: 1;
+  min-width: 200px;
+  input{
+    padding: 1rem 0.5rem;
+  }
+}
+
+.select-field {
+  min-width: 200px;
+
+  flex: 1;
+  mat-form-field {
+    width: 100%;
+  }
+}
+
+@media (max-width: 600px) {
+  .add-category-row {
+    flex-direction: column;
+    .input-field, .select-field, .actions{
+      width: 100%;
+      justify-content: center;
+    }
+  }
+}

@@ -9,6 +9,7 @@ import {
   OrderDto,
 } from '../../models/order';
 import { Observable } from 'rxjs';
+import { PaginatedResponse } from '../../models/pagination';
 
 @Injectable({
   providedIn: 'root',
@@ -56,5 +57,28 @@ export class OrdersService {
       `${this.apiUrl}/cancel-order/${orderId}`,
       {}
     );
+  }
+
+  getAllOrders(
+    pageNumber: number,
+    pageSize: number
+  ): Observable<PaginatedResponse<OrderDto>> {
+    return this.http.get<PaginatedResponse<OrderDto>>(
+      `${this.apiUrl}/get-all-orders-history`,
+      {
+        params: {
+          pageNumber: pageNumber.toString(),
+          pageSize: pageSize.toString(),
+        },
+      }
+    );
+  }
+
+  getOrdersCount(): Observable<number> {
+    return this.http.get<number>(`${this.apiUrl}/count`);
+  }
+
+  getInProgressOrdersCount(): Observable<number> {
+    return this.http.get<number>(`${this.apiUrl}/count/in-progress`);
   }
 }

@@ -1,0 +1,41 @@
+<mat-sidenav-container class="admin-container">
+  <mat-sidenav #sidenav mode="side" opened class="admin-sidenav">
+    <mat-nav-list>
+      <a class="item" routerLink="/admin/dashboard">
+        <mat-icon>dashboard</mat-icon>
+        <span> لوحة التحكم </span>
+      </a>
+      <a class="item" routerLink="/admin/dashboard/categories">
+        <mat-icon>category</mat-icon>
+        <span> الفئات </span>
+      </a>
+      <a class="item" routerLink="/admin/dashboard/products">
+        <mat-icon>inventory_2</mat-icon>
+        <span> المنتجات </span>
+      </a>
+      <a class="item" routerLink="/admin/dashboard/orders">
+        <mat-icon>local_shipping</mat-icon>
+        <span> الطلبات </span>
+      </a>
+      <a class="item" routerLink="/admin/dashboard/users">
+        <mat-icon>people</mat-icon>
+        <span> المستخدمون </span>
+      </a>
+    </mat-nav-list>
+  </mat-sidenav>
+
+  <mat-sidenav-content>
+    <mat-toolbar class="admin-toolbar">
+      <button mat-icon-button (click)="sidenav.toggle()">
+        <mat-icon>menu</mat-icon>
+      </button>
+      <span class="spacer"></span>
+      <button mat-button>
+        <mat-icon>account_circle</mat-icon>
+        {{ authService.currentUserName }}
+      </button>
+    </mat-toolbar>
+
+    <router-outlet></router-outlet>
+  </mat-sidenav-content>
+</mat-sidenav-container>
