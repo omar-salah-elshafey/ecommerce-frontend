@@ -1,0 +1,37 @@
+.dashboard-container {
+  padding: 1rem;
+}
+.section-card {
+  .products-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 0.5rem;
+
+    .product-card {
+      img {
+        width: 100%;
+        object-fit: cover;
+      }
+
+      mat-card-content {
+        padding: 1rem;
+
+        h4 {
+          margin: 0 0 0.5rem;
+        }
+      }
+    }
+  }
+}
+@media (max-width: 768px) {
+  .products-grid {
+    .product-card {
+      img {
+        height: auto !important;
+        min-height: 200px;
+      }
+    }
+  }
+}

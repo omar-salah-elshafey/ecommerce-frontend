@@ -33,9 +33,17 @@ export class WishlistService {
   }
 
   removeFromWishlist(productId: string): Observable<WishlistDto> {
-    return this.http.delete<WishlistDto>(
-      `${this.apiUrl}/remove-wishlist-item/${productId}`,
-      {}
-    );
+    return this.http
+      .delete<WishlistDto>(
+        `${this.apiUrl}/remove-wishlist-item/${productId}`,
+        {}
+      )
+      .pipe(
+        tap((wishlist) => {
+          wishlist.items.forEach((item) => {
+            item.imageUrl = this.getImageUrl(item.imageUrl);
+          });
+        })
+      );
   }
 }

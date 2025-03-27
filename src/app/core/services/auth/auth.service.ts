@@ -121,12 +121,14 @@ export class AuthService {
         }),
         catchError((error) => {
           this.clearAuthentication();
-          return throwError(() => new error(error));
+          return throwError(() => error);
         })
       );
   }
 
   refreshAccessToken(refreshToken: string) {
+    console.log('Refreshing token...');
+
     return this.http
       .get<any>(`${this.baseUrl}/refreshtoken?refreshToken=${refreshToken}`)
       .pipe(

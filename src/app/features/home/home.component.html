@@ -9,32 +9,6 @@
   </div>
 </section>
 <div class="main-container">
-  <!-- Categories Grid -->
-  <!-- <section class="categories">
-    <h2 class="section-title" @slideIn>الفئات</h2>
-    <div class="categories-grid" @staggerAnimation>
-      <mat-card
-        *ngFor="let category of categories | async"
-        class="category-card"
-        @slideIn
-      >
-        <i [class]="category.icon"></i>
-        <mat-card-header>
-          <mat-card-title>{{ category.name }}</mat-card-title>
-        </mat-card-header>
-        <mat-card-actions>
-          <button
-            mat-button
-            [routerLink]="['/products']"
-            [queryParams]="{ category: category.id }"
-          >
-            تصفح
-          </button>
-        </mat-card-actions>
-      </mat-card>
-    </div>
-  </section> -->
-
   <!-- Featured Products -->
   <section class="featured-products">
     <h2 class="section-title">منتجات مميزة</h2>
@@ -102,8 +76,18 @@
       <h2>اشترك في نشرتنا الإخبارية</h2>
       <p>احصل على آخر العروض والتحديثات مباشرة إلى بريدك</p>
       <div class="newsletter-form">
-        <input type="email" placeholder="ادخل بريدك الإلكتروني"  [(ngModel)]="email"/>
-        <button (click)="newsLetterSubscribe(email)" mat-raised-button color="primary">اشتراك</button>
+        <input
+          type="email"
+          placeholder="ادخل بريدك الإلكتروني"
+          [(ngModel)]="email"
+        />
+        <button
+          (click)="newsLetterSubscribe(email)"
+          mat-raised-button
+          color="primary"
+        >
+          اشتراك
+        </button>
       </div>
     </div>
   </section>
@@ -113,7 +97,7 @@
     <div class="cta-content" @fadeIn>
       <h2>هل أنت مستعد للتسوق؟</h2>
       <p>أنشئ حسابك الآن واحصل على تخفيضات حصرية.</p>
-      <button mat-raised-button color="primary" routerLink="/signup">
+      <button mat-raised-button color="primary" routerLink="/register">
         أنشئ حسابك
       </button>
     </div>

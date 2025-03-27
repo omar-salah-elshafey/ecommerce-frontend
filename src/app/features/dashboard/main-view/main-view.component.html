@@ -67,7 +67,9 @@
 
     <div class="products-grid">
       <mat-card *ngFor="let product of recentProducts" class="product-card">
-        <img [src]="product.mainImageUrl" alt="{{ product.name }}" />
+        <div class="image">
+          <img [src]="product.mainImageUrl" alt="{{ product.name }}" />
+        </div>
         <mat-card-content>
           <h4>{{ product.name }}</h4>
           <p>{{ product.price | currency : "EGP " }}</p>

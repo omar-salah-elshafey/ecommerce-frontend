@@ -33,34 +33,6 @@
             ></app-category-tree>
           </div>
         </div>
-
-        <!-- <div class="filter-section">
-          <h3>السعر</h3>
-          <div class="price-range">
-            <mat-slider
-              min="0"
-              max="10000"
-              step="50"
-              discrete="true"
-              showTickMarks="true"
-            >
-              <input
-                matSliderStartThumb
-                [(ngModel)]="filters.minPrice"
-                (ngModelChange)="updateFilters()"
-              />
-              <input
-                matSliderEndThumb
-                [(ngModel)]="filters.maxPrice"
-                (ngModelChange)="updateFilters()"
-              />
-            </mat-slider>
-          </div>
-          <div class="price-labels">
-            <span>الحد الأدنى: {{ filters.minPrice | currency : "EGP " }}</span>
-            <span>الحد الأقصى: {{ filters.maxPrice | currency : "EGP " }}</span>
-          </div>
-        </div> -->
       </aside>
 
       <div *ngIf="products.length === 0" class="empty-state">

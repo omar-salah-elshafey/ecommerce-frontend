@@ -1,1 +1,14 @@
-<p>manage-products works!</p>
+<section class="dashboard-container">
+  <mat-card class="section-card">
+    <div class="products-grid">
+      <mat-card *ngFor="let product of products" class="product-card">
+        <img [src]="product.mainImageUrl" alt="{{ product.name }}" />
+        <mat-card-content>
+          <h4>{{ product.name }}</h4>
+          <p>{{ product.price | currency : "EGP " }}</p>
+          <p>المخزون: {{ product.stock }}</p>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </mat-card>
+</section>
