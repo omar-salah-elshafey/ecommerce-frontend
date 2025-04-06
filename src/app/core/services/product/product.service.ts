@@ -3,7 +3,12 @@ import { environment } from '../../../environments/environment';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { catchError, map, Observable, tap, throwError } from 'rxjs';
 import { PaginatedResponse } from '../../models/pagination';
-import { ProductDto, ProductImage } from '../../models/product';
+import {
+  CreateProductDto,
+  ProductDto,
+  ProductImage,
+  UpdateProductDto,
+} from '../../models/product';
 
 @Injectable({
   providedIn: 'root',
@@ -147,5 +152,74 @@ export class ProductService {
 
   getProductsCount(): Observable<number> {
     return this.http.get<number>(`${this.apiUrl}/count`);
+  }
+
+  addProduct(createProductDto: CreateProductDto): Observable<ProductDto> {
+    const formData = new FormData();
+    formData.append('Name', createProductDto.name);
+    formData.append('Description', createProductDto.description);
+    formData.append('Price', createProductDto.price.toString());
+    formData.append('Stock', createProductDto.stock.toString());
+    formData.append(
+      'MaxOrderQuantity',
+      createProductDto.maxOrderQuantity.toString()
+    );
+    formData.append('SKU', createProductDto.sku);
+    formData.append('IsFeatured', createProductDto.isFeatured.toString());
+    formData.append('CategoryId', createProductDto.categoryId);
+    createProductDto.images.forEach((file, index) => {
+      formData.append('Images', file, file.name);
+    });
+
+    return this.http
+      .post<ProductDto>(`${this.apiUrl}/add-product`, formData)
+      .pipe(
+        map((product) => ({
+          ...product,
+          mainImageUrl:
+            this.getMainImage(product.images) ||
+            'assets/images/placeholder.png',
+        }))
+      );
+  }
+
+  updateProduct(
+    id: string,
+    updateProductDto: UpdateProductDto
+  ): Observable<ProductDto> {
+    const formData = new FormData();
+    formData.append('Name', updateProductDto.name);
+    formData.append('Description', updateProductDto.description);
+    formData.append('Price', updateProductDto.price.toString());
+    formData.append('Stock', updateProductDto.stock.toString());
+    formData.append(
+      'MaxOrderQuantity',
+      updateProductDto.maxOrderQuantity.toString()
+    );
+    formData.append('IsFeatured', updateProductDto.isFeatured.toString());
+    if (updateProductDto.categoryId) {
+      formData.append('CategoryId', updateProductDto.categoryId);
+    }
+    updateProductDto.imagesToDelete.forEach((id) =>
+      formData.append('ImagesToDelete', id)
+    );
+    updateProductDto.newImages.forEach((file) =>
+      formData.append('NewImages', file, file.name)
+    );
+
+    return this.http
+      .put<ProductDto>(`${this.apiUrl}/update-product/${id}`, formData)
+      .pipe(
+        map((product) => ({
+          ...product,
+          mainImageUrl:
+            this.getMainImage(product.images) ||
+            'assets/images/placeholder.png',
+        }))
+      );;
+  }
+
+  deleteProduct(id: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/delete-product/${id}`);
   }
 }

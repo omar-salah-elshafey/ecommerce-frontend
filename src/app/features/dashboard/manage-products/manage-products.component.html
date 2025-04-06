@@ -1,3 +1,139 @@
+<div *ngIf="addingNewProduct; else addNewButton" class="add-product-container">
+  <form [formGroup]="productForm" (ngSubmit)="saveNewProduct()">
+    <mat-card>
+      <mat-card-content>
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>الاسم</mat-label>
+            <input matInput formControlName="name" placeholder="الاسم" />
+          </mat-form-field>
+        </div>
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>الوصف</mat-label>
+            <textarea
+              matInput
+              formControlName="description"
+              placeholder="الوصف"
+            ></textarea>
+          </mat-form-field>
+        </div>
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>السعر</mat-label>
+            <input
+              matInput
+              type="number"
+              formControlName="price"
+              placeholder="السعر"
+              min="1"
+            />
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>الكمية</mat-label>
+            <input
+              matInput
+              type="number"
+              formControlName="stock"
+              placeholder="الكمية"
+              min="1"
+            />
+          </mat-form-field>
+        </div>
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>أقصى كمية للطلب</mat-label>
+            <input
+              matInput
+              type="number"
+              formControlName="maxOrderQuantity"
+              placeholder="أقصى كمية للطلب"
+              min="1"
+            />
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>SKU</mat-label>
+            <input matInput formControlName="sku" placeholder="SKU" />
+          </mat-form-field>
+        </div>
+        <div class="form-row">
+          <mat-checkbox formControlName="isFeatured" name="isFeatured">
+            مميز؟
+          </mat-checkbox>
+        </div>
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>الفئة</mat-label>
+            <mat-select formControlName="categoryId">
+              <mat-option
+                *ngFor="let category of flatCategories"
+                [value]="category.id"
+              >
+                {{ category.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="form-row">
+          <div class="upload-container" *ngIf="selectedFiles.length < 6">
+            <label class="upload-btn">
+              <mat-icon>image</mat-icon>
+              <input
+                type="file"
+                (change)="onFileSelected($event)"
+                accept="image/*"
+                multiple
+              />
+            </label>
+          </div>
+          <div class="selected-files" *ngIf="selectedFiles.length > 0">
+            <div
+              *ngFor="let file of selectedFiles; let i = index"
+              class="file-preview"
+            >
+              <div class="image-preview">
+                <img
+                  [src]="imagePreviews[i]"
+                  alt="Preview"
+                  *ngIf="imagePreviews[i]"
+                />
+              </div>
+              <button type="button" class="remove-file" (click)="removeFile(i)">
+                ×
+              </button>
+            </div>
+          </div>
+        </div>
+      </mat-card-content>
+      <mat-card-actions class="actions">
+        <button mat-raised-button color="primary" type="submit">
+          <mat-icon>save</mat-icon>
+        </button>
+        <button
+          mat-raised-button
+          color="accent"
+          type="button"
+          (click)="cancelAddProduct()"
+        >
+          <mat-icon>cancel</mat-icon>
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  </form>
+</div>
+
+<ng-template #addNewButton>
+  <div class="add-prod-btn-section">
+    <button
+      mat-raised-button
+      color="primary"
+      class="add-new-prod-btn"
+      (click)="startAddingProduct()"
+    >
+      إضافة منتج جديد
+    </button>
+  </div>
+</ng-template>
 <section class="dashboard-container">
   <mat-card class="section-card">
     <div class="products-grid">
@@ -7,6 +143,7 @@
           <h4>{{ product.name }}</h4>
           <p>{{ product.price | currency : "EGP " }}</p>
           <p>المخزون: {{ product.stock }}</p>
+          <p>أقصى كمية للطلب: {{ product.maxOrderQuantity }}</p>
         </mat-card-content>
       </mat-card>
     </div>

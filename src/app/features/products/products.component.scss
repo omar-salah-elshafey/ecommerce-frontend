@@ -7,7 +7,7 @@
   display: flex;
   gap: 2rem;
   padding: 2rem;
-  min-height: 100vh;
+  // min-height: 100vh;
 }
 
 .filters-sidebar {
@@ -63,6 +63,9 @@
     position: relative;
     overflow: hidden;
     transition: transform 0.3s ease;
+    height: 100%;
+    display: flex;
+    justify-content: space-between;
 
     &:hover {
       transform: translateY(-5px);
@@ -71,6 +74,7 @@
     /* Image container */
     .card-image {
       position: relative;
+      flex-grow: 1;
 
       img {
         width: 100%;
@@ -80,17 +84,16 @@
       /* Overlay at the bottom */
       .card-overlay {
         position: absolute;
-        bottom: 0; /* Stick to the bottom */
+        bottom: 0;
         left: 0;
         right: 0;
-        background: rgba(32, 33, 33, 0.5); /* Semi-transparent black */
+        background: rgba(32, 33, 33, 0.3);
         display: flex;
         justify-content: center;
-        gap: 1rem;
-        padding: 0.5rem;
+        gap: 0.5rem;
         opacity: 0;
         transition: opacity 0.3s ease, transform 0.3s ease;
-        transform: translateY(100%); /* Initially hidden outside */
+        transform: translateY(100%);
       }
     }
 

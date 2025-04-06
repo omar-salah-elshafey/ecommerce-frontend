@@ -1,6 +1,6 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, Validators } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatInputModule } from '@angular/material/input';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -42,7 +42,7 @@ import { PostDto } from '../../core/models/blog';
 })
 export class BlogsComponent implements OnInit {
   private blogService = inject(BlogService);
-  private blogsService = inject(BlogsService);
+  private fb = inject(FormBuilder);
 
   blogs: PostDto[] = [];
   loading: boolean = true;
@@ -51,6 +51,12 @@ export class BlogsComponent implements OnInit {
   totalItems: number = 0;
   totalPages: number = 0;
   hasMore: boolean = true;
+
+  postForm!: FormGroup;
+  posting = false;
+
+  imageFile?: File;
+  videoFile?: File;
 
   ngOnInit() {
     this.loadPosts();
@@ -83,5 +89,66 @@ export class BlogsComponent implements OnInit {
     if (this.hasMore && !this.loading) {
       this.loadPosts();
     }
+  }
+
+  onFileSelected(event: Event, fileType: 'image' | 'video') {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      if (fileType === 'image') {
+        this.imageFile = input.files[0];
+      } else if (fileType === 'video') {
+        this.videoFile = input.files[0];
+      }
+    }
+  }
+  removeFile(type: 'image' | 'video') {
+    if (type === 'image') {
+      this.imageFile = undefined;
+    } else {
+      this.videoFile = undefined;
+    }
+  }
+  initializeForm(): void {
+    this.postForm = this.fb.group({
+      content: [
+        '',
+        [
+          Validators.required,
+          Validators.maxLength(5000),
+          Validators.minLength(3),
+          Validators.pattern(/^(?!\s*$).+/),
+        ],
+      ],
+    });
+  }
+
+  onCreatePost(): void {
+    if (this.postForm.invalid) {
+      return;
+    }
+    this.posting = true;
+    this.postForm.disable();
+    const postDto = {
+      content: this.postForm.value.content.trim(),
+      imageFile: this.imageFile,
+      videoFile: this.videoFile,
+    };
+    // this.postService.addPost(postDto).subscribe({
+    //   next: (response) => {
+    //     this.posts.unshift(response);
+    //     this.toastr.success('Post created successfully!', 'Success');
+    //     this.imageFile = undefined;
+    //     this.videoFile = undefined;
+    //     this.postForm.reset();
+    //     this.posting = false;
+    //     this.postForm.enable();
+    //   },
+    //   error: (err) => {
+    //     console.error('Error creating post:', err);
+    //     this.toastr.error('Error creating post.', 'Error');
+    //     this.posting = false;
+    //     this.postForm.enable();
+    //   },
+    // });
   }
 }

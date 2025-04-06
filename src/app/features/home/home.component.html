@@ -16,6 +16,7 @@
       <mat-card
         *ngFor="let product of featuredProducts$ | async"
         class="product-card"
+        [routerLink]="['/products', product.id]"
       >
         <img
           [src]="product.mainImageUrl"
@@ -26,15 +27,6 @@
           <h3 class="product-name">{{ product.name }}</h3>
           <p class="product-price">{{ product.price | currency : "EGP " }}</p>
         </mat-card-content>
-        <mat-card-actions>
-          <button
-            mat-raised-button
-            color="primary"
-            [routerLink]="['/products', product.id]"
-          >
-            عرض التفاصيل
-          </button>
-        </mat-card-actions>
       </mat-card>
     </div>
   </section>
@@ -46,6 +38,7 @@
       <mat-card
         *ngFor="let product of bestSellers$ | async"
         class="product-card"
+        [routerLink]="['/products', product.id]"
       >
         <img
           [src]="product.mainImageUrl"
@@ -57,15 +50,6 @@
           <p class="product-price">{{ product.price | currency : "EGP " }}</p>
           <p class="sales-count">تم بيع {{ product.salesCount }} وحدة</p>
         </mat-card-content>
-        <mat-card-actions>
-          <button
-            mat-raised-button
-            color="primary"
-            [routerLink]="['/products', product.id]"
-          >
-            عرض التفاصيل
-          </button>
-        </mat-card-actions>
       </mat-card>
     </div>
   </section>

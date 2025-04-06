@@ -1,6 +1,7 @@
 .dashboard-container {
   padding: 1rem;
 }
+
 .section-card {
   .products-grid {
     display: grid;
@@ -10,6 +11,9 @@
     padding: 0.5rem;
 
     .product-card {
+      display: flex;
+      justify-content: space-between;
+      min-height: 310px;
       img {
         width: 100%;
         object-fit: cover;
@@ -25,6 +29,175 @@
     }
   }
 }
+
+.add-prod-btn-section {
+  display: flex;
+  justify-content: center;
+  margin: 1rem 0;
+}
+
+.add-new-prod-btn {
+  font-size: 1.2rem;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+  transition: background-color 0.3s ease, transform 0.2s ease;
+
+  &:hover {
+    cursor: pointer;
+    background-color: #ffffff;
+  }
+}
+
+.add-product-container {
+  margin-bottom: 1rem;
+
+  mat-card {
+    padding: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .form-row {
+    margin-bottom: 1rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+
+    .form-field {
+      flex: 1;
+      min-width: 150px;
+    }
+
+    input[type="file"] {
+      width: 100%;
+      padding: 0.4rem;
+      font-size: 1rem;
+    }
+  }
+
+  mat-card-actions.actions {
+    padding: 0.2rem;
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    button {
+      cursor: pointer;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+}
+
+input,
+textarea {
+  font-size: 1rem;
+  padding: 0.4rem 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  transition: border-color 0.2s;
+
+  &:focus {
+    border-color: #3f51b5;
+    outline: none;
+  }
+}
+
+.upload-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 15px 0;
+
+  .upload-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 3rem;
+    height: 3rem;
+    gap: 8px;
+    padding: 5px;
+    border: 2px dashed #3f51b5;
+    border-radius: 6px;
+    color: #3f51b5;
+    cursor: pointer;
+    transition: all 0.4s;
+
+    &:hover {
+      background: #3f51b5;
+      color: #fff;
+    }
+
+    input {
+      display: none;
+    }
+
+    mat-icon {
+      width: 2rem;
+      height: 2rem;
+      font-size: 2rem;
+    }
+  }
+}
+
+.selected-files {
+  margin-top: 10px;
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+
+  .file-preview {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 5px 0;
+    padding: 5px;
+    background: #f5f5f5;
+    border-radius: 4px;
+    position: relative;
+
+    .image-preview {
+      width: 100px;
+      height: 100px;
+      overflow: hidden;
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 4px;
+      }
+    }
+
+    .remove-file {
+      position: absolute;
+      top: 0.2rem;
+      left: 0.2rem;
+      background: transparent;
+      color: #000;
+      border: none;
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      line-height: 20px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: 0.3s;
+
+      &:hover {
+        background: #cc0000;
+      }
+    }
+  }
+}
+
 @media (max-width: 768px) {
   .products-grid {
     .product-card {

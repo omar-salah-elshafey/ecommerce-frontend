@@ -1,6 +1,6 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { CategoryService } from '../../../core/services/category/category.service';
-import { AddCategoryDto, CategoryDto, UpdateCategoryDto } from '../../../core/models/category';
+import { AddCategoryDto, CategoryDto, FlatCategory, UpdateCategoryDto } from '../../../core/models/category';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
@@ -9,14 +9,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatCard, MatCardModule } from '@angular/material/card';
-
-interface FlatCategory {
-  id: string;
-  name: string;
-  parentCategoryName?: string;
-  parentCategoryId?: string;
-  hasChildren: boolean;
-}
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-categories',

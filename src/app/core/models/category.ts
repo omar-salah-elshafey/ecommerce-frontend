@@ -16,3 +16,11 @@ export interface UpdateCategoryDto {
   parentCategoryId?: string;
   clearParentCategory: boolean;
 }
+
+export interface FlatCategory {
+  id: string;
+  name: string;
+  parentCategoryName?: string;
+  parentCategoryId?: string;
+  hasChildren: boolean;
+}

@@ -47,7 +47,7 @@
         <button
           mat-icon-button
           (click)="decreaseQuantity()"
-          [disabled]="quantity <= 1 || authService.isLoggedIn$"
+          [disabled]="quantity <= 1"
         >
           <mat-icon>remove</mat-icon>
         </button>
@@ -59,7 +59,7 @@
             quantity >= product.stock ||
             product.stock == 0 ||
             quantity == product.maxOrderQuantity ||
-            authService.isLoggedIn$
+            !(authService.isLoggedIn$ | async)
           "
         >
           <mat-icon>add</mat-icon>
