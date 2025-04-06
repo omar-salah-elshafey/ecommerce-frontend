@@ -7,6 +7,7 @@ import {
   CreateOrderDto,
   GovernorateDto,
   OrderDto,
+  UpdateOrderStatusDto,
 } from '../../models/order';
 import { Observable } from 'rxjs';
 import { PaginatedResponse } from '../../models/pagination';
@@ -80,5 +81,9 @@ export class OrdersService {
 
   getInProgressOrdersCount(): Observable<number> {
     return this.http.get<number>(`${this.apiUrl}/count/in-progress`);
+  }
+
+  updateOrderStatus(dto: UpdateOrderStatusDto): Observable<OrderDto> {
+    return this.http.put<OrderDto>(`${this.apiUrl}/update-order-status`, dto);
   }
 }

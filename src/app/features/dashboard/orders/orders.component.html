@@ -4,20 +4,54 @@
       <li *ngFor="let order of orders" class="list-item">
         <div class="order-info">
           <span class="name">رقم الطلب: {{ order.id }}</span>
-          <span class="date"
-            >تاريخ الطلب: {{ order.orderDate | date : "short" }}</span
-          >
-          <span class="status"
-            >حالة الطلب:
+          <span class="date">
+            تاريخ الطلب: {{ order.orderDate | date : "short" }}
+          </span>
+          <span class="status">
+            حالة الطلب:
             <mat-icon [ngStyle]="{ color: getStatusColor(order.status) }">
               {{ getStatusIcon(order.status) }}
             </mat-icon>
-            <span>{{ translateOrderStatus(order.status) }}</span></span
+            <span>{{ translateOrderStatus(order.status) }}</span>
+          </span>
+          <span
+            class="status-update"
+            *ngIf="
+              order.status !== OrderStatus[OrderStatus.Delivered] &&
+              order.status !== OrderStatus[OrderStatus.Cancelled]
+            "
           >
+            <mat-select
+              [(ngModel)]="selectedStatuses[order.id]"
+              placeholder="تغيير الحالة"
+              [disabled]="
+                order.status === OrderStatus[OrderStatus.Delivered] ||
+                order.status === OrderStatus[OrderStatus.Cancelled]
+              "
+            >
+              <mat-option
+                *ngFor="let status of orderStatuses"
+                [value]="status.value"
+              >
+                {{ status.label }}
+              </mat-option>
+            </mat-select>
+            <button
+              mat-icon-button
+              color="primary"
+              (click)="updateOrderStatus(order)"
+              [disabled]="
+                !selectedStatuses[order.id] ||
+                selectedStatuses[order.id] === getStatusEnumValue(order.status)
+              "
+            >
+              <mat-icon>save</mat-icon>
+            </button>
+          </span>
         </div>
-        <span class="amount"
-          >تكلفة الطلب: {{ order.totalAmount | currency : "EGP " }}</span
-        >
+        <span class="amount">
+          تكلفة الطلب: {{ order.totalAmount | currency : "EGP " }}
+        </span>
       </li>
     </ul>
   </mat-card>
