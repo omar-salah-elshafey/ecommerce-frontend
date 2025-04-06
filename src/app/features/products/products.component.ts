@@ -92,11 +92,11 @@ export class ProductsComponent implements OnInit {
 
   @HostListener('window:scroll', ['$event'])
   onScroll() {
-    const threshold = 600;
-    const position = window.scrollY + window.innerHeight;
-    const height = document.documentElement.scrollHeight;
+    const windowHeight = window.innerHeight;
+    const documentHeight = document.documentElement.scrollHeight;
+    const scrollTop = window.scrollY || document.documentElement.scrollTop;
 
-    if (position > height - threshold && this.hasMore) {
+    if (windowHeight + scrollTop >= documentHeight - 100 && this.hasMore) {
       this.loadMore$.next();
     }
   }

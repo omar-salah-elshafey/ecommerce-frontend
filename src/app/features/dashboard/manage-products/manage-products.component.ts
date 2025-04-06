@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, HostListener, inject, OnInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import {
   CreateProductDto,
@@ -24,6 +24,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { CategoryService } from '../../../core/services/category/category.service';
 import { CategoryDto, FlatCategory } from '../../../core/models/category';
 import { MatSelectModule } from '@angular/material/select';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 const ALLOWED_EXTENSIONS = ['.jpg', '.jpeg', '.png'];
 const ALLOWED_MIME_TYPES = ['image/jpeg', 'image/png', 'image/jpg'];
@@ -42,6 +43,7 @@ const ALLOWED_MIME_TYPES = ['image/jpeg', 'image/png', 'image/jpg'];
     FormsModule,
     MatSelectModule,
     MatButtonModule,
+    MatProgressSpinnerModule,
   ],
   templateUrl: './manage-products.component.html',
   styleUrl: './manage-products.component.scss',
@@ -59,6 +61,11 @@ export class ManageProductsComponent implements OnInit {
   editingProduct: ProductDto | null = null;
   existingImageUrls: string[] = [];
   imagesToDelete: string[] = [];
+
+  private currentPage: number = 1;
+  private pageSize: number = 20;
+  isLoading: boolean = false;
+  private hasMore: boolean = true;
 
   private productService = inject(ProductService);
   private snackBar = inject(MatSnackBar);
@@ -85,9 +92,22 @@ export class ManageProductsComponent implements OnInit {
   }
 
   loadProducts(): void {
-    this.productService.getAllProducts(1, 20).subscribe((res) => {
-      this.products = res.items;
-    });
+    if (this.isLoading || !this.hasMore) return;
+    this.isLoading = true;
+    this.productService
+      .getAllProducts(this.currentPage, this.pageSize)
+      .subscribe({
+        next: (res) => {
+          this.products = [...this.products, ...res.items];
+          this.currentPage++;
+          this.hasMore = res.items.length === this.pageSize;
+          this.isLoading = false;
+        },
+        error: (err) => {
+          console.error('Error loading products:', err);
+          this.isLoading = false;
+        },
+      });
   }
 
   startAddingProduct(): void {
@@ -100,10 +120,14 @@ export class ManageProductsComponent implements OnInit {
       isFeatured: false,
     });
     this.selectedFiles = [];
+    this.imagePreviews = [];
+    this.existingImageUrls = [];
+    this.imagesToDelete = [];
   }
 
   cancelAddProduct(): void {
     this.addingNewProduct = false;
+    this.resetFormState();
   }
 
   startEditingProduct(product: ProductDto): void {
@@ -152,7 +176,7 @@ export class ManageProductsComponent implements OnInit {
     if (fileErrors) {
       this.snackBar.open(
         'Please fix image errors: ' + JSON.stringify(fileErrors),
-        'Close',
+        'إغلاق',
         {
           duration: 3000,
           horizontalPosition: 'center',
@@ -163,7 +187,7 @@ export class ManageProductsComponent implements OnInit {
     }
 
     if (this.productForm.invalid) {
-      this.snackBar.open('Please fix the errors in the form.', 'Close', {
+      this.snackBar.open('برجاء إدخال قيم صالحة.', 'إغلاق', {
         duration: 3000,
         horizontalPosition: 'center',
         verticalPosition: 'top',
@@ -171,6 +195,7 @@ export class ManageProductsComponent implements OnInit {
       return;
     }
 
+    this.isLoading = true;
     const formValue = this.productForm.value;
     const newProductDto: CreateProductDto = {
       name: formValue.name,
@@ -186,17 +211,18 @@ export class ManageProductsComponent implements OnInit {
 
     this.productService.addProduct(newProductDto).subscribe({
       next: (product) => {
-        this.snackBar.open('Product added successfully', 'Close', {
+        this.snackBar.open('تم إضافة المنتج بنجاح', 'إغلاق', {
           duration: 3000,
           horizontalPosition: 'center',
           verticalPosition: 'top',
         });
-        this.products.push(product);
+        this.products.unshift(product);
+        this.isLoading = false;
         this.cancelAddProduct();
       },
       error: (err) => {
         console.error('Error adding product:', err);
-        this.snackBar.open('Error adding product', 'Close', {
+        this.snackBar.open('خطأ أثناء إضافة المنتج', 'إغلاق', {
           duration: 3000,
           horizontalPosition: 'center',
           verticalPosition: 'top',
@@ -207,7 +233,7 @@ export class ManageProductsComponent implements OnInit {
 
   saveUpdatedProduct(): void {
     if (this.productForm.invalid) {
-      this.snackBar.open('Please fix the errors in the form.', 'Close', {
+      this.snackBar.open('برجاء إدخال قيم صالحة.', 'إغلاق', {
         duration: 3000,
         horizontalPosition: 'center',
         verticalPosition: 'top',
@@ -221,7 +247,7 @@ export class ManageProductsComponent implements OnInit {
       this.existingImageUrls.length === 0 &&
       this.selectedFiles.length === 0
     ) {
-      this.snackBar.open('At least one image is required.', 'Close', {
+      this.snackBar.open('يجب إضافة صورة واحدة على الأقل.', 'إغلاق', {
         duration: 3000,
         horizontalPosition: 'center',
         verticalPosition: 'top',
@@ -229,6 +255,7 @@ export class ManageProductsComponent implements OnInit {
       return;
     }
 
+    this.isLoading = true;
     const formValue = this.productForm.value;
     const updateProductDto: UpdateProductDto = {
       name: formValue.name,
@@ -246,7 +273,7 @@ export class ManageProductsComponent implements OnInit {
       .updateProduct(this.editingProduct.id, updateProductDto)
       .subscribe({
         next: (updatedProduct) => {
-          this.snackBar.open('Product updated successfully', 'Close', {
+          this.snackBar.open('تم تحديث المنتج بنجاح', 'إغلاق', {
             duration: 3000,
             horizontalPosition: 'center',
             verticalPosition: 'top',
@@ -255,11 +282,12 @@ export class ManageProductsComponent implements OnInit {
             (p) => p.id === updatedProduct.id
           );
           this.products[index] = updatedProduct;
+          this.isLoading = false;
           this.cancelEdit();
         },
         error: (err) => {
           console.error('Error updating product:', err);
-          this.snackBar.open('Error updating product', 'Close', {
+          this.snackBar.open('خطأ أثناء تحديث المنتج', 'إغلاق', {
             duration: 3000,
             horizontalPosition: 'center',
             verticalPosition: 'top',
@@ -330,6 +358,17 @@ export class ManageProductsComponent implements OnInit {
     }
     this.existingImageUrls.splice(index, 1);
     this.productForm.get('images')?.updateValueAndValidity();
+  }
+
+  @HostListener('window:scroll', ['$event'])
+  onScroll(event: Event): void {
+    const windowHeight = window.innerHeight;
+    const documentHeight = document.documentElement.scrollHeight;
+    const scrollTop = window.scrollY || document.documentElement.scrollTop;
+
+    if (windowHeight + scrollTop >= documentHeight - 100) {
+      this.loadProducts();
+    }
   }
 
   private flattenCategories(
