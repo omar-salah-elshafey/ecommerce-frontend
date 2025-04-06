@@ -71,6 +71,10 @@ export class ProductService {
           ...response,
           items: response.items.map((product) => ({
             ...product,
+            images: product.images.map((img) => ({
+              ...img,
+              imageUrl: `${environment.apiUrl}${img.imageUrl}`,
+            })),
             mainImageUrl:
               this.getMainImage(product.images) ||
               'assets/images/placeholder.png',
@@ -176,6 +180,10 @@ export class ProductService {
       .pipe(
         map((product) => ({
           ...product,
+          images: product.images.map((img) => ({
+            ...img,
+            imageUrl: `${environment.apiUrl}${img.imageUrl}`,
+          })),
           mainImageUrl:
             this.getMainImage(product.images) ||
             'assets/images/placeholder.png',
@@ -212,11 +220,15 @@ export class ProductService {
       .pipe(
         map((product) => ({
           ...product,
+          images: product.images.map((img) => ({
+            ...img,
+            imageUrl: `${environment.apiUrl}${img.imageUrl}`,
+          })),
           mainImageUrl:
             this.getMainImage(product.images) ||
             'assets/images/placeholder.png',
         }))
-      );;
+      );
   }
 
   deleteProduct(id: string): Observable<void> {

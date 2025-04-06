@@ -1,5 +1,8 @@
-<div *ngIf="addingNewProduct; else addNewButton" class="add-product-container">
-  <form [formGroup]="productForm" (ngSubmit)="saveNewProduct()">
+<div *ngIf="addingNewProduct|| editingProduct; else addNewButton" class="add-product-container">
+  <form
+    [formGroup]="productForm"
+    (ngSubmit)="editingProduct ? saveUpdatedProduct() : saveNewProduct()"
+  >
     <mat-card>
       <mat-card-content>
         <div class="form-row">
@@ -75,7 +78,10 @@
           </mat-form-field>
         </div>
         <div class="form-row">
-          <div class="upload-container" *ngIf="selectedFiles.length < 6">
+          <div
+            class="upload-container"
+            *ngIf="existingImageUrls.length + selectedFiles.length < 6"
+          >
             <label class="upload-btn">
               <mat-icon>image</mat-icon>
               <input
@@ -86,7 +92,25 @@
               />
             </label>
           </div>
-          <div class="selected-files" *ngIf="selectedFiles.length > 0">
+          <div
+            class="selected-files"
+            *ngIf="existingImageUrls.length > 0 || selectedFiles.length > 0"
+          >
+            <div
+              *ngFor="let url of existingImageUrls; let i = index"
+              class="file-preview"
+            >
+              <div class="image-preview">
+                <img [src]="url" alt="Existing Image" />
+              </div>
+              <button
+                type="button"
+                class="remove-file"
+                (click)="removeExistingImage(i)"
+              >
+                ×
+              </button>
+            </div>
             <div
               *ngFor="let file of selectedFiles; let i = index"
               class="file-preview"
@@ -106,14 +130,14 @@
         </div>
       </mat-card-content>
       <mat-card-actions class="actions">
-        <button mat-raised-button color="primary" type="submit">
+        <button mat-icon-button color="primary" type="submit">
           <mat-icon>save</mat-icon>
         </button>
         <button
-          mat-raised-button
+          mat-icon-button
           color="accent"
           type="button"
-          (click)="cancelAddProduct()"
+          (click)="editingProduct ? cancelEdit() : cancelAddProduct()"
         >
           <mat-icon>cancel</mat-icon>
         </button>
@@ -145,6 +169,14 @@
           <p>المخزون: {{ product.stock }}</p>
           <p>أقصى كمية للطلب: {{ product.maxOrderQuantity }}</p>
         </mat-card-content>
+        <mat-card-actions>
+          <button mat-icon-button (click)="startEditingProduct(product)">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-icon-button (click)="deleteProduct(product.id)">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </mat-card-actions>
       </mat-card>
     </div>
   </mat-card>

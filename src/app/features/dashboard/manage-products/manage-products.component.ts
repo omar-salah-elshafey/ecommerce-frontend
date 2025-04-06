@@ -1,6 +1,10 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { CreateProductDto, ProductDto } from '../../../core/models/product';
+import {
+  CreateProductDto,
+  ProductDto,
+  UpdateProductDto,
+} from '../../../core/models/product';
 import { ProductService } from '../../../core/services/product/product.service';
 import { MatCardModule } from '@angular/material/card';
 import { CommonModule } from '@angular/common';
@@ -37,6 +41,7 @@ const ALLOWED_MIME_TYPES = ['image/jpeg', 'image/png', 'image/jpg'];
     MatIconModule,
     FormsModule,
     MatSelectModule,
+    MatButtonModule,
   ],
   templateUrl: './manage-products.component.html',
   styleUrl: './manage-products.component.scss',
@@ -50,6 +55,10 @@ export class ManageProductsComponent implements OnInit {
   categories: CategoryDto[] = [];
   flatCategories: FlatCategory[] = [];
   imagePreviews: string[] = [];
+
+  editingProduct: ProductDto | null = null;
+  existingImageUrls: string[] = [];
+  imagesToDelete: string[] = [];
 
   private productService = inject(ProductService);
   private snackBar = inject(MatSnackBar);
@@ -83,9 +92,10 @@ export class ManageProductsComponent implements OnInit {
 
   startAddingProduct(): void {
     this.addingNewProduct = true;
+    this.editingProduct = null;
     this.productForm.reset({
-      price: 0,
-      stock: 0,
+      price: 1,
+      stock: 1,
       maxOrderQuantity: 1,
       isFeatured: false,
     });
@@ -94,6 +104,39 @@ export class ManageProductsComponent implements OnInit {
 
   cancelAddProduct(): void {
     this.addingNewProduct = false;
+  }
+
+  startEditingProduct(product: ProductDto): void {
+    this.editingProduct = product;
+    this.addingNewProduct = false;
+    this.selectedFiles = [];
+    this.imagePreviews = [];
+    this.imagesToDelete = [];
+    this.existingImageUrls = product.images.map((img) => img.imageUrl);
+
+    this.productForm.patchValue({
+      name: product.name,
+      description: product.description,
+      price: product.price,
+      stock: product.stock,
+      maxOrderQuantity: product.maxOrderQuantity,
+      sku: product.sku || '',
+      isFeatured: product.isFeatured,
+      categoryId: product.categoryId,
+    });
+  }
+
+  cancelEdit(): void {
+    this.editingProduct = null;
+    this.resetFormState();
+  }
+
+  private resetFormState(): void {
+    this.selectedFiles = [];
+    this.imagePreviews = [];
+    this.existingImageUrls = [];
+    this.imagesToDelete = [];
+    this.productForm.reset();
   }
 
   onFileSelected(event: any): void {
@@ -162,12 +205,80 @@ export class ManageProductsComponent implements OnInit {
     });
   }
 
+  saveUpdatedProduct(): void {
+    if (this.productForm.invalid) {
+      this.snackBar.open('Please fix the errors in the form.', 'Close', {
+        duration: 3000,
+        horizontalPosition: 'center',
+        verticalPosition: 'top',
+      });
+      return;
+    }
+
+    if (!this.editingProduct) return;
+
+    if (
+      this.existingImageUrls.length === 0 &&
+      this.selectedFiles.length === 0
+    ) {
+      this.snackBar.open('At least one image is required.', 'Close', {
+        duration: 3000,
+        horizontalPosition: 'center',
+        verticalPosition: 'top',
+      });
+      return;
+    }
+
+    const formValue = this.productForm.value;
+    const updateProductDto: UpdateProductDto = {
+      name: formValue.name,
+      description: formValue.description,
+      price: formValue.price,
+      stock: formValue.stock,
+      maxOrderQuantity: formValue.maxOrderQuantity,
+      isFeatured: formValue.isFeatured,
+      categoryId: formValue.categoryId,
+      imagesToDelete: this.imagesToDelete,
+      newImages: this.selectedFiles,
+    };
+
+    this.productService
+      .updateProduct(this.editingProduct.id, updateProductDto)
+      .subscribe({
+        next: (updatedProduct) => {
+          this.snackBar.open('Product updated successfully', 'Close', {
+            duration: 3000,
+            horizontalPosition: 'center',
+            verticalPosition: 'top',
+          });
+          const index = this.products.findIndex(
+            (p) => p.id === updatedProduct.id
+          );
+          this.products[index] = updatedProduct;
+          this.cancelEdit();
+        },
+        error: (err) => {
+          console.error('Error updating product:', err);
+          this.snackBar.open('Error updating product', 'Close', {
+            duration: 3000,
+            horizontalPosition: 'center',
+            verticalPosition: 'top',
+          });
+        },
+      });
+  }
+
   fileArrayValidator(control: any): { [key: string]: any } | null {
     const files: File[] = this.selectedFiles;
-    if (!files || files.length === 0) {
+    const totalImages = files.length + this.existingImageUrls.length;
+
+    if (
+      (!this.editingProduct && (!files || files.length === 0)) ||
+      (this.editingProduct && totalImages === 0)
+    ) {
       return { required: 'At least one image is required.' };
     }
-    if (files.length > 6) {
+    if (totalImages > 6) {
       return { maxFiles: 'Maximum 6 images allowed.' };
     }
     for (let file of files) {
@@ -209,6 +320,15 @@ export class ManageProductsComponent implements OnInit {
   removeFile(index: number): void {
     this.selectedFiles.splice(index, 1);
     this.imagePreviews.splice(index, 1);
+    this.productForm.get('images')?.updateValueAndValidity();
+  }
+
+  removeExistingImage(index: number): void {
+    const imageId = this.editingProduct?.images[index].id;
+    if (imageId) {
+      this.imagesToDelete.push(imageId);
+    }
+    this.existingImageUrls.splice(index, 1);
     this.productForm.get('images')?.updateValueAndValidity();
   }
 
