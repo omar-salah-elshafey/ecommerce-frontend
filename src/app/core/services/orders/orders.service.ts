@@ -75,6 +75,21 @@ export class OrdersService {
     );
   }
 
+  getAllInProgressOrders(
+    pageNumber: number,
+    pageSize: number
+  ): Observable<PaginatedResponse<OrderDto>> {
+    return this.http.get<PaginatedResponse<OrderDto>>(
+      `${this.apiUrl}/get-all-in-progress-orders`,
+      {
+        params: {
+          pageNumber: pageNumber.toString(),
+          pageSize: pageSize.toString(),
+        },
+      }
+    );
+  }
+
   getOrdersCount(): Observable<number> {
     return this.http.get<number>(`${this.apiUrl}/count`);
   }

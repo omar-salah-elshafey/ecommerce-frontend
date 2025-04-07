@@ -1,13 +1,43 @@
-<section class="dashboard-container">
-  <mat-card class="section-card">
-    <ul class="responsive-table">
-      <li *ngFor="let order of orders" class="list-item">
+<section class="dashboard-container" *ngIf="!isLoading">
+  <div *ngIf="orders.length === 0" class="empty-state">
+    <mat-icon class="empty-icon">inventory_2</mat-icon>
+    <p class="empty-text">سجل الطلبات فارغ حالياً</p>
+  </div>
+
+  <div *ngIf="orders.length > 0" class="orders-history-items">
+    <div class="filter-buttons">
+      <button
+        mat-raised-button
+        color="primary"
+        (click)="onFilterChange('all')"
+        [disabled]="filter === 'all'"
+      >
+        عرض جميع الطلبات
+      </button>
+      <button
+        mat-raised-button
+        color="primary"
+        (click)="onFilterChange('inProgress')"
+        [disabled]="filter === 'inProgress'"
+      >
+        عرض الطلبات قيد التنفيذ
+      </button>
+    </div>
+    <mat-card *ngFor="let order of orders" class="orders-history-item">
+      <div class="order-content">
         <div class="order-info">
-          <span class="name">رقم الطلب: {{ order.id }}</span>
-          <span class="date">
-            تاريخ الطلب: {{ order.orderDate | date : "short" }}
-          </span>
-          <span class="status">
+          <h3 class="order-id">
+            رقم الطلب: <span>{{ order.id }}</span>
+          </h3>
+
+          <p class="order-price">
+            السعر الكلي: {{ order.totalAmount | currency : "EGP " }}
+          </p>
+          <p class="order-date">
+            <mat-icon>schedule</mat-icon>
+            تم الطلب في {{ order.orderDate | date : "mediumDate" }}
+          </p>
+          <span class="order-status">
             حالة الطلب:
             <mat-icon [ngStyle]="{ color: getStatusColor(order.status) }">
               {{ getStatusIcon(order.status) }}
@@ -49,10 +79,22 @@
             </button>
           </span>
         </div>
-        <span class="amount">
-          تكلفة الطلب: {{ order.totalAmount | currency : "EGP " }}
-        </span>
-      </li>
-    </ul>
-  </mat-card>
+        <mat-card-actions>
+          <button
+            mat-icon-button
+            color="primary"
+            matTooltip="عرض التفاصيل"
+            matTooltipPosition="above"
+            matTooltipShowDelay="100"
+            [routerLink]="['/orders', order.id]"
+          >
+            <mat-icon>visibility</mat-icon>
+          </button>
+        </mat-card-actions>
+      </div>
+    </mat-card>
+  </div>
 </section>
+<div *ngIf="isLoading" class="loading-overlay">
+  <mat-spinner diameter="60"></mat-spinner>
+</div>

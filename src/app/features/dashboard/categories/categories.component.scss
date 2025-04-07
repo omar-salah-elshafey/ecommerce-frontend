@@ -2,6 +2,7 @@
   display: flex;
   justify-content: center;
   margin: 1rem 0;
+  width: 100%;
 }
 
 .add-new-cat-btn {
@@ -12,10 +13,6 @@
   transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
-.add-new-cat-btn:hover {
-  cursor: pointer;
-  background-color: #ffffff;
-}
 .actions {
   padding: 0.2rem;
   display: flex;
@@ -23,12 +20,13 @@
   flex-wrap: wrap;
   button {
     cursor: pointer;
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    mat-icon {
+      font-size: 2rem;
+      width: 3rem;
+      height: 3rem;
+      inset-inline-start: 50%;
+      top: -25%;
+    }
   }
 }
 
@@ -81,8 +79,8 @@ input {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
   padding: 1rem;
-  margin: 1rem 0;
   transition: box-shadow 0.3s ease;
+  width: 100%;
 
   &:hover {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
@@ -95,13 +93,14 @@ input {
   gap: 1rem;
   flex-wrap: wrap;
   justify-content: center;
-
+  max-width: 700px;
+  margin: 0 auto;
 }
 
 .input-field {
   flex: 1;
   min-width: 200px;
-  input{
+  input {
     padding: 1rem 0.5rem;
   }
 }
@@ -118,7 +117,9 @@ input {
 @media (max-width: 600px) {
   .add-category-row {
     flex-direction: column;
-    .input-field, .select-field, .actions{
+    .input-field,
+    .select-field,
+    .actions {
       width: 100%;
       justify-content: center;
     }

@@ -1,6 +1,11 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { CategoryService } from '../../../core/services/category/category.service';
-import { AddCategoryDto, CategoryDto, FlatCategory, UpdateCategoryDto } from '../../../core/models/category';
+import {
+  AddCategoryDto,
+  CategoryDto,
+  FlatCategory,
+  UpdateCategoryDto,
+} from '../../../core/models/category';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
@@ -22,6 +27,7 @@ import { MatButtonModule } from '@angular/material/button';
     ReactiveFormsModule,
     FormsModule,
     MatCardModule,
+    MatButtonModule,
   ],
   templateUrl: './categories.component.html',
   styleUrl: './categories.component.scss',

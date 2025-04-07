@@ -40,20 +40,43 @@
       <button mat-button routerLink="/admin/dashboard/users">عرض الكل</button>
     </mat-card-header>
 
-    <ul class="responsive-table">
-      <li *ngFor="let user of recentUsers" class="list-item">
-        <div class="user-info">
-          <span class="name"
-            >الاسم: {{ user.firstName }} {{ user.lastName }}</span
-          >
-          <span class="role">الصلاحية: {{ translateRole(user.role) }}</span>
-        </div>
-        <div class="user-info">
-          <span class="email">البريد الإلكتروني: {{ user.email }}</span>
-          <span class="username">اسم المستخدم: {{ user.userName }}</span>
-        </div>
-      </li>
-    </ul>
+    <table class="users-table">
+      <thead>
+        <tr>
+          <th>الاسم الكامل</th>
+          <th>اسم المستخدم</th>
+          <th>البريد الإلكتروني</th>
+          <th>الصلاحية</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let user of recentUsers">
+          <td>{{ user.firstName }} {{ user.lastName }}</td>
+          <td>{{ user.userName }}</td>
+          <td>{{ user.email }}</td>
+          <td>{{ translateRole(user.role) }}</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div *ngFor="let user of recentUsers" class="user-card">
+      <div class="card-item">
+        <span class="card-label">الاسم:</span>
+        <span class="card-value">{{ user.firstName }} {{ user.lastName }}</span>
+      </div>
+      <div class="card-item">
+        <span class="card-label">اسم المستخدم:</span>
+        <span class="card-value">{{ user.userName }}</span>
+      </div>
+      <div class="card-item">
+        <span class="card-label">البريد الإلكتروني:</span>
+        <span class="card-value">{{ user.email }}</span>
+      </div>
+      <div class="card-item">
+        <span class="card-label">الصلاحية:</span>
+        <span class="card-value">{{ translateRole(user.role) }}</span>
+      </div>
+    </div>
   </mat-card>
 
   <!-- Recent Products Section -->
@@ -66,13 +89,18 @@
     </mat-card-header>
 
     <div class="products-grid">
-      <mat-card *ngFor="let product of recentProducts" class="product-card">
+      <mat-card
+        *ngFor="let product of recentProducts"
+        class="product-card"
+        [routerLink]="['/products', product.id]"
+      >
         <div class="image">
           <img [src]="product.mainImageUrl" alt="{{ product.name }}" />
         </div>
         <mat-card-content>
           <h4>{{ product.name }}</h4>
           <p>{{ product.price | currency : "EGP " }}</p>
+          <p class="sales-count">تم بيع {{ product.salesCount }} وحدة</p>
           <p>المخزون: {{ product.stock }}</p>
         </mat-card-content>
       </mat-card>
@@ -80,31 +108,47 @@
   </mat-card>
 
   <!-- Recent Orders Section -->
-  <mat-card class="section-card">
+  <mat-card class="section-card orders-history-items">
     <mat-card-header>
       <mat-card-title>أحدث الطلبات</mat-card-title>
       <button mat-button routerLink="/admin/dashboard/orders">عرض الكل</button>
     </mat-card-header>
 
-    <ul class="responsive-table">
-      <li *ngFor="let order of recentOrders" class="list-item">
+    <mat-card *ngFor="let order of recentOrders" class="orders-history-item">
+      <div class="order-content">
         <div class="order-info">
-          <span class="name">رقم الطلب: {{ order.id }}</span>
-          <span class="date"
-            >تاريخ الطلب: {{ order.orderDate | date : "short" }}</span
-          >
-          <span class="status"
-            >حالة الطلب:
+          <h3 class="order-id">
+            رقم الطلب: <span>{{ order.id }}</span>
+          </h3>
+
+          <p class="order-price">
+            السعر الكلي: {{ order.totalAmount | currency : "EGP " }}
+          </p>
+          <p class="order-date">
+            <mat-icon>schedule</mat-icon>
+            تم الطلب في {{ order.orderDate | date : "mediumDate" }}
+          </p>
+          <span class="order-status">
+            حالة الطلب:
             <mat-icon [ngStyle]="{ color: getStatusColor(order.status) }">
               {{ getStatusIcon(order.status) }}
             </mat-icon>
-            <span>{{ translateOrderStatus(order.status) }}</span></span
-          >
+            <span>{{ translateOrderStatus(order.status) }}</span>
+          </span>
         </div>
-        <span class="amount"
-          >تكلفة الطلب: {{ order.totalAmount | currency : "EGP " }}</span
-        >
-      </li>
-    </ul>
+        <mat-card-actions>
+          <button
+            mat-icon-button
+            color="primary"
+            matTooltip="عرض التفاصيل"
+            matTooltipPosition="above"
+            matTooltipShowDelay="100"
+            [routerLink]="['/orders', order.id]"
+          >
+            <mat-icon>visibility</mat-icon>
+          </button>
+        </mat-card-actions>
+      </div>
+    </mat-card>
   </mat-card>
 </section>

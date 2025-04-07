@@ -1,54 +1,54 @@
-<div
-  class="add-category-container"
-  *ngIf="addingNewCategory; else addNewButton"
->
-  <div class="add-category-row">
-    <div class="input-field">
-      <input
-        placeholder="اسم الفئة الجديدة"
-        [(ngModel)]="newCategoryData.name"
-      />
-    </div>
-    <div class="select-field">
-      <mat-form-field appearance="outline">
-        <mat-select
-          placeholder="اسم الفئة الأب (اختياري)"
-          [(ngModel)]="newCategoryData.parentCategoryId"
-        >
-          <mat-option [value]="null">-- لا يوجد --</mat-option>
-          <mat-option *ngFor="let cat of flatCategories" [value]="cat.id">
-            {{ cat.name }}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
-    </div>
-  </div>
-  <div class="add-category-row">
-    <div class="actions">
-      <button mat-raised-button color="primary" (click)="saveNewCategory()">
-        <mat-icon>save</mat-icon>
-      </button>
-      <button mat-raised-button color="accent" (click)="cancelAddCategory()">
-        <mat-icon>cancel</mat-icon>
-      </button>
-    </div>
-  </div>
-</div>
-
-<ng-template #addNewButton>
-  <div class="add-cat-btn-section">
-    <button
-      mat-raised-button
-      color="primary"
-      class="add-new-cat-btn"
-      (click)="startAddingCategory()"
-    >
-      إضافة فئة جديدة
-    </button>
-  </div>
-</ng-template>
-
 <div class="category-container">
+  <div
+    class="add-category-container"
+    *ngIf="addingNewCategory; else addNewButton"
+  >
+    <div class="add-category-row">
+      <div class="input-field">
+        <input
+          placeholder="اسم الفئة الجديدة"
+          [(ngModel)]="newCategoryData.name"
+        />
+      </div>
+      <div class="select-field">
+        <mat-form-field appearance="outline">
+          <mat-select
+            placeholder="اسم الفئة الأب (اختياري)"
+            [(ngModel)]="newCategoryData.parentCategoryId"
+          >
+            <mat-option [value]="null">-- لا يوجد --</mat-option>
+            <mat-option *ngFor="let cat of flatCategories" [value]="cat.id">
+              {{ cat.name }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </div>
+    <div class="add-category-row">
+      <div class="actions">
+        <button mat-icon-button color="primary" (click)="saveNewCategory()">
+          <mat-icon>save</mat-icon>
+        </button>
+        <button mat-icon-button color="accent" (click)="cancelAddCategory()">
+          <mat-icon>cancel</mat-icon>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <ng-template #addNewButton>
+    <div class="add-cat-btn-section">
+      <button
+        mat-raised-button
+        color="primary"
+        class="add-new-cat-btn"
+        (click)="startAddingCategory()"
+      >
+        إضافة فئة جديدة
+      </button>
+    </div>
+  </ng-template>
+
   <mat-card
     *ngFor="let category of flatCategories"
     class="category-card mat-elevation-z4"

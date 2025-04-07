@@ -1,5 +1,4 @@
 .orders-history-container {
-  width: 85%;
   max-width: 900px;
   margin: 2rem auto;
   padding: 0 1rem;
@@ -40,7 +39,6 @@
     display: flex;
     justify-content: center;
     gap: 1rem;
-    margin-bottom: 1rem;
 
     button {
       transition: background-color 0.3s, transform 0.3s;
@@ -75,7 +73,6 @@
 
     .order-content {
       display: flex;
-      gap: 1.5rem;
       align-items: center;
       padding: 1rem;
 
@@ -136,8 +133,12 @@
 }
 
 @media (max-width: 768px) {
-  .filter-buttons{
+  .filter-buttons {
     flex-direction: column;
+    align-items: center;
+    button {
+      width: fit-content;
+    }
   }
   .orders-history-item {
     .order-content {

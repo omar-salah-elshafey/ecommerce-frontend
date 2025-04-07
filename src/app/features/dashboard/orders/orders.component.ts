@@ -13,6 +13,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatSelectModule } from '@angular/material/select';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-orders',
@@ -24,6 +25,7 @@ import { MatButtonModule } from '@angular/material/button';
     MatSelectModule,
     FormsModule,
     MatButtonModule,
+    MatProgressSpinnerModule,
   ],
   templateUrl: './orders.component.html',
   styleUrl: './orders.component.scss',
@@ -32,10 +34,11 @@ export class OrdersComponent implements OnInit {
   orders: OrderDto[] = [];
   private currentPage: number = 1;
   private pageSize: number = 10;
-  private isLoading: boolean = false;
+  isLoading: boolean = false;
   private hasMore: boolean = true;
 
   OrderStatus = OrderStatus;
+  filter: 'all' | 'inProgress' = 'all';
 
   orderStatuses: { value: OrderStatus; label: string }[] = [
     { value: OrderStatus.Pending, label: 'قيد الانتظار' },
@@ -53,10 +56,10 @@ export class OrdersComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.loadOrders();
+    this.getAllOrders();
   }
 
-  loadOrders(): void {
+  getAllOrders(): void {
     if (this.isLoading || !this.hasMore) return;
 
     this.isLoading = true;
@@ -77,6 +80,43 @@ export class OrdersComponent implements OnInit {
         this.isLoading = false;
       },
     });
+  }
+
+  getInProgressOrders(): void {
+    if (this.isLoading || !this.hasMore) return;
+
+    this.isLoading = true;
+    this.orderService
+      .getAllInProgressOrders(this.currentPage, this.pageSize)
+      .subscribe({
+        next: (res) => {
+          this.orders = [...this.orders, ...res.items];
+          this.currentPage++;
+          this.hasMore = res.items.length === this.pageSize;
+          this.isLoading = false;
+        },
+        error: (err) => {
+          console.error('Error loading orders:', err);
+          this.snackBar.open('خطأ في تحميل الطلبات', 'إغلاق', {
+            duration: 3000,
+            horizontalPosition: 'center',
+            verticalPosition: 'top',
+          });
+          this.isLoading = false;
+        },
+      });
+  }
+
+  loadOrders() {
+    this.filter === 'all' ? this.getAllOrders() : this.getInProgressOrders();
+  }
+
+  onFilterChange(filter: 'all' | 'inProgress') {
+    this.currentPage = 1;
+    this.orders = [];
+    this.hasMore = true;
+    this.filter = filter;
+    this.loadOrders();
   }
 
   updateOrderStatus(order: OrderDto): void {
@@ -115,7 +155,7 @@ export class OrdersComponent implements OnInit {
     const documentHeight = document.documentElement.scrollHeight;
     const scrollTop = window.scrollY || document.documentElement.scrollTop;
 
-    if (windowHeight + scrollTop >= documentHeight - 100) {
+    if (windowHeight + scrollTop >= documentHeight - 200) {
       this.loadOrders();
     }
   }
