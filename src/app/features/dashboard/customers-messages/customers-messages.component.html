@@ -1,0 +1,145 @@
+<div class="messages-container">
+  <table
+    mat-table
+    [dataSource]="messages"
+    class="messages-table"
+    *ngIf="messages.length > 0; else noMessages"
+  >
+    <ng-container matColumnDef="name">
+      <th mat-header-cell *matHeaderCellDef>الاسم</th>
+      <td mat-cell *matCellDef="let message">{{ message.name }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="email">
+      <th mat-header-cell *matHeaderCellDef>البريد الإلكتروني</th>
+      <td mat-cell *matCellDef="let message">
+        {{ message.email }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="message">
+      <th mat-header-cell *matHeaderCellDef>الرسالة</th>
+      <td
+        mat-cell
+        *matCellDef="let message"
+        (click)="openMessageDialog(message)"
+        class="message-preview"
+        [class.unread]="!message.isRead"
+      >
+        {{ message.message | slice : 0 : 50 }}...
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="messageDate">
+      <th mat-header-cell *matHeaderCellDef>تاريخ الإرسال</th>
+      <td mat-cell *matCellDef="let message">
+        {{ message.messageDate | date : "dd/MM/yyyy HH:mm" }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="isRead">
+      <th mat-header-cell *matHeaderCellDef>الحالة</th>
+      <td mat-cell *matCellDef="let message">
+        <span [class.unread]="!message.isRead">
+          {{ message.isRead ? "مقروءة" : "غير مقروءة" }}
+        </span>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef>الإجراءات</th>
+      <td mat-cell *matCellDef="let message">
+        <button
+          mat-icon-button
+          color="primary"
+          (click)="markAsRead(message)"
+          *ngIf="!message.isRead"
+        >
+          <mat-icon>done</mat-icon>
+        </button>
+        <button
+          mat-icon-button
+          color="warn"
+          (click)="deleteMessage(message.id)"
+        >
+          <mat-icon>delete</mat-icon>
+        </button>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+  </table>
+
+  <div class="messages-grid" *ngIf="messages.length > 0">
+    <mat-card *ngFor="let message of messages" class="message-card">
+      <mat-card-content>
+        <p><strong>الاسم:</strong> {{ message.name }}</p>
+        <p><strong>البريد:</strong> {{ message.email }}</p>
+        <p
+          class="message-preview"
+          [class.unread]="!message.isRead"
+          (click)="openMessageDialog(message)"
+        >
+          <strong>الرسالة:</strong> {{ message.message | slice:0:50 }}...
+        </p>
+        <p><strong>التاريخ:</strong> {{ message.messageDate | date:'dd/MM/yyyy HH:mm' }}</p>
+        <p>
+          <strong>الحالة:</strong>
+          <span [class.unread]="!message.isRead">
+            {{ message.isRead ? 'مقروءة' : 'غير مقروءة' }}
+          </span>
+        </p>
+      </mat-card-content>
+      <mat-card-actions>
+        <button
+          mat-icon-button
+          color="primary"
+          (click)="markAsRead(message)"
+          *ngIf="!message.isRead"
+        >
+          <mat-icon>done</mat-icon>
+        </button>
+        <button mat-icon-button color="warn" (click)="deleteMessage(message.id)">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+
+  <ng-template #noMessages>
+    <div class="no-messages" *ngIf="!isLoading">
+      <p>لا توجد رسائل حالياً</p>
+    </div>
+  </ng-template>
+
+  <div class="loading-overlay" *ngIf="isLoading">
+    <mat-spinner diameter="50"></mat-spinner>
+  </div>
+
+  <ng-template #messageDialogTemplate let-data>
+    <div class="dialog-content">
+      <h2 mat-dialog-title>تفاصيل الرسالة</h2>
+      <mat-dialog-content>
+        <div class="message-details">
+          <p><strong>الاسم:</strong> {{ data.name }}</p>
+          <p><strong>البريد الإلكتروني:</strong> {{ data.email }}</p>
+          <p>
+            <strong>تاريخ الإرسال:</strong>
+            {{ data.messageDate | date : "dd/MM/yyyy HH:mm" }}
+          </p>
+          <p>
+            <strong>الحالة:</strong> {{ data.isRead ? "مقروءة" : "غير مقروءة" }}
+          </p>
+          <p><strong>الرسالة:</strong></p>
+          <div class="message-text">{{ data.message }}</div>
+        </div>
+      </mat-dialog-content>
+      <mat-dialog-actions>
+        <button mat-button color="primary" (click)="dialogRef?.close()">
+          إغلاق
+        </button>
+      </mat-dialog-actions>
+    </div>
+  </ng-template>
+</div>

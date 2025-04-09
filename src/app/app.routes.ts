@@ -27,6 +27,7 @@ import { CategoriesComponent } from './features/dashboard/categories/categories.
 import { OrdersComponent } from './features/dashboard/orders/orders.component';
 import { UsersComponent } from './features/dashboard/users/users.component';
 import { AddUserComponent } from './features/dashboard/add-user/add-user.component';
+import { CustomersMessagesComponent } from './features/dashboard/customers-messages/customers-messages.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -82,6 +83,7 @@ export const routes: Routes = [
       { path: 'orders', component: OrdersComponent },
       { path: 'users', component: UsersComponent },
       { path: 'add-user', component: AddUserComponent },
+      { path: 'messages', component: CustomersMessagesComponent },
       { path: '**', redirectTo: '', pathMatch: 'full' },
     ],
   },

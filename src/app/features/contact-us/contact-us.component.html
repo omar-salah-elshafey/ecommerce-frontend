@@ -54,6 +54,12 @@
         <mat-error *ngIf="contactForm.get('fullName')?.hasError('required')">
           هذا الحقل مطلوب
         </mat-error>
+        <mat-error *ngIf="contactForm.get('fullName')?.hasError('minlength')">
+          يجب أن يتكون الاسم من 10 أحرف على الأقل
+        </mat-error>
+        <mat-error *ngIf="contactForm.get('fullName')?.hasError('maxlength')">
+          لا يمكن ان يتجاوز الاسم 100 حرف
+        </mat-error>
       </mat-form-field>
 
       <mat-form-field appearance="outline">
@@ -64,6 +70,9 @@
         </mat-error>
         <mat-error *ngIf="contactForm.get('email')?.hasError('required')">
           هذا الحقل مطلوب
+        </mat-error>
+        <mat-error *ngIf="contactForm.get('email')?.hasError('maxlength')">
+          لا يمكن ان يتجاوز البريد 100 حرف
         </mat-error>
       </mat-form-field>
 
@@ -77,6 +86,12 @@
         ></textarea>
         <mat-error *ngIf="contactForm.get('message')?.hasError('required')">
           هذا الحقل مطلوب
+        </mat-error>
+        <mat-error *ngIf="contactForm.get('message')?.hasError('minlength')">
+          يجب أن تتكون الرسالة من 10 أحرف على الأقل
+        </mat-error>
+        <mat-error *ngIf="contactForm.get('message')?.hasError('maxlength')">
+          لا يمكن ان تتجاوز الرسالة 2000 حرف
         </mat-error>
       </mat-form-field>
 

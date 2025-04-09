@@ -31,9 +31,21 @@ import { SendMessageDto } from '../../core/models/contact-us';
 })
 export class ContactUsComponent {
   contactForm = new FormGroup({
-    fullName: new FormControl('', [Validators.required]),
-    email: new FormControl('', [Validators.required, Validators.email]),
-    message: new FormControl('', [Validators.required]),
+    fullName: new FormControl('', [
+      Validators.required,
+      Validators.minLength(10),
+      Validators.maxLength(100),
+    ]),
+    email: new FormControl('', [
+      Validators.required,
+      Validators.email,
+      Validators.maxLength(100),
+    ]),
+    message: new FormControl('', [
+      Validators.required,
+      Validators.minLength(10),
+      Validators.maxLength(2000),
+    ]),
   });
   isLoading = false;
 
