@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { HttpClient } from '@angular/common/http';
-import { Observable, tap } from 'rxjs';
+import { catchError, Observable, tap, throwError } from 'rxjs';
 import { PaginatedResponse } from '../../models/pagination';
-import { PostDto } from '../../models/blog';
+import { CreatePostDto, PostDto, UpdatePostDto } from '../../models/blog';
 
 @Injectable({
   providedIn: 'root',
@@ -26,8 +26,7 @@ export class BlogService {
       .pipe(
         tap((posts) => {
           posts.items.forEach((item) => {
-            if (item.imageUrl) item.imageUrl = this.getFullUrl(item.imageUrl);
-            if (item.videoUrl) item.videoUrl = this.getFullUrl(item.videoUrl);
+            this.getFullUrl(item);
           });
         })
       );
@@ -36,13 +35,64 @@ export class BlogService {
   getPostById(id: string): Observable<PostDto> {
     return this.http.get<PostDto>(`${this.apiUrl}/posts/${id}`).pipe(
       tap((post) => {
-        if (post.imageUrl) post.imageUrl = this.getFullUrl(post.imageUrl);
-        if (post.videoUrl) post.videoUrl = this.getFullUrl(post.videoUrl);
+        this.getFullUrl(post);
       })
     );
   }
 
-  private getFullUrl(url: string): string {
-    return `${environment.apiUrl}${url}`;
+  createPost(postDto: CreatePostDto): Observable<PostDto> {
+    const formData = new FormData();
+    formData.append('title', postDto.title);
+    formData.append('content', postDto.content);
+    formData.append('readTime', postDto.readTime.toString());
+    if (postDto.imageUrl) formData.append('imageUrl', postDto.imageUrl);
+    if (postDto.videoUrl) formData.append('videoUrl', postDto.videoUrl);
+    console.log('Form Data:', formData);
+    return this.http.post<PostDto>(`${this.apiUrl}/create-post`, formData).pipe(
+      tap((post) => {
+        this.getFullUrl(post);
+      }),
+      catchError((error) => {
+        console.error('Error occurred while creating the post:', error);
+        return throwError(() => error);
+      })
+    );
+  }
+
+  updatePost(id: string, postDto: UpdatePostDto): Observable<PostDto> {
+    const formData = new FormData();
+    formData.append('title', postDto.title);
+    formData.append('content', postDto.content);
+    formData.append('readTime', postDto.readTime.toString());
+    if (postDto.imageUrl) formData.append('imageUrl', postDto.imageUrl);
+    if (postDto.videoUrl) formData.append('videoUrl', postDto.videoUrl);
+    if (postDto.deleteImage) formData.append('deleteImage', 'true');
+    if (postDto.deleteVideo) formData.append('deleteVideo', 'true');
+    return this.http
+      .put<PostDto>(`${this.apiUrl}/update-post/${id}`, formData)
+      .pipe(
+        tap((post) => {
+          this.getFullUrl(post);
+        }),
+        catchError((error) => {
+          console.error('Error occurred while creating the post:', error);
+          return throwError(() => error);
+        })
+      );
+  }
+
+  deletePost(id: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/delete-post/${id}`).pipe(
+      catchError((error) => {
+        console.error('Error Deleting the Post', error);
+        return throwError(() => error);
+      })
+    );
+  }
+
+  private getFullUrl(post: PostDto): PostDto {
+    if (post.imageUrl) post.imageUrl = `${environment.apiUrl}${post.imageUrl}`;
+    if (post.videoUrl) post.videoUrl = `${environment.apiUrl}${post.videoUrl}`;
+    return post;
   }
 }

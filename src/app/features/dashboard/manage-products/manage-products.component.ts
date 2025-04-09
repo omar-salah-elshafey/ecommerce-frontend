@@ -366,7 +366,7 @@ export class ManageProductsComponent implements OnInit {
     const documentHeight = document.documentElement.scrollHeight;
     const scrollTop = window.scrollY || document.documentElement.scrollTop;
 
-    if (windowHeight + scrollTop >= documentHeight - 100) {
+    if (windowHeight + scrollTop >= documentHeight - 100 && this.hasMore) {
       this.loadProducts();
     }
   }

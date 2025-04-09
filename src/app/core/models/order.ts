@@ -34,7 +34,8 @@ export interface OrderDto {
   city: string;
   region: string;
   items: OrderItemDto[];
-  userName: string;
+  userFullName: string;
+  phoneNumber: string;
 }
 
 export interface OrderItemDto {

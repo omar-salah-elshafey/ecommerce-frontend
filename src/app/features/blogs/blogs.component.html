@@ -1,50 +1,166 @@
 <div class="main-container">
   <div class="blogs-page">
-    <!-- Blogs Grid -->
-    <main class="blogs-grid">
-      <div *ngIf="loading" class="loading-overlay">
-        <mat-spinner diameter="50"></mat-spinner>
-      </div>
-
-      <ng-container *ngIf="!loading">
-        <div *ngFor="let blog of blogs" @fadeIn class="blog-card">
-          <mat-card>
-            <div class="media" *ngIf="blog.imageUrl || blog.videoUrl">
-              <img
-                *ngIf="blog.imageUrl"
-                [src]="blog.imageUrl"
-                [alt]="blog.title"
-                class="blog-image"
-              />
-              <video *ngIf="blog.videoUrl" class="blog-video" controls>
-                <source [src]="blog.videoUrl" />
-                متصفحك لا يدعم تشغيل الفيديو.
-              </video>
-            </div>
-            <mat-card-header>
-              <mat-card-title>{{ blog.title | slice : 0 : 10 }}</mat-card-title>
-            </mat-card-header>
-            <mat-card-content>
-              <div class="meta-info">
-                <span class="date">{{
-                  blog.publishDate | date : "dd/MM/yyyy"
-                }}</span>
-                <span class="read-time">{{ blog.readTime }} دقيقة قراءة</span>
-              </div>
-              <p class="excerpt">{{ blog.content | slice : 0 : 30 }}...</p>
-            </mat-card-content>
-            <mat-card-actions>
-              <button
-                mat-raised-button
-                color="primary"
-                [routerLink]="['/blogs', blog.id]"
-              >
-                اقرأ المزيد
-              </button>
-            </mat-card-actions>
-          </mat-card>
+    <div *ngIf="authService.isAdmin$ | async" class="new-post-form">
+      <form [formGroup]="postForm">
+        <mat-form-field appearance="outline">
+          <mat-label> العنوان </mat-label>
+          <input
+            matInput
+            id="title"
+            formControlName="title"
+            placeholder="العنوان"
+          />
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label> المحتوى </mat-label>
+          <textarea
+            id="content"
+            matInput
+            rows="5"
+            formControlName="content"
+            placeholder="المحتوى"
+          ></textarea>
+        </mat-form-field>
+        <div class="reading-time-selector">
+          <label for="readTime">مدة القراءة:</label>
+          <div class="quantity-control">
+            <button
+              mat-icon-button
+              (click)="decreaseReadTime()"
+              [disabled]="postForm.get('readTime')?.value <= 1"
+            >
+              <mat-icon>remove</mat-icon>
+            </button>
+            <span id="readTime" class="quantity-value">
+              {{ postForm.get("readTime")?.value }} دقيقة
+            </span>
+            <button
+              mat-icon-button
+              (click)="increaseReadTime()"
+              [disabled]="postForm.get('readTime')?.value >= 30"
+            >
+              <mat-icon>add</mat-icon>
+            </button>
+          </div>
         </div>
-      </ng-container>
+
+        <div class="upload-container">
+          <label *ngIf="!imageFile" class="upload-btn" [class.disabled]="posting">
+            <mat-icon>image</mat-icon>
+            <input
+              #imageInput
+              type="file"
+              (change)="onFileSelected($event, 'image')"
+              accept="image/*"
+              [disabled]="posting"
+            />
+          </label>
+
+          <label *ngIf="!videoFile" class="upload-btn" [class.disabled]="posting">
+            <mat-icon>videocam</mat-icon>
+            <input
+              #videoInput
+              type="file"
+              (change)="onFileSelected($event, 'video')"
+              accept="video/*"
+              [disabled]="posting"
+            />
+          </label>
+        </div>
+
+        <div class="selected-files">
+          <div *ngIf="imageFile" class="file-preview">
+            <div class="preview-container">
+              <img
+                [src]="imagePreviewUrl"
+                [alt]="imageFile.name"
+                class="preview-image"
+              />
+            </div>
+            <button
+              type="button"
+              class="remove-file"
+              (click)="removeFile('image')"
+              [disabled]="posting"
+              [class.disabled]="posting"
+            >
+              &times;
+            </button>
+          </div>
+
+          <div *ngIf="videoFile" class="file-preview">
+            <div class="preview-container">
+              <img
+                [src]="videoPreviewUrl"
+                [alt]="videoFile.name"
+                class="preview-image"
+              />
+            </div>
+            <button
+              type="button"
+              class="remove-file"
+              (click)="removeFile('video')"
+              [disabled]="posting"
+              [class.disabled]="posting"
+            >
+              &times;
+            </button>
+          </div>
+        </div>
+
+        <button
+          class="btn"
+          type="submit"
+          [disabled]="postForm.invalid || posting"
+          (click)="onCreatePost()"
+        >
+          {{ posting ? "جاري النشر..." : "نشر" }}
+        </button>
+      </form>
+    </div>
+    <main class="blogs-grid">
+      <div *ngFor="let blog of blogs" @fadeIn class="blog-card">
+        <mat-card>
+          <div class="media" *ngIf="blog.imageUrl || blog.videoUrl">
+            <img
+              *ngIf="blog.imageUrl"
+              [src]="blog.imageUrl"
+              [alt]="blog.title"
+              class="blog-image"
+            />
+            <video *ngIf="blog.videoUrl" class="blog-video" controls>
+              <source [src]="blog.videoUrl" />
+              متصفحك لا يدعم تشغيل الفيديو.
+            </video>
+          </div>
+          <mat-card-header>
+            <mat-card-title>{{ blog.title | slice : 0 : 10 }}</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="meta-info">
+              <span class="date">{{
+                blog.publishDate | date : "dd/MM/yyyy"
+              }}</span>
+              <span class="read-time">{{ blog.readTime }} دقيقة قراءة</span>
+            </div>
+            <p class="excerpt">{{ blog.content | slice : 0 : 30 }}...</p>
+          </mat-card-content>
+          <mat-card-actions>
+            <button
+              mat-raised-button
+              color="primary"
+              [routerLink]="['/blogs', blog.id]"
+            >
+              اقرأ المزيد
+            </button>
+          </mat-card-actions>
+        </mat-card>
+      </div>
     </main>
   </div>
 </div>
+<div *ngIf="loading" class="loading-overlay">
+  <mat-spinner diameter="50"></mat-spinner>
+</div>
+
+<!-- *ngIf="authService.isAdmin$ | async" -->

@@ -99,6 +99,25 @@ export class AuthService {
       );
   }
 
+  addUser(
+    registrationData: RegistrationDto
+  ): Observable<AuthResponseModel> {
+    return this.http
+      .post<AuthResponseModel>(
+        `${this.baseUrl}/add-user`,
+        registrationData
+      )
+      .pipe(
+        tap((response) => {
+          console.log('User registered successfully: ', response);
+        }),
+        catchError((error) => {
+          console.error('Error while registering: ', error);
+          return throwError(() => error);
+        })
+      );
+  }
+
   login(userData: LoginDto): Observable<AuthResponseModel> {
     return this.http.post(`${this.baseUrl}/login`, userData).pipe(
       tap((response: any) => {
@@ -137,7 +156,7 @@ export class AuthService {
         ),
         catchError((error) => {
           console.error('Token refresh failed:', error);
-          return throwError(() => new error(error));
+          return throwError(() => error);
         })
       );
   }

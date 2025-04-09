@@ -35,13 +35,20 @@
           <h3 class="order-id">
             رقم الطلب: <span>{{ item.id }}</span>
           </h3>
-
           <p class="order-price">
             السعر الكلي: {{ item.totalAmount | currency : "EGP " }}
           </p>
           <p class="order-date">
             <mat-icon>schedule</mat-icon>
             تم الطلب في {{ item.orderDate | date : "mediumDate" }}
+          </p>
+          <p class="user-fullname">
+            <mat-icon>person</mat-icon>
+            اسم المستخدم: {{ item.userFullName }}
+          </p>
+          <p class="phone-number">
+            <mat-icon>phone</mat-icon>
+            رقم الهاتف: {{ item.phoneNumber }}
           </p>
           <p class="order-status">
             <mat-icon [ngStyle]="{ color: getStatusColor(item.status) }">

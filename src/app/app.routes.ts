@@ -26,6 +26,7 @@ import { MainViewComponent } from './features/dashboard/main-view/main-view.comp
 import { CategoriesComponent } from './features/dashboard/categories/categories.component';
 import { OrdersComponent } from './features/dashboard/orders/orders.component';
 import { UsersComponent } from './features/dashboard/users/users.component';
+import { AddUserComponent } from './features/dashboard/add-user/add-user.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -80,6 +81,7 @@ export const routes: Routes = [
       { path: 'products', component: ManageProductsComponent },
       { path: 'orders', component: OrdersComponent },
       { path: 'users', component: UsersComponent },
+      { path: 'add-user', component: AddUserComponent },
       { path: '**', redirectTo: '', pathMatch: 'full' },
     ],
   },

@@ -44,6 +44,16 @@
 
   <div class="order-summary">
     <div class="summary-details">
+      <span class="summary-label">اسم المستخدم:</span>
+      <span class="summary-value">{{ order.userFullName }}</span>
+    </div>
+
+    <div class="summary-details">
+      <span class="summary-label">رقم الهاتف:</span>
+      <span class="summary-value">{{ order.phoneNumber }}</span>
+    </div>
+
+    <div class="summary-details">
       <span class="summary-label">المجموع الكلي:</span>
       <span class="summary-value">
         {{ order.totalAmount | currency : "EGP " }}
