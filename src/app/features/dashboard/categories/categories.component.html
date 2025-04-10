@@ -104,11 +104,11 @@
           <button
             mat-icon-button
             (click)="saveCategoryUpdate(category)"
-            aria-label="Save"
+            aria-label="Save" color="primary"
           >
             <mat-icon>save</mat-icon>
           </button>
-          <button mat-icon-button (click)="cancelEdit()" aria-label="Cancel">
+          <button mat-icon-button color="accent" (click)="cancelEdit()" aria-label="Cancel">
             <mat-icon>cancel</mat-icon>
           </button>
         </ng-container>
@@ -116,12 +116,12 @@
           <button
             mat-icon-button
             (click)="updateCategory(category)"
-            aria-label="Edit"
+            aria-label="Edit" color="accent"
           >
             <mat-icon>edit</mat-icon>
           </button>
           <button
-            mat-icon-button
+            mat-icon-button color="warn"
             (click)="deleteCategory(category)"
             aria-label="Delete"
           >

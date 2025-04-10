@@ -32,17 +32,14 @@ export class AboutUsComponent {
   ];
 
   team = [
-    { name: 'محمد أحمد', role: 'المدير التنفيذي', img: 'assets/team/ceo.jpg' },
-    {
-      name: 'فاطمة خالد',
-      role: 'مدير التسويق',
-      img: 'assets/team/marketing.jpg',
-    },
+    { name: 'محمد رضا', role: 'المالك', icon: 'person' },
+    { name: 'م. محمد طاهر', role: 'المدير التنفيذي', icon: 'person' },
+    { name: 'محمد سمير', role: 'صانع محتوى', icon: 'person' },
+    { name: 'عمر الشافعي', role: 'مهندس برمجيات', icon: 'person' },
   ];
 
   timeline = [
-    { year: '٢٠٢٠', event: 'تأسيس الشركة' },
-    { year: '٢٠٢٢', event: 'توسعة فريق العمل' },
-    { year: '٢٠٢٤', event: 'وصول لأكثر من ١٠٠ ألف عميل' },
+    { year: '2024', event: 'تأسيس الشركة' },
+    { year: '2025', event: 'توسعة فريق العمل' },
   ];
 }

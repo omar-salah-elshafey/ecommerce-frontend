@@ -23,7 +23,7 @@
       <h2 class="section-title">فريقنا</h2>
       <div class="team-grid">
         <div class="member-card" *ngFor="let member of team">
-          <img [src]="member.img" [alt]="member.name" />
+          <mat-icon>{{ member.icon }}</mat-icon>
           <h3>{{ member.name }}</h3>
           <p>{{ member.role }}</p>
         </div>

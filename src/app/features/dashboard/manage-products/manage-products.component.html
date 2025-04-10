@@ -178,11 +178,29 @@
             <p>أقصى كمية للطلب: {{ product.maxOrderQuantity }}</p>
           </mat-card-content>
           <mat-card-actions>
-            <button mat-icon-button (click)="startEditingProduct(product)">
+            <button
+              mat-icon-button
+              color="accent"
+              (click)="startEditingProduct(product)"
+            >
               <mat-icon>edit</mat-icon>
             </button>
-            <button mat-icon-button (click)="deleteProduct(product.id)">
+            <button
+              mat-icon-button
+              color="warn"
+              (click)="deleteProduct(product.id)"
+            >
               <mat-icon>delete</mat-icon>
+            </button>
+            <button
+              mat-icon-button
+              color="primary"
+              matTooltip="عرض التفاصيل"
+              matTooltipPosition="above"
+              matTooltipShowDelay="100"
+              [routerLink]="['/products', product.id]"
+            >
+              <mat-icon>visibility</mat-icon>
             </button>
           </mat-card-actions>
         </mat-card>

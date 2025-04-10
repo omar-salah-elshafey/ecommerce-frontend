@@ -12,9 +12,9 @@ const refreshTokenSubject = new BehaviorSubject<string | null>(null);
 
 export const tokenInterceptor: HttpInterceptorFn = (req, next) => {
   const cookieService = inject(CookieService);
-  const authService = inject(AuthService);
   const router = inject(Router);
   const snackBar = inject(MatSnackBar);
+  const injector = inject(Injector);
 
   let accessToken = cookieService.get('accessToken');
   const refreshToken = cookieService.get('refreshToken');
@@ -23,7 +23,6 @@ export const tokenInterceptor: HttpInterceptorFn = (req, next) => {
     req = req.clone({
       setHeaders: {
         Authorization: `Bearer ${accessToken}`,
-        'ngrok-skip-browser-warning': 'true',
       },
     });
   }
@@ -32,6 +31,7 @@ export const tokenInterceptor: HttpInterceptorFn = (req, next) => {
     catchError((error) => {
       if (error.status === 401 && refreshToken) {
         if (!refreshPromise) {
+          const authService = injector.get(AuthService);
           refreshPromise = firstValueFrom(
             authService.refreshAccessToken(refreshToken)
           )
@@ -89,7 +89,6 @@ export const tokenInterceptor: HttpInterceptorFn = (req, next) => {
             req = req.clone({
               setHeaders: {
                 Authorization: `Bearer ${newAccessToken}`,
-                'ngrok-skip-browser-warning': 'true',
               },
             });
             return next(req);

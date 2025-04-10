@@ -1,5 +1,7 @@
 .dashboard-container {
   padding: 1rem;
+  max-width: 900px;
+  margin: 0 auto;
 }
 
 .section-card {
@@ -49,7 +51,8 @@
 }
 
 .add-product-container {
-  margin-bottom: 1rem;
+  margin: 1rem auto ;
+  max-width: 800px;
 
   mat-card {
     padding: 1rem;
