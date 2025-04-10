@@ -146,7 +146,11 @@ export class BlogDetailsComponent implements OnInit {
 
   onUpdatePost() {
     if (this.editForm.invalid) {
-      this.snackBar.open('برجاء إدخال قيم صالحة.', 'إغلاق', { duration: 3000 });
+      this.snackBar.open('برجاء إدخال قيم صالحة.', 'إغلاق', {
+        duration: 3000,
+        horizontalPosition: 'center',
+        verticalPosition: 'top',
+      });
       return;
     }
     this.updating = true;
@@ -167,6 +171,8 @@ export class BlogDetailsComponent implements OnInit {
         this.blog = updatedPost;
         this.snackBar.open('تم حفظ التغييرات بنجاح.', 'إغلاق', {
           duration: 3000,
+          horizontalPosition: 'center',
+          verticalPosition: 'top',
         });
         this.isEditing = false;
         this.updating = false;
@@ -177,6 +183,8 @@ export class BlogDetailsComponent implements OnInit {
         console.error('Error updating post:', err);
         this.snackBar.open('حدث خطأ، برجاء المحاولة لاحقاً.', 'إغلاق', {
           duration: 3000,
+          horizontalPosition: 'center',
+          verticalPosition: 'top',
         });
         this.updating = false;
         this.editForm.enable();

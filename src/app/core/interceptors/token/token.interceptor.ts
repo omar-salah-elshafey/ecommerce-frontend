@@ -11,18 +11,19 @@ let refreshPromise: Promise<string | null> | null = null;
 const refreshTokenSubject = new BehaviorSubject<string | null>(null);
 
 export const tokenInterceptor: HttpInterceptorFn = (req, next) => {
-  const injector = inject(Injector);
-  const router = inject(Router);
   const cookieService = inject(CookieService);
+  const authService = inject(AuthService);
+  const router = inject(Router);
   const snackBar = inject(MatSnackBar);
 
   let accessToken = cookieService.get('accessToken');
-  let refreshToken = cookieService.get('refreshToken');
+  const refreshToken = cookieService.get('refreshToken');
 
   if (accessToken) {
     req = req.clone({
       setHeaders: {
         Authorization: `Bearer ${accessToken}`,
+        'ngrok-skip-browser-warning': 'true',
       },
     });
   }
@@ -30,9 +31,7 @@ export const tokenInterceptor: HttpInterceptorFn = (req, next) => {
   return next(req).pipe(
     catchError((error) => {
       if (error.status === 401 && refreshToken) {
-        console.log('UNAUTHORIZED');
         if (!refreshPromise) {
-          const authService = injector.get(AuthService);
           refreshPromise = firstValueFrom(
             authService.refreshAccessToken(refreshToken)
           )
@@ -67,7 +66,7 @@ export const tokenInterceptor: HttpInterceptorFn = (req, next) => {
               cookieService.delete('refreshToken', '/');
               router.navigate(['/login']);
               snackBar.open(
-                'انتهت صلاحية الجلسة، برجاء إعادة تسجيل الدخول',
+                'انتهت صلاحية الجلسة، برجاء إعادة تسجيل الدخول.',
                 'إغلاق',
                 {
                   duration: 3000,
@@ -85,11 +84,12 @@ export const tokenInterceptor: HttpInterceptorFn = (req, next) => {
         return from(refreshPromise).pipe(
           switchMap((newAccessToken) => {
             if (!newAccessToken) {
-              return throwError(() => 'Token refresh failed');
+              return throwError(() => new Error('Token refresh failed'));
             }
             req = req.clone({
               setHeaders: {
                 Authorization: `Bearer ${newAccessToken}`,
+                'ngrok-skip-browser-warning': 'true',
               },
             });
             return next(req);
