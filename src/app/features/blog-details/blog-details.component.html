@@ -5,38 +5,201 @@
   </button>
 
   <ng-container *ngIf="blog as blog; else loading">
-    <mat-card>
-      <!-- Media Container -->
-      <div class="media" *ngIf="blog.imageUrl || blog.videoUrl">
-        <img
-          *ngIf="blog.imageUrl"
-          [src]="blog.imageUrl"
-          [alt]="blog.title"
-          class="blog-image"
-        />
-        <video
-          *ngIf="blog.videoUrl"
-          class="blog-video"
-          controls
-        >
-          <source [src]="blog.videoUrl"/>
-          متصفحك لا يدعم تشغيل الفيديو.
-        </video>
-      </div>
-
-      <mat-card-header>
-        <mat-card-title>{{ blog.title }}</mat-card-title>
-      </mat-card-header>
-
-      <mat-card-content>
-        <div class="meta-info">
-          <span class="date">{{ blog.publishDate | date: "dd/MM/yyyy" }}</span>
-          <span class="read-time">{{ blog.readTime }} دقيقة قراءة</span>
+    <ng-container *ngIf="!isEditing">
+      <mat-card>
+        <div class="admin-actions" *ngIf="authService.isAdmin$ | async">
+          <button mat-icon-button [matMenuTriggerFor]="adminMenu">
+            <mat-icon>more_vert</mat-icon>
+          </button>
+          <mat-menu #adminMenu="matMenu">
+            <button mat-menu-item (click)="startEditing()">
+              <mat-icon>edit</mat-icon>
+              <span>تعديل</span>
+            </button>
+            <button mat-menu-item (click)="deleteBlog()">
+              <mat-icon>delete</mat-icon>
+              <span>حذف</span>
+            </button>
+          </mat-menu>
+        </div>
+        <!-- Media Container -->
+        <div class="media" *ngIf="blog.imageUrl || blog.videoUrl">
+          <img
+            *ngIf="blog.imageUrl"
+            [src]="blog.imageUrl"
+            [alt]="blog.title"
+            class="blog-image"
+          />
+          <video *ngIf="blog.videoUrl" class="blog-video" controls>
+            <source [src]="blog.videoUrl" />
+            متصفحك لا يدعم تشغيل الفيديو.
+          </video>
         </div>
 
-        <div class="content" [innerHTML]="blog.content"></div>
-      </mat-card-content>
-    </mat-card>
+        <mat-card-header>
+          <mat-card-title>{{ blog.title }}</mat-card-title>
+        </mat-card-header>
+
+        <mat-card-content>
+          <div class="meta-info">
+            <span class="date">{{
+              blog.publishDate | date : "dd/MM/yyyy"
+            }}</span>
+            <span class="read-time">{{ blog.readTime }} دقيقة قراءة</span>
+          </div>
+
+          <div class="content" [innerHTML]="blog.content"></div>
+        </mat-card-content>
+      </mat-card>
+    </ng-container>
+    <ng-container *ngIf="isEditing && (authService.isAdmin$ | async)">
+      <div class="edit-post-form">
+        <form [formGroup]="editForm">
+          <mat-form-field appearance="outline">
+            <mat-label> العنوان </mat-label>
+            <input
+              matInput
+              id="title"
+              formControlName="title"
+              placeholder="العنوان"
+            />
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label> المحتوى </mat-label>
+            <textarea
+              id="content"
+              matInput
+              rows="5"
+              formControlName="content"
+              placeholder="المحتوى"
+            ></textarea>
+          </mat-form-field>
+          <div class="reading-time-selector">
+            <label for="readTime">مدة القراءة:</label>
+            <div class="quantity-control">
+              <button
+                mat-icon-button
+                (click)="decreaseReadTime()"
+                [disabled]="editForm.get('readTime')?.value <= 1"
+              >
+                <mat-icon>remove</mat-icon>
+              </button>
+              <span id="readTime" class="quantity-value">
+                {{ editForm.get("readTime")?.value }} دقيقة
+              </span>
+              <button
+                mat-icon-button
+                (click)="increaseReadTime()"
+                [disabled]="editForm.get('readTime')?.value >= 30"
+              >
+                <mat-icon>add</mat-icon>
+              </button>
+            </div>
+          </div>
+
+          <div class="upload-container">
+            <label
+              *ngIf="!imageFile && !imagePreviewUrl"
+              class="upload-btn"
+              [class.disabled]="updating"
+            >
+              <mat-icon>image</mat-icon>
+              <input
+                #imageInput
+                type="file"
+                (change)="onFileSelected($event, 'image')"
+                accept="image/*"
+                [disabled]="updating"
+              />
+            </label>
+
+            <label
+              *ngIf="!videoFile && !videoPreviewUrl"
+              class="upload-btn"
+              [class.disabled]="updating"
+            >
+              <mat-icon>videocam</mat-icon>
+              <input
+                #videoInput
+                type="file"
+                (change)="onFileSelected($event, 'video')"
+                accept="video/*"
+                [disabled]="updating"
+              />
+            </label>
+          </div>
+
+          <div class="selected-files">
+            <div *ngIf="imageFile || imagePreviewUrl" class="file-preview">
+              <div class="preview-container">
+                <img
+                  [src]="imagePreviewUrl"
+                  [alt]="imageFile?.name || blog.title"
+                  class="preview-image"
+                />
+              </div>
+              <button
+                type="button"
+                class="remove-file"
+                (click)="removeFile('image')"
+                [disabled]="updating"
+                [class.disabled]="updating"
+              >
+                ×
+              </button>
+            </div>
+
+            <div *ngIf="videoFile || videoPreviewUrl" class="file-preview">
+              <div class="preview-container">
+                <video
+                  *ngIf="!videoFile && videoPreviewUrl"
+                  [src]="videoPreviewUrl"
+                  class="preview-image"
+                  muted
+                  preload="metadata"
+                  disablePictureInPicture
+                  controlsList="nodownload nofullscreen noremoteplayback"
+                ></video>
+                <img
+                  *ngIf="videoFile && videoPreviewUrl"
+                  [src]="videoPreviewUrl"
+                  [alt]="videoFile.name || 'Video Preview'"
+                  class="preview-image"
+                />
+              </div>
+              <button
+                type="button"
+                class="remove-file"
+                (click)="removeFile('video')"
+                [disabled]="updating"
+                [class.disabled]="updating"
+              >
+                ×
+              </button>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button
+              class="btn"
+              type="submit"
+              [disabled]="editForm.invalid || updating"
+              (click)="onUpdatePost()"
+            >
+              {{ updating ? "جاري الحفظ..." : "حفظ التغييرات" }}
+            </button>
+            <button
+              class="btn cancel-btn"
+              type="button"
+              (click)="cancelEditing()"
+              [disabled]="updating"
+            >
+              إلغاء
+            </button>
+          </div>
+        </form>
+      </div>
+    </ng-container>
   </ng-container>
 
   <ng-template #loading>

@@ -73,8 +73,6 @@ export class BlogsComponent implements OnInit {
   imagePreviewUrl?: string;
   videoPreviewUrl?: string;
 
-  editingPostId: string | null = null;
-
   constructor() {
     this.initializeForm();
   }
