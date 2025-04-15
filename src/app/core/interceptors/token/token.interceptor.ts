@@ -36,24 +36,7 @@ export const tokenInterceptor: HttpInterceptorFn = (req, next) => {
             authService.refreshAccessToken(refreshToken)
           )
             .then((newTokens) => {
-              cookieService.set(
-                'accessToken',
-                newTokens.accessToken,
-                1,
-                '/',
-                undefined,
-                true,
-                'Strict'
-              );
-              cookieService.set(
-                'refreshToken',
-                newTokens.refreshToken,
-                1,
-                '/',
-                undefined,
-                true,
-                'Strict'
-              );
+              authService.setTokens(newTokens.accessToken, newTokens.refreshToken);
               refreshTokenSubject.next(newTokens.refreshToken);
               return newTokens.accessToken;
             })

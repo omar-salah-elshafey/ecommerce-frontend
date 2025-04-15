@@ -40,7 +40,8 @@ export class ResetPasswordRequestComponent implements OnInit {
     private passwordService: PasswordService,
     private snackBar: MatSnackBar,
     private router: Router
-  ) {}
+  ) { }
+  
   ngOnInit(): void {
     this.resetPasswordRequestForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],

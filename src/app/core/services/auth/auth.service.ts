@@ -99,14 +99,9 @@ export class AuthService {
       );
   }
 
-  addUser(
-    registrationData: RegistrationDto
-  ): Observable<AuthResponseModel> {
+  addUser(registrationData: RegistrationDto): Observable<AuthResponseModel> {
     return this.http
-      .post<AuthResponseModel>(
-        `${this.baseUrl}/add-user`,
-        registrationData
-      )
+      .post<AuthResponseModel>(`${this.baseUrl}/add-user`, registrationData)
       .pipe(
         tap((response) => {
           console.log('User registered successfully: ', response);
@@ -162,13 +157,14 @@ export class AuthService {
   }
 
   setTokens(accessToken: string, refreshToken: string) {
+    const isSecure = false;
     this.cookieService.set(
       'accessToken',
       accessToken,
       1,
       '/',
       '',
-      true,
+      isSecure,
       'Strict'
     );
     this.cookieService.set(
@@ -177,9 +173,10 @@ export class AuthService {
       1,
       '/',
       '',
-      true,
+      isSecure,
       'Strict'
     );
+
     this.accessTokenSubject.next(accessToken);
     this.isLoggedInSubject.next(true);
   }
