@@ -1,0 +1,118 @@
+.governorates-container {
+  padding: 1rem;
+
+  .add-gov-container {
+    background-color: #f9f9f9;
+    padding: 1rem;
+    border-radius: 12px;
+    margin-bottom: 1rem;
+    box-shadow: 0 0 6px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+
+    .add-gov-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 1rem;
+
+      .input-field {
+        flex: 1;
+
+        input {
+          width: 100%;
+          padding: 0.5rem;
+          border: 1px solid #ccc;
+          border-radius: 6px;
+          font-size: 1rem;
+        }
+      }
+
+      .actions {
+        display: flex;
+        gap: 0.5rem;
+
+        button {
+          transition: all 0.3s ease;
+
+          mat-icon {
+            font-size: 20px;
+          }
+        }
+      }
+    }
+  }
+
+  .add-gov-btn-section {
+    display: flex;
+    justify-content: center;
+    margin: 1rem 0;
+    width: 100%;
+    .add-new-gov-btn {
+      font-size: 1.2rem;
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+      transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+  }
+
+  .governorates-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 1rem;
+  }
+
+  .gov-card {
+    background: white;
+    border-radius: 1rem;
+    padding: 1rem;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+
+    h3 {
+      font-size: 1.2rem;
+      margin-bottom: 0.5rem;
+    }
+
+    p {
+      margin-bottom: 1rem;
+      color: #666;
+    }
+
+    .actions {
+      display: flex;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+  }
+
+  .edit-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+
+    .edit-input {
+      width: 100%;
+      padding: 0.5rem;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 1rem;
+    }
+
+    .edit-actions {
+      display: flex;
+      gap: 0.5rem;
+      justify-content: center;
+
+      button {
+        transition: all 0.3s ease;
+
+        mat-icon {
+          font-size: 20px;
+        }
+      }
+    }
+  }
+}

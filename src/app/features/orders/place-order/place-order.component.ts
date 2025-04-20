@@ -11,12 +11,7 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import {
-  AddressDto,
-  CityDto,
-  CreateOrderDto,
-  GovernorateDto,
-} from '../../../core/models/order';
+import { CreateOrderDto } from '../../../core/models/order';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
@@ -24,6 +19,11 @@ import { Router } from '@angular/router';
 import { CartService } from '../../../core/services/cart/cart.service';
 import { MatIconModule } from '@angular/material/icon';
 import { MatRadioModule } from '@angular/material/radio';
+import {
+  GovernorateDto,
+  CityDto,
+  AddressDto,
+} from '../../../core/models/address';
 
 @Component({
   selector: 'app-place-order',

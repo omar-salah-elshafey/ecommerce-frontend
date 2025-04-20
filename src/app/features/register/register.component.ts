@@ -56,7 +56,7 @@ export class RegisterComponent implements OnInit {
   isLoading = false;
   errorMessage: string | null = null;
 
-  genders = ['ذكر', 'أنثى', 'غير محدد'];
+  genders = ['ذكر', 'أنثى'];
   maritalStatuses = ['أعزب', 'متزوج', 'مطلق', 'أرمل'];
 
   ngOnInit() {
@@ -228,7 +228,7 @@ export class RegisterComponent implements OnInit {
       case 'أنثى':
         return Gender.Female;
       default:
-        return Gender.Unknown;
+        return Gender.Male;
     }
   }
 

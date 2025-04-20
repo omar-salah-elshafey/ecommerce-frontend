@@ -1,27 +1,9 @@
-export interface AddressDto {
-  id: string;
-  governorate: string;
-  city: string;
-  region: string;
-}
-
-export interface CityDto {
-  id: string;
-  name: string;
-}
-
 export interface CreateOrderDto {
   phoneNumber: string;
   addressId?: string;
   governorateId: string;
   cityId: string;
   region: string;
-}
-
-export interface GovernorateDto {
-  id: string;
-  name: string;
-  cities: CityDto[];
 }
 
 export interface OrderDto {

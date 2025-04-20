@@ -50,7 +50,7 @@ export class AddUserComponent {
   isLoading = false;
   errorMessage: string | null = null;
 
-  genders = ['ذكر', 'أنثى', 'غير محدد'];
+  genders = ['ذكر', 'أنثى'];
   maritalStatuses = ['أعزب', 'متزوج', 'مطلق', 'أرمل'];
   roles = [
     { label: 'مستخدم', value: Role.User },
@@ -224,7 +224,7 @@ export class AddUserComponent {
       case 'أنثى':
         return Gender.Female;
       default:
-        return Gender.Unknown;
+        return Gender.Male;
     }
   }
 

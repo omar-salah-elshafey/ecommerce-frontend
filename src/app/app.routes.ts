@@ -28,6 +28,8 @@ import { OrdersComponent } from './features/dashboard/orders/orders.component';
 import { UsersComponent } from './features/dashboard/users/users.component';
 import { AddUserComponent } from './features/dashboard/add-user/add-user.component';
 import { CustomersMessagesComponent } from './features/dashboard/customers-messages/customers-messages.component';
+import { ManageGovernoratesComponent } from './features/dashboard/manage-governorates/manage-governorates.component';
+import { ManageCitiesComponent } from './features/dashboard/manage-cities/manage-cities.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -84,6 +86,8 @@ export const routes: Routes = [
       { path: 'users', component: UsersComponent },
       { path: 'add-user', component: AddUserComponent },
       { path: 'messages', component: CustomersMessagesComponent },
+      { path: 'governorates', component: ManageGovernoratesComponent },
+      { path: 'cities', component: ManageCitiesComponent },
       { path: '**', redirectTo: '', pathMatch: 'full' },
     ],
   },

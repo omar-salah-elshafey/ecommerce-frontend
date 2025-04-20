@@ -2,15 +2,13 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import {
-  AddressDto,
-  CityDto,
   CreateOrderDto,
-  GovernorateDto,
   OrderDto,
   UpdateOrderStatusDto,
 } from '../../models/order';
 import { Observable } from 'rxjs';
 import { PaginatedResponse } from '../../models/pagination';
+import { AddressDto, GovernorateDto, CityDto } from '../../models/address';
 
 @Injectable({
   providedIn: 'root',

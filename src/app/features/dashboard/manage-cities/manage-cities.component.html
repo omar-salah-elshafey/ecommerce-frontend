@@ -1,0 +1,108 @@
+<div class="cities-container">
+  <div *ngIf="isLoading" class="loading-overlay">
+    <mat-spinner diameter="60"></mat-spinner>
+  </div>
+
+  <div *ngIf="!isLoading && governorates.length === 0">
+    لا توجد محافظات متاحة.
+  </div>
+
+  <div *ngIf="!isLoading && governorates.length > 0">
+    <!-- Governorate Selector -->
+    <div class="governorate-selector">
+      <mat-form-field appearance="fill">
+        <mat-label>اختر المحافظة</mat-label>
+        <mat-select [(ngModel)]="selectedGovernorate" (ngModelChange)="selectGovernorate($event)">
+          <mat-option *ngFor="let gov of governorates" [value]="gov">
+            {{ gov.name }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <!-- Add City Section -->
+    <div class="add-city-container" *ngIf="addingNewCity; else addNewButton">
+      <div class="add-city-row">
+        <div class="input-field">
+          <input placeholder="اسم المدينة الجديدة" [(ngModel)]="newCityName" />
+        </div>
+        <div class="actions">
+          <button mat-icon-button color="primary" (click)="saveNewCity()">
+            <mat-icon>save</mat-icon>
+          </button>
+          <button mat-icon-button color="accent" (click)="cancelAddCity()">
+            <mat-icon>cancel</mat-icon>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <ng-template #addNewButton>
+      <div class="add-city-btn-section">
+        <button
+          mat-raised-button
+          color="primary"
+          class="add-new-city-btn"
+          (click)="startAddingCity()"
+        >
+          إضافة مدينة جديدة
+        </button>
+      </div>
+    </ng-template>
+
+    <!-- Cities Display -->
+    <div *ngIf="selectedGovernorate" class="cities-section">
+      <h2>المدن في المحافظة: {{ selectedGovernorate.name }}</h2>
+      <div *ngIf="cities.length === 0">
+        لا توجد مدن في هذه المحافظة.
+      </div>
+      <div class="cities-grid" *ngIf="cities.length > 0">
+        <div class="city-card" *ngFor="let city of cities">
+          <div *ngIf="editingCityId !== city.id; else editForm">
+            <h3>{{ city.name }}</h3>
+            <div class="actions">
+              <button
+                mat-icon-button
+                aria-label="Edit"
+                color="accent"
+                (click)="startEditingCity(city)"
+              >
+                <mat-icon>edit</mat-icon>
+              </button>
+              <button
+                mat-icon-button
+                color="warn"
+                aria-label="Delete"
+                (click)="deleteCity(city.id)"
+              >
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
+          </div>
+
+          <ng-template #editForm>
+            <div class="edit-form">
+              <input
+                [(ngModel)]="updatedName"
+                placeholder="اسم المدينة الجديد"
+                class="edit-input"
+              />
+              <div class="edit-actions">
+                <button
+                  mat-icon-button
+                  color="primary"
+                  (click)="saveUpdatedCity()"
+                >
+                  <mat-icon>save</mat-icon>
+                </button>
+                <button mat-icon-button color="warn" (click)="cancelEdit()">
+                  <mat-icon>cancel</mat-icon>
+                </button>
+              </div>
+            </div>
+          </ng-template>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

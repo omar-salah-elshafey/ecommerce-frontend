@@ -1,0 +1,95 @@
+<div class="governorates-container">
+  <div *ngIf="isLoading" class="loading-overlay">
+    <mat-spinner diameter="60"></mat-spinner>
+  </div>
+
+  <div *ngIf="!isLoading && governorates.length === 0">
+    لا توجد بيانات متاحة.
+  </div>
+
+  <div
+    class="add-gov-container"
+    *ngIf="addingNewGovernorate; else addNewButton"
+  >
+    <div class="add-gov-row">
+      <div class="input-field">
+        <input
+          placeholder="اسم المحافظة الجديدة"
+          [(ngModel)]="newGovernorateName"
+        />
+      </div>
+      <div class="actions">
+        <button mat-icon-button color="primary" (click)="saveNewGovernorate()">
+          <mat-icon>save</mat-icon>
+        </button>
+        <button mat-icon-button color="accent" (click)="cancelAddGovernorate()">
+          <mat-icon>cancel</mat-icon>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <ng-template #addNewButton>
+    <div class="add-gov-btn-section">
+      <button
+        mat-raised-button
+        color="primary"
+        class="add-new-gov-btn"
+        (click)="startAddingGovernorate()"
+      >
+        إضافة محافظة جديدة
+      </button>
+    </div>
+  </ng-template>
+
+  <div class="governorates-grid" *ngIf="!isLoading && governorates.length > 0">
+    <div class="gov-card" *ngFor="let gov of governorates">
+      <div *ngIf="editingGovernorateId !== gov.id; else editForm">
+        <h3>{{ gov.name }}</h3>
+        <p>المدن: {{ gov.cities.length }}</p>
+
+        <div class="actions">
+          <button
+            mat-icon-button
+            aria-label="Edit"
+            color="accent"
+            (click)="startEditingGovernorate(gov)"
+          >
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button
+            mat-icon-button
+            color="warn"
+            aria-label="Delete"
+            [disabled]="gov.cities.length > 0"
+            (click)="deleteGovernorate(gov.id)"
+          >
+            <mat-icon>delete</mat-icon>
+          </button>
+        </div>
+      </div>
+
+      <ng-template #editForm>
+        <div class="edit-form">
+          <input
+            [(ngModel)]="updatedName"
+            placeholder="اسم المحافظة الجديد"
+            class="edit-input"
+          />
+          <div class="edit-actions">
+            <button
+              mat-icon-button
+              color="primary"
+              (click)="saveUpdatedGovernorate()"
+            >
+              <mat-icon>save</mat-icon>
+            </button>
+            <button mat-icon-button color="warn" (click)="cancelEdit()">
+              <mat-icon>cancel</mat-icon>
+            </button>
+          </div>
+        </div>
+      </ng-template>
+    </div>
+  </div>
+</div>

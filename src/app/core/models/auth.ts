@@ -16,7 +16,6 @@ export interface RegistrationDto {
 export enum Gender {
   Male = 1,
   Female,
-  Unknown,
 }
 
 export enum Role {
