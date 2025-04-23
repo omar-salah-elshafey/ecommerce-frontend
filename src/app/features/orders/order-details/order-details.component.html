@@ -54,6 +54,13 @@
     </div>
 
     <div class="summary-details">
+      <span class="summary-label">العنوان:</span>
+      <span class="summary-value"
+        >{{ order.governorate }}, {{ order.city }}, {{ order.region }}</span
+      >
+    </div>
+
+    <div class="summary-details">
       <span class="summary-label">المجموع الكلي:</span>
       <span class="summary-value">
         {{ order.totalAmount | currency : "EGP " }}

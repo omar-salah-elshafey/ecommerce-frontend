@@ -50,6 +50,11 @@
             <mat-icon>phone</mat-icon>
             رقم الهاتف: {{ item.phoneNumber }}
           </p>
+          <p class="order-address">
+            <mat-icon>place</mat-icon>
+            العنوان: {{ item.governorate }}, {{ item.city }},
+            {{ item.region }}
+          </p>
           <p class="order-status">
             <mat-icon [ngStyle]="{ color: getStatusColor(item.status) }">
               {{ getStatusIcon(item.status) }}

@@ -132,12 +132,12 @@
   }
   .featured-products {
     padding: 0.5rem;
-  }
-  .products-grid {
-    grid-template-columns: repeat(2, 1fr) !important;
-    gap: 0.3rem !important;
-  }
-  .product-image {
-    width: 100%;
+    .products-grid {
+      grid-template-columns: repeat(2, 1fr) !important;
+      gap: 0.3rem !important;
+      .product-image {
+        width: 100%;
+      }
+    }
   }
 }

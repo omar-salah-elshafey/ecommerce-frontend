@@ -30,10 +30,12 @@ import { AddUserComponent } from './features/dashboard/add-user/add-user.compone
 import { CustomersMessagesComponent } from './features/dashboard/customers-messages/customers-messages.component';
 import { ManageGovernoratesComponent } from './features/dashboard/manage-governorates/manage-governorates.component';
 import { ManageCitiesComponent } from './features/dashboard/manage-cities/manage-cities.component';
+import { MediaComponent } from './features/media/media.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
   { path: 'products', component: ProductsComponent },
+  { path: 'media', component: MediaComponent },
   { path: 'products/:id', component: ProductDetailsComponent },
   { path: 'cart', component: CartComponent },
   { path: 'blogs', component: BlogsComponent },
@@ -93,3 +95,4 @@ export const routes: Routes = [
   },
   { path: '**', redirectTo: '' },
 ];
+

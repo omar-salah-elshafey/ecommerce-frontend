@@ -39,11 +39,16 @@
           </p>
           <p class="user-fullname">
             <mat-icon>person</mat-icon>
-            اسم المستخدم: {{ order.userFullName }}
+            اسم العميل: {{ order.userFullName }}
           </p>
           <p class="phone-number">
             <mat-icon>phone</mat-icon>
             رقم الهاتف: {{ order.phoneNumber }}
+          </p>
+          <p class="order-address">
+            <mat-icon>place</mat-icon>
+            العنوان: {{ order.governorate }}, {{ order.city }},
+            {{ order.region }}
           </p>
           <span class="order-status">
             حالة الطلب:
