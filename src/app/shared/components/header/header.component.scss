@@ -1,42 +1,63 @@
 .header {
   display: flex;
-  align-items: center;
   justify-content: space-between;
-  height: 64px;
+  height: auto;
   position: fixed;
   top: 0;
+  width: 100%;
   font-weight: 700;
   z-index: 1000;
   background-color: #fff;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
 
-  .header-left {
-    display: flex;
-    align-items: center;
+.header-right {
+  display: flex;
+  align-items: center;
 
-    .logo {
-      img {
-        width: 80px;
-        height: 64px;
-      }
-    }
-
-    .mobile-menu {
-      display: none;
+  .logo {
+    width: 80px;
+    height: 64px;
+    img {
+      width: 100%;
     }
   }
+}
 
-  .desktop-nav,
-  .desktop-search,
-  .desktop-cart,
-  .desktop-user-actions {
+.primary-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 64px;
+}
+
+.secondary-nav {
+  display: flex;
+  justify-content: center;
+  height: 40px;
+  justify-content: space-between;
+  border-top: 1px solid #e0e0e0;
+}
+
+.header-left {
+  .user-actions {
     display: flex;
     align-items: center;
   }
 }
+
+.mobile-menu {
+  display: none;
+}
+
+.desktop-cart {
+  margin-left: 8px;
+}
+
 .logout {
   rotate: 180deg;
 }
+
 .mobile-nav {
   background-color: #fff;
   position: absolute;
@@ -66,31 +87,10 @@
     }
   }
 }
+
 ::ng-deep .mat-badge-content {
   top: 10px !important;
   right: 10px !important;
-}
-
-/* Media queries for responsiveness */
-@media (max-width: 768px) {
-  .header {
-    justify-content: space-between;
-    /* Hide desktop elements on mobile */
-    .desktop-nav,
-    .desktop-search,
-    .desktop-cart,
-    .desktop-user-actions {
-      display: none;
-    }
-    .header-left {
-      display: flex;
-      justify-content: space-between;
-      width: 100%;
-      .mobile-menu {
-        display: block;
-      }
-    }
-  }
 }
 
 .user-menu-trigger {
@@ -130,5 +130,21 @@
 
   mat-divider {
     margin: 8px 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .header {
+    flex-direction: row;
+    height: 64px;
+  }
+
+  .desktop-nav,
+  .header-left {
+    display: none;
+  }
+
+  .mobile-menu {
+    display: block;
   }
 }

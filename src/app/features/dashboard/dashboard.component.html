@@ -25,7 +25,13 @@
         <mat-icon>inventory_2</mat-icon>
         <span> المنتجات </span>
       </a>
-      <a class="item" routerLink="/admin/dashboard/orders">
+      <a
+        class="item"
+        *ngIf="
+          (authService.isAdmin$ | async) || (authService.isSuperAdmin$ | async)
+        "
+        routerLink="/admin/dashboard/orders"
+      >
         <mat-icon>local_shipping</mat-icon>
         <span> الطلبات </span>
       </a>

@@ -83,6 +83,34 @@ export class ProductService {
       );
   }
 
+  getCurrentSellerProducts(
+    pageNumber: number,
+    pageSize: number
+  ): Observable<PaginatedResponse<ProductDto>> {
+    return this.http
+      .get<PaginatedResponse<ProductDto>>(`${this.apiUrl}/seller-Id`, {
+        params: {
+          PageNumber: pageNumber.toString(),
+          PageSize: pageSize.toString(),
+        },
+      })
+      .pipe(
+        map((response) => ({
+          ...response,
+          items: response.items.map((product) => ({
+            ...product,
+            images: product.images.map((img) => ({
+              ...img,
+              imageUrl: `${environment.apiUrl}${img.imageUrl}`,
+            })),
+            mainImageUrl:
+              this.getMainImage(product.images) ||
+              'assets/images/placeholder.png',
+          })),
+        }))
+      );
+  }
+
   getProductById(id: string): Observable<ProductDto> {
     return this.http
       .get<ProductDto>(`${this.apiUrl}/get-product-by-id/${id}`)

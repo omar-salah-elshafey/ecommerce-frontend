@@ -81,13 +81,20 @@ export class ProductDetailsComponent {
   ngOnInit() {
     const productId = this.route.snapshot.paramMap.get('id');
     if (productId) {
-      this.productService.getProductById(productId).subscribe((product) => {
-        this.product = product;
-        this.selectedImage = product.mainImageUrl;
-        this.loading = false;
-        this.loadReviews();
-        this.initializeReviewForm();
-        if (this.authService.getAccessToken()) this.loadWishlist();
+      this.productService.getProductById(productId).subscribe({
+        next: (product) => {
+          this.product = product;
+          this.selectedImage = product.mainImageUrl;
+          this.loadReviews();
+          this.initializeReviewForm();
+          if (this.authService.getAccessToken()) this.loadWishlist();
+        },
+        error: (err) => {
+          console.error('Failed to load product:', err);
+        },
+        complete: () => {
+          this.loading = false;
+        },
       });
     }
   }

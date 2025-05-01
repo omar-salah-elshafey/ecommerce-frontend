@@ -97,7 +97,11 @@ export const routes: Routes = [
         canActivate: [authGuard, adminGuard],
       },
       { path: 'products', component: ManageProductsComponent },
-      { path: 'orders', component: OrdersComponent },
+      {
+        path: 'orders',
+        component: OrdersComponent,
+        canActivate: [authGuard, adminGuard],
+      },
       {
         path: 'users',
         component: UsersComponent,

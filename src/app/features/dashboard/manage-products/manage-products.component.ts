@@ -25,6 +25,8 @@ import { CategoryService } from '../../../core/services/category/category.servic
 import { CategoryDto, FlatCategory } from '../../../core/models/category';
 import { MatSelectModule } from '@angular/material/select';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { AuthService } from '../../../core/services/auth/auth.service';
+import { combineLatest } from 'rxjs';
 
 const ALLOWED_EXTENSIONS = ['.jpg', '.jpeg', '.png'];
 const ALLOWED_MIME_TYPES = ['image/jpeg', 'image/png', 'image/jpg'];
@@ -66,11 +68,14 @@ export class ManageProductsComponent implements OnInit {
   private pageSize: number = 20;
   isLoading: boolean = false;
   private hasMore: boolean = true;
+  private isAdminOrSuperAdmin: boolean = false;
+  private isPartner: boolean = false;
 
   private productService = inject(ProductService);
   private snackBar = inject(MatSnackBar);
   private fb = inject(FormBuilder);
   private categoryService = inject(CategoryService);
+  public authService = inject(AuthService);
 
   constructor() {
     this.productForm = this.fb.group({
@@ -88,7 +93,23 @@ export class ManageProductsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.loadProducts();
+    this.products = [];
+    this.currentPage = 1;
+    this.hasMore = true;
+    combineLatest([
+      this.authService.isAdmin$,
+      this.authService.isSuperAdmin$,
+      this.authService.isPartner$,
+    ]).subscribe(([isAdmin, isSuperAdmin, isPartner]) => {
+      this.isAdminOrSuperAdmin = isAdmin || isSuperAdmin;
+      this.isPartner = isPartner;
+
+      if (this.isAdminOrSuperAdmin) {
+        this.loadProducts();
+      } else if (this.isPartner) {
+        this.loadSellerProducts();
+      }
+    });
   }
 
   loadProducts(): void {
@@ -96,6 +117,25 @@ export class ManageProductsComponent implements OnInit {
     this.isLoading = true;
     this.productService
       .getAllProducts(this.currentPage, this.pageSize)
+      .subscribe({
+        next: (res) => {
+          this.products = [...this.products, ...res.items];
+          this.currentPage++;
+          this.hasMore = res.items.length === this.pageSize;
+          this.isLoading = false;
+        },
+        error: (err) => {
+          console.error('Error loading products:', err);
+          this.isLoading = false;
+        },
+      });
+  }
+
+  loadSellerProducts(): void {
+    if (this.isLoading || !this.hasMore) return;
+    this.isLoading = true;
+    this.productService
+      .getCurrentSellerProducts(this.currentPage, this.pageSize)
       .subscribe({
         next: (res) => {
           this.products = [...this.products, ...res.items];

@@ -29,10 +29,17 @@ export class OrderDetailsComponent implements OnInit {
   ngOnInit(): void {
     const orderId = this.route.snapshot.paramMap.get('id');
     if (orderId) {
-      this.orderService.getOrderById(orderId).subscribe((order) => {
-        this.order = order;
-        this.orderItems = order.items;
-        this.isLoading = false;
+      this.orderService.getOrderById(orderId).subscribe({
+        next: (order) => {
+          this.order = order;
+          this.orderItems = order.items;
+        },
+        error: (err) => {
+          console.error('Failed to load order:', err);
+        },
+        complete: () => {
+          this.isLoading = false;
+        },
       });
     }
   }
