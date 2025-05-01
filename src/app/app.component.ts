@@ -17,7 +17,7 @@ import { filter } from 'rxjs';
   styleUrl: './app.component.scss',
 })
 export class AppComponent implements OnInit {
-  title = 'AQRRAB - أقرب';
+  title = 'AQRAB - أقربلك';
   constructor(private router: Router) {}
 
   ngOnInit() {

@@ -127,6 +127,7 @@ export class OrdersComponent implements OnInit {
       orderId: order.id,
       newStatus: newStatus,
     };
+    this.isLoading = true;
 
     this.orderService.updateOrderStatus(dto).subscribe({
       next: (updatedOrder) => {
@@ -137,6 +138,7 @@ export class OrdersComponent implements OnInit {
           horizontalPosition: 'center',
           verticalPosition: 'top',
         });
+        this.isLoading = false;
       },
       error: (err) => {
         console.error('Error updating order status:', err);
@@ -145,6 +147,7 @@ export class OrdersComponent implements OnInit {
           horizontalPosition: 'center',
           verticalPosition: 'top',
         });
+        this.isLoading = false;
       },
     });
   }

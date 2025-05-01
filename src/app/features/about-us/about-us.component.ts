@@ -17,17 +17,14 @@ export class AboutUsComponent {
     {
       icon: 'verified_user',
       title: 'الجودة المضمونة',
-      text: 'منتجاتنا تخضع لأعلى معايير الجودة',
     },
     {
       icon: 'local_shipping',
       title: 'شحن سريع',
-      text: 'توصيل خلال ٢٤-٤٨ ساعة',
     },
     {
       icon: 'support_agent',
       title: 'دعم فني',
-      text: 'خدمة عملاء على مدار الساعة',
     },
   ];
 

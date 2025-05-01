@@ -6,9 +6,9 @@ export interface RegistrationDto {
   phoneNumber: string;
   role: Role;
   gender: Gender;
-  maritalStatus: MaritalStatus;
-  hasChildren: boolean;
-  childrenCount: number;
+  // maritalStatus: MaritalStatus;
+  // hasChildren: boolean;
+  // childrenCount: number;
   password: string;
   confirmPassword: string;
 }
@@ -21,6 +21,8 @@ export enum Gender {
 export enum Role {
   User = 1,
   Admin,
+  SuperAdmin,
+  Partner,
 }
 
 export enum MaritalStatus {

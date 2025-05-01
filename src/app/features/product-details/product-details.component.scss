@@ -43,7 +43,7 @@
   .price {
     font-size: 2rem;
     color: #333;
-    margin-bottom: 2rem;
+    margin: 2rem 0;
   }
 
   .description {
@@ -67,7 +67,8 @@
   }
 
   .category,
-  .sku {
+  .sku,
+  .seller {
     font-size: 1.1rem;
     color: #555;
     margin-bottom: 1.5rem;

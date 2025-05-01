@@ -222,6 +222,7 @@ export class ManageProductsComponent implements OnInit {
       },
       error: (err) => {
         console.error('Error adding product:', err);
+        this.isLoading = false;
         this.snackBar.open('خطأ أثناء إضافة المنتج', 'إغلاق', {
           duration: 3000,
           horizontalPosition: 'center',
@@ -287,6 +288,7 @@ export class ManageProductsComponent implements OnInit {
         },
         error: (err) => {
           console.error('Error updating product:', err);
+          this.isLoading = false;
           this.snackBar.open('خطأ أثناء تحديث المنتج', 'إغلاق', {
             duration: 3000,
             horizontalPosition: 'center',

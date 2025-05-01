@@ -128,7 +128,7 @@
 
       <!-- Marital Status and Role Section -->
       <div class="form-row">
-        <mat-form-field appearance="outline">
+        <!-- <mat-form-field appearance="outline">
           <mat-label>الحالة الاجتماعية</mat-label>
           <mat-select formControlName="maritalStatus" required>
             <mat-option *ngFor="let status of maritalStatuses" [value]="status">
@@ -140,17 +140,25 @@
           >
             هذا الحقل مطلوب
           </mat-error>
-        </mat-form-field>
+        </mat-form-field> -->
 
-        <mat-form-field
-          appearance="outline"
-          *ngIf="authService.isAdmin$ | async"
-        >
+        <mat-form-field appearance="outline">
           <mat-label>الصلاحية</mat-label>
           <mat-select formControlName="role" required>
-            <mat-option *ngFor="let role of roles" [value]="role.value">
+            <mat-option
+              *ngFor="let role of roles | slice : 0 : 2"
+              [value]="role.value"
+            >
               {{ role.label }}
             </mat-option>
+            <ng-container *ngIf="authService.isSuperAdmin$ | async">
+              <mat-option
+                *ngFor="let role of roles | slice : 2"
+                [value]="role.value"
+              >
+                {{ role.label }}
+              </mat-option>
+            </ng-container>
           </mat-select>
           <mat-error *ngIf="registerForm.get('role')?.hasError('required')">
             هذا الحقل مطلوب
@@ -159,7 +167,7 @@
       </div>
 
       <!-- Children Section -->
-      <div
+      <!-- <div
         class="form-row"
         *ngIf="registerForm.get('maritalStatus')?.value !== 'أعزب'"
       >
@@ -182,7 +190,7 @@
             يجب أن يكون العدد 1 على الأقل
           </mat-error>
         </mat-form-field>
-      </div>
+      </div> -->
 
       <!-- Passwords Row -->
       <div class="form-row">

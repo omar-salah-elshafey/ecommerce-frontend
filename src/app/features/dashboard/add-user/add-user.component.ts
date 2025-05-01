@@ -54,7 +54,9 @@ export class AddUserComponent {
   maritalStatuses = ['أعزب', 'متزوج', 'مطلق', 'أرمل'];
   roles = [
     { label: 'مستخدم', value: Role.User },
+    { label: 'شريك نجاح', value: Role.Partner },
     { label: 'مسؤول', value: Role.Admin },
+    { label: 'مسؤول عام', value: Role.SuperAdmin },
   ];
 
   ngOnInit() {
@@ -93,9 +95,9 @@ export class AddUserComponent {
           ],
         ],
         gender: ['', Validators.required],
-        maritalStatus: ['', Validators.required],
-        hasChildren: [false],
-        childrenCount: [1],
+        // maritalStatus: ['', Validators.required],
+        // hasChildren: [false],
+        // childrenCount: [1],
         password: [
           '',
           [
@@ -112,13 +114,13 @@ export class AddUserComponent {
       { validators: this.passwordMatchValidator }
     );
 
-    this.registerForm.get('maritalStatus')?.valueChanges.subscribe((value) => {
-      this.handleMaritalStatusChange(value);
-    });
+    // this.registerForm.get('maritalStatus')?.valueChanges.subscribe((value) => {
+    //   this.handleMaritalStatusChange(value);
+    // });
 
-    this.registerForm.get('hasChildren')?.valueChanges.subscribe((value) => {
-      this.handleHasChildrenChange(value);
-    });
+    // this.registerForm.get('hasChildren')?.valueChanges.subscribe((value) => {
+    //   this.handleHasChildrenChange(value);
+    // });
   }
 
   onSubmit() {
@@ -136,9 +138,9 @@ export class AddUserComponent {
       ...this.registerForm.value,
       role: this.registerForm.value.role,
       gender: this.getGenderEnum(this.registerForm.value.gender),
-      maritalStatus: this.getMaritalStatusEnum(
-        this.registerForm.value.maritalStatus
-      ),
+      // maritalStatus: this.getMaritalStatusEnum(
+      //   this.registerForm.value.maritalStatus
+      // ),
     };
 
     this.authService.addUser(registrationData).subscribe({
@@ -183,6 +185,17 @@ export class AddUserComponent {
     }
   }
 
+  private getGenderEnum(value: string): Gender {
+    switch (value) {
+      case 'ذكر':
+        return Gender.Male;
+      case 'أنثى':
+        return Gender.Female;
+      default:
+        return Gender.Male;
+    }
+  }
+
   private handleMaritalStatusChange(status: string) {
     const hasChildrenControl = this.registerForm.get('hasChildren');
     const childrenCountControl = this.registerForm.get('childrenCount');
@@ -215,17 +228,6 @@ export class AddUserComponent {
       childrenCountControl?.clearValidators();
     }
     childrenCountControl?.updateValueAndValidity();
-  }
-
-  private getGenderEnum(value: string): Gender {
-    switch (value) {
-      case 'ذكر':
-        return Gender.Male;
-      case 'أنثى':
-        return Gender.Female;
-      default:
-        return Gender.Male;
-    }
   }
 
   private getMaritalStatusEnum(value: string): MaritalStatus {

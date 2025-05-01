@@ -12,7 +12,6 @@
         <div class="value-card" *ngFor="let value of values">
           <mat-icon>{{ value.icon }}</mat-icon>
           <h3>{{ value.title }}</h3>
-          <p>{{ value.text }}</p>
         </div>
       </div>
     </div>
@@ -40,6 +39,20 @@
           <div class="event">{{ item.event }}</div>
         </div>
       </div>
+    </div>
+  </section>
+
+  <section class="company-profile">
+    <div class="container">
+      <h2 class="section-title">ملف الشركة</h2>
+      <p>لتحميل ملف تعريف الشركة الخاص بنا، اضغط على الزر أدناه:</p>
+      <a
+        href="assets/portfolio_aqrab.pdf"
+        download="portfolio_aqrab.pdf"
+        class="download-btn"
+      >
+        تحميل ملف الشركة
+      </a>
     </div>
   </section>
 </div>

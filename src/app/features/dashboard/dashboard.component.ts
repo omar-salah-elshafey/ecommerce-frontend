@@ -7,6 +7,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { AuthService } from '../../core/services/auth/auth.service';
 import { RouterModule, RouterOutlet } from '@angular/router';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-dashboard',
@@ -19,6 +20,7 @@ import { RouterModule, RouterOutlet } from '@angular/router';
     MatMenuModule,
     RouterModule,
     RouterOutlet,
+    CommonModule,
   ],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],

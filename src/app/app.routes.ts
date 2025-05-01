@@ -31,6 +31,11 @@ import { CustomersMessagesComponent } from './features/dashboard/customers-messa
 import { ManageGovernoratesComponent } from './features/dashboard/manage-governorates/manage-governorates.component';
 import { ManageCitiesComponent } from './features/dashboard/manage-cities/manage-cities.component';
 import { MediaComponent } from './features/media/media.component';
+import { dashboardGuard } from './core/guards/dashboard/dashboard.guard';
+import { CarsComponent } from './features/cars/cars.component';
+import { InvestmentsComponent } from './features/investments/investments.component';
+import { RealEstateComponent } from './features/real-estate/real-estate.component';
+import { ServicesComponent } from './features/services/services.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -79,20 +84,57 @@ export const routes: Routes = [
   {
     path: 'admin/dashboard',
     component: DashboardComponent,
-    canActivate: [authGuard, adminGuard],
+    canActivate: [authGuard, dashboardGuard],
     children: [
-      { path: '', component: MainViewComponent },
-      { path: 'categories', component: CategoriesComponent },
+      {
+        path: '',
+        component: MainViewComponent,
+        canActivate: [authGuard, adminGuard],
+      },
+      {
+        path: 'categories',
+        component: CategoriesComponent,
+        canActivate: [authGuard, adminGuard],
+      },
       { path: 'products', component: ManageProductsComponent },
       { path: 'orders', component: OrdersComponent },
-      { path: 'users', component: UsersComponent },
-      { path: 'add-user', component: AddUserComponent },
-      { path: 'messages', component: CustomersMessagesComponent },
-      { path: 'governorates', component: ManageGovernoratesComponent },
-      { path: 'cities', component: ManageCitiesComponent },
+      {
+        path: 'users',
+        component: UsersComponent,
+        canActivate: [authGuard, adminGuard],
+      },
+      {
+        path: 'add-user',
+        component: AddUserComponent,
+        canActivate: [authGuard, adminGuard],
+      },
+      {
+        path: 'messages',
+        component: CustomersMessagesComponent,
+        canActivate: [authGuard, adminGuard],
+      },
+      {
+        path: 'governorates',
+        component: ManageGovernoratesComponent,
+        canActivate: [authGuard, adminGuard],
+      },
+      {
+        path: 'cities',
+        component: ManageCitiesComponent,
+        canActivate: [authGuard, adminGuard],
+      },
       { path: '**', redirectTo: '', pathMatch: 'full' },
     ],
   },
+  { path: 'cars', component: CarsComponent },
+  {
+    path: 'investments',
+    component: InvestmentsComponent,
+  },
+  {
+    path: 'real-estates',
+    component: RealEstateComponent,
+  },
+  { path: 'services', component: ServicesComponent },
   { path: '**', redirectTo: '' },
 ];
-

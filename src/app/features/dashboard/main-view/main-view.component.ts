@@ -30,7 +30,7 @@ import { OrderDto } from '../../../core/models/order';
   templateUrl: './main-view.component.html',
   styleUrl: './main-view.component.scss',
 })
-export class MainViewComponent  implements OnInit{
+export class MainViewComponent implements OnInit {
   usersCount = 0;
   productsCount = 0;
   ordersCount = 0;
@@ -88,7 +88,9 @@ export class MainViewComponent  implements OnInit{
   translateRole(role: string): string {
     const translations: { [key: string]: string } = {
       user: 'عميل',
-      admin: 'مسؤول'
+      admin: 'مسؤول',
+      superadmin: 'مسؤول عام',
+      partner: 'شريك نجاح',
     };
     return translations[role.toLowerCase()] || role;
   }

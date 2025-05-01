@@ -1,11 +1,23 @@
 <mat-sidenav-container class="admin-container">
   <mat-sidenav #sidenav mode="side" opened class="admin-sidenav">
     <mat-nav-list>
-      <a class="item" routerLink="/admin/dashboard">
+      <a
+        class="item"
+        *ngIf="
+          (authService.isAdmin$ | async) || (authService.isSuperAdmin$ | async)
+        "
+        routerLink="/admin/dashboard"
+      >
         <mat-icon>dashboard</mat-icon>
         <span> لوحة التحكم </span>
       </a>
-      <a class="item" routerLink="/admin/dashboard/categories">
+      <a
+        class="item"
+        *ngIf="
+          (authService.isAdmin$ | async) || (authService.isSuperAdmin$ | async)
+        "
+        routerLink="/admin/dashboard/categories"
+      >
         <mat-icon>category</mat-icon>
         <span> الفئات </span>
       </a>
@@ -17,23 +29,53 @@
         <mat-icon>local_shipping</mat-icon>
         <span> الطلبات </span>
       </a>
-      <a class="item" routerLink="/admin/dashboard/users">
+      <a
+        class="item"
+        *ngIf="
+          (authService.isAdmin$ | async) || (authService.isSuperAdmin$ | async)
+        "
+        routerLink="/admin/dashboard/users"
+      >
         <mat-icon>people</mat-icon>
         <span> المستخدمون </span>
       </a>
-      <a class="item" routerLink="/admin/dashboard/add-user">
+      <a
+        class="item"
+        *ngIf="
+          (authService.isAdmin$ | async) || (authService.isSuperAdmin$ | async)
+        "
+        routerLink="/admin/dashboard/add-user"
+      >
         <mat-icon>person_add</mat-icon>
         <span> إضافة مستخدم </span>
       </a>
-      <a class="item" routerLink="/admin/dashboard/messages">
+      <a
+        class="item"
+        *ngIf="
+          (authService.isAdmin$ | async) || (authService.isSuperAdmin$ | async)
+        "
+        routerLink="/admin/dashboard/messages"
+      >
         <mat-icon>forum</mat-icon>
         <span> رسائل العملاء </span>
       </a>
-      <a class="item" routerLink="/admin/dashboard/governorates">
+      <a
+        class="item"
+        *ngIf="
+          (authService.isAdmin$ | async) || (authService.isSuperAdmin$ | async)
+        "
+        routerLink="/admin/dashboard/governorates"
+      >
         <mat-icon>location_city</mat-icon>
         <span> المحافظات </span>
       </a>
-      <a class="item" routerLink="/admin/dashboard/cities">
+      <a
+        class="item"
+        *ngIf="
+          (authService.isAdmin$ | async) || (authService.isSuperAdmin$ | async)
+        "
+        routerLink="/admin/dashboard/cities"
+      >
         <mat-icon>apartment</mat-icon>
         <span> المدن </span>
       </a>

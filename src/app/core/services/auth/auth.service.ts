@@ -80,6 +80,18 @@ export class AuthService {
     );
   }
 
+  get isSuperAdmin$(): Observable<boolean> {
+    return this.currentUser$.pipe(
+      map((user) => (user ? user.role.toLowerCase() === 'superadmin' : false))
+    );
+  }
+
+  get isPartner$(): Observable<boolean> {
+    return this.currentUser$.pipe(
+      map((user) => (user ? user.role.toLowerCase() === 'partner' : false))
+    );
+  }
+
   registerUser(
     registrationData: RegistrationDto
   ): Observable<AuthResponseModel> {
@@ -157,14 +169,13 @@ export class AuthService {
   }
 
   setTokens(accessToken: string, refreshToken: string) {
-    const isSecure = false;
     this.cookieService.set(
       'accessToken',
       accessToken,
       1,
       '/',
       '',
-      isSecure,
+      true,
       'Strict'
     );
     this.cookieService.set(
@@ -173,7 +184,7 @@ export class AuthService {
       1,
       '/',
       '',
-      isSecure,
+      true,
       'Strict'
     );
 

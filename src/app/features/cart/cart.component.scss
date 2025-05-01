@@ -184,10 +184,22 @@
       }
     }
   }
-  .summary-details{
+  .summary-details {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
     align-items: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .cart-container {
+    width: 95%;
+  }
+}
+
+@media (max-width: 370px) {
+  .quantity-selector {
+    flex-direction: column;
   }
 }

@@ -1,6 +1,11 @@
 <div class="main-container">
   <div class="blogs-page">
-    <div *ngIf="authService.isAdmin$ | async" class="new-post-form">
+    <div
+      *ngIf="
+        (authService.isAdmin$ | async) || (authService.isSuperAdmin$ | async)
+      "
+      class="new-post-form"
+    >
       <form [formGroup]="postForm">
         <mat-form-field appearance="outline">
           <mat-label> العنوان </mat-label>
@@ -45,7 +50,11 @@
         </div>
 
         <div class="upload-container">
-          <label *ngIf="!imageFile" class="upload-btn" [class.disabled]="posting">
+          <label
+            *ngIf="!imageFile"
+            class="upload-btn"
+            [class.disabled]="posting"
+          >
             <mat-icon>image</mat-icon>
             <input
               #imageInput
@@ -56,7 +65,11 @@
             />
           </label>
 
-          <label *ngIf="!videoFile" class="upload-btn" [class.disabled]="posting">
+          <label
+            *ngIf="!videoFile"
+            class="upload-btn"
+            [class.disabled]="posting"
+          >
             <mat-icon>videocam</mat-icon>
             <input
               #videoInput

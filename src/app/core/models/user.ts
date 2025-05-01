@@ -15,9 +15,6 @@ export interface UserDto {
 export interface UpdateUserDto {
   firstName: string;
   lastName: string;
-  maritalStatus: MaritalStatus;
-  hasChildren: boolean;
-  childrenCount: number;
 }
 
 export interface DeleteProfile {

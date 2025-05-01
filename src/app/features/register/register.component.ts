@@ -95,9 +95,9 @@ export class RegisterComponent implements OnInit {
           ],
         ],
         gender: ['', Validators.required],
-        maritalStatus: ['', Validators.required],
-        hasChildren: [false],
-        childrenCount: [1],
+        // maritalStatus: ['', Validators.required],
+        // hasChildren: [false],
+        // childrenCount: [1],
         password: [
           '',
           [
@@ -113,13 +113,13 @@ export class RegisterComponent implements OnInit {
       { validators: this.passwordMatchValidator }
     );
 
-    this.registerForm.get('maritalStatus')?.valueChanges.subscribe((value) => {
-      this.handleMaritalStatusChange(value);
-    });
+    // this.registerForm.get('maritalStatus')?.valueChanges.subscribe((value) => {
+    //   this.handleMaritalStatusChange(value);
+    // });
 
-    this.registerForm.get('hasChildren')?.valueChanges.subscribe((value) => {
-      this.handleHasChildrenChange(value);
-    });
+    // this.registerForm.get('hasChildren')?.valueChanges.subscribe((value) => {
+    //   this.handleHasChildrenChange(value);
+    // });
   }
 
   onSubmit() {
@@ -135,12 +135,13 @@ export class RegisterComponent implements OnInit {
 
     const registrationData: RegistrationDto = {
       ...this.registerForm.value,
-      role: Role.User, // Default role
+      role: Role.User,
       gender: this.getGenderEnum(this.registerForm.value.gender),
-      maritalStatus: this.getMaritalStatusEnum(
-        this.registerForm.value.maritalStatus
-      ),
+    //   maritalStatus: this.getMaritalStatusEnum(
+    //     this.registerForm.value.maritalStatus
+    //   ),
     };
+console.log(registrationData);
 
     this.authService.registerUser(registrationData).subscribe({
       next: () => {

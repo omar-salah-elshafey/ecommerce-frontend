@@ -18,6 +18,9 @@ export interface ProductDto {
   categoryName: string;
   images: ProductImage[];
   mainImageUrl: string;
+  sellerId: string;
+  sellerName: string;
+  isPartnerSeller: boolean;
 }
 
 export interface CreateProductDto {

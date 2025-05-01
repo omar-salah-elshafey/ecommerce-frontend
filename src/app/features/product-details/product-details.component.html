@@ -33,6 +33,11 @@
       <strong>SKU:</strong> {{ product.sku }}
     </p>
 
+    <p class="seller" dir="rtl">
+      <strong>البائع:</strong>
+      {{ product.isPartnerSeller ? product.sellerName : "AQRAB" }}
+    </p>
+
     <div class="stock-info">
       <mat-icon [ngClass]="{ 'out-stock': product.stock === 0 }"
         >inventory_2</mat-icon

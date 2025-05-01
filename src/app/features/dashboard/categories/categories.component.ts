@@ -36,6 +36,7 @@ export class CategoriesComponent implements OnInit {
   categories: CategoryDto[] = [];
   flatCategories: FlatCategory[] = [];
   editedCategoryId: string | null = null;
+  isLoading = false;
 
   editData: { name: string; parentCategoryId: string | null } = {
     name: '',
@@ -56,16 +57,28 @@ export class CategoriesComponent implements OnInit {
   }
 
   getAllCategories() {
+    this.isLoading = true;
     this.categoryService.getAllCategories().subscribe({
       next: (categories) => {
         this.categories = categories;
         this.flatCategories = this.flattenCategories(categories);
+        this.isLoading = false;
+      },
+      error: (error) => {
+        console.error('Error loading category:', error);
+        this.snackBar.open(error.error!.error, 'إغلاق', {
+          duration: 3000,
+          horizontalPosition: 'center',
+          verticalPosition: 'top',
+        });
+        this.isLoading = false;
       },
     });
   }
 
   deleteCategory(category: CategoryDto) {
     if (!confirm('هل أنت متأكد من حذف العنصر')) return;
+    this.isLoading = true;
     this.categoryService.deleteCategory(category.id).subscribe({
       next: () => {
         this.snackBar.open('تم حذف الفئة بنجاح', 'إغلاق', {
@@ -73,6 +86,7 @@ export class CategoriesComponent implements OnInit {
           horizontalPosition: 'center',
           verticalPosition: 'top',
         });
+        this.isLoading = false;
         this.getAllCategories();
       },
       error: (error) => {
@@ -82,6 +96,7 @@ export class CategoriesComponent implements OnInit {
           horizontalPosition: 'center',
           verticalPosition: 'top',
         });
+        this.isLoading = false;
       },
     });
   }
@@ -114,6 +129,7 @@ export class CategoriesComponent implements OnInit {
       name: this.newCategoryData.name,
       parentCategoryId: this.newCategoryData.parentCategoryId || undefined,
     };
+    this.isLoading = true;
 
     this.categoryService.addCategory(newCategoryDto).subscribe({
       next: () => {
@@ -124,6 +140,7 @@ export class CategoriesComponent implements OnInit {
         });
         this.getAllCategories();
         this.cancelAddCategory();
+        this.isLoading = false;
       },
       error: (error) => {
         console.error('Error adding category:', error);
@@ -136,6 +153,7 @@ export class CategoriesComponent implements OnInit {
             verticalPosition: 'top',
           }
         );
+        this.isLoading = false;
       },
     });
   }
@@ -147,6 +165,7 @@ export class CategoriesComponent implements OnInit {
       clearParentCategory: !this.editData.parentCategoryId,
     };
 
+    this.isLoading = true;
     this.categoryService.updateCategory(category.id, updateDto).subscribe({
       next: (updatedCategory) => {
         this.snackBar.open('تم تحديث الفئة بنجاح', 'إغلاق', {
@@ -156,6 +175,7 @@ export class CategoriesComponent implements OnInit {
         });
         this.getAllCategories();
         this.cancelEdit();
+        this.isLoading = false;
       },
       error: (error) => {
         console.error('Error updating category:', error);
@@ -168,6 +188,7 @@ export class CategoriesComponent implements OnInit {
             verticalPosition: 'top',
           }
         );
+        this.isLoading = false;
       },
     });
   }

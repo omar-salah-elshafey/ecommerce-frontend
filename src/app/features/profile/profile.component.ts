@@ -114,25 +114,25 @@ export class ProfileComponent implements OnInit {
           Validators.maxLength(50),
         ],
       ],
-      maritalStatus: [
-        this.translateMaritalStatus(this.userProfile.maritalStatus),
-        Validators.required,
-      ],
-      hasChildren: [this.userProfile.hasChildren, Validators.required],
-      childrenCount: [this.userProfile.childrenCount, Validators.required],
+      // maritalStatus: [
+      //   this.translateMaritalStatus(this.userProfile.maritalStatus),
+      //   Validators.required,
+      // ],
+      // hasChildren: [this.userProfile.hasChildren, Validators.required],
+      // childrenCount: [this.userProfile.childrenCount, Validators.required],
     });
 
-    this.updateProfileForm
-      .get('maritalStatus')
-      ?.valueChanges.subscribe((value) => {
-        this.handleMaritalStatusChange(value);
-      });
+    // this.updateProfileForm
+    //   .get('maritalStatus')
+    //   ?.valueChanges.subscribe((value) => {
+    //     this.handleMaritalStatusChange(value);
+    //   });
 
-    this.updateProfileForm
-      .get('hasChildren')
-      ?.valueChanges.subscribe((value) => {
-        this.handleHasChildrenChange(value);
-      });
+    // this.updateProfileForm
+    //   .get('hasChildren')
+    //   ?.valueChanges.subscribe((value) => {
+    //     this.handleHasChildrenChange(value);
+    //   });
   }
 
   onUpdateProfile() {
@@ -148,11 +148,11 @@ export class ProfileComponent implements OnInit {
     const userData: UpdateUserDto = {
       firstName: this.updateProfileForm.value.firstName,
       lastName: this.updateProfileForm.value.lastName,
-      maritalStatus: this.getMaritalStatusEnum(
-        this.updateProfileForm.value.maritalStatus
-      ),
-      hasChildren: this.updateProfileForm.value.hasChildren,
-      childrenCount: this.updateProfileForm.value.childrenCount,
+      // maritalStatus: this.getMaritalStatusEnum(
+      //   this.updateProfileForm.value.maritalStatus
+      // ),
+      // hasChildren: this.updateProfileForm.value.hasChildren,
+      // childrenCount: this.updateProfileForm.value.childrenCount,
     };
     this.userProfileService
       .updateProfile(this.userProfile.userName, userData)
@@ -194,7 +194,7 @@ export class ProfileComponent implements OnInit {
             Validators.required,
             Validators.minLength(8),
             Validators.pattern(
-              '^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$'
+              '^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&^#])[A-Za-z\\d@$!%*?&^#]{8,}$'
             ),
           ],
         ],
@@ -204,7 +204,7 @@ export class ProfileComponent implements OnInit {
             Validators.required,
             Validators.minLength(8),
             Validators.pattern(
-              '^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$'
+              '^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&^#])[A-Za-z\\d@$!%*?&^#]{8,}$'
             ),
           ],
         ],
@@ -304,7 +304,6 @@ export class ProfileComponent implements OnInit {
     const translations: { [key: string]: string } = {
       Male: 'ذكر',
       Female: 'أنثى',
-      Unknown: 'غير محدد',
     };
     return translations[gender] || gender;
   }

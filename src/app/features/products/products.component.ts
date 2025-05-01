@@ -78,89 +78,8 @@ export class ProductsComponent implements OnInit {
   categories: CategoryDto[] = [];
   selectedCategoryIds: string[] = [];
   searchQuery: string = '';
-  featuredProducts$!: Observable<ProductDto[]>;
-  bestSellers$!: Observable<ProductDto[]>;
   showFilters = true;
   isMobile = window.innerWidth <= 768;
-  @ViewChild('featuredSwiper') featuredSwiperRef!: ElementRef;
-  @ViewChild('bestSellersSwiper') bestSellersSwiperRef!: ElementRef;
-
-  private initSwiper(ref: ElementRef) {
-    return new Swiper(ref.nativeElement, {
-      modules: [Navigation, Pagination, Autoplay],
-      slidesPerView: 1,
-      spaceBetween: 16,
-      autoplay: {
-        delay: 3000,
-        disableOnInteraction: false,
-        pauseOnMouseEnter: true,
-      },
-      loop: true,
-      navigation: {
-        nextEl: '.swiper-button-next',
-        prevEl: '.swiper-button-prev',
-      },
-      pagination: {
-        el: '.swiper-pagination',
-        clickable: true,
-      },
-      breakpoints: {
-        400: { slidesPerView: 2 },
-        480: { slidesPerView: 3 },
-        768: { slidesPerView: 4 },
-        900: { slidesPerView: 5 },
-      },
-    });
-  }
-
-  private loadFeaturedProducts() {
-    this.featuredProducts$ = this.productService
-      .getFeaturedProducts(1, 12)
-      .pipe(
-        tap(() => {
-          setTimeout(() => {
-            if (this.featuredSwiperRef) {
-              this.initSwiper(this.featuredSwiperRef);
-            }
-          }, 0);
-        }),
-        catchError((error) => {
-          this.snackBar.open('خطأ في تحميل المنتجات المميزة', 'إغلاق', {
-            duration: 3000,
-            direction: 'rtl',
-            verticalPosition: 'top',
-          });
-          console.error('Error loading featured products:', error);
-          return of([]);
-        })
-      );
-  }
-
-  private loadBestSellers() {
-    this.bestSellers$ = this.productService.getBestSellers().pipe(
-      tap(() => {
-        setTimeout(() => {
-          if (this.bestSellersSwiperRef) {
-            this.initSwiper(this.bestSellersSwiperRef);
-          }
-        }, 0);
-      }),
-      catchError((error) => {
-        this.snackBar.open('خطأ في تحميل المنتجات الأكثر مبيعًا', 'إغلاق', {
-          duration: 3000,
-          direction: 'rtl',
-          verticalPosition: 'top',
-        });
-        console.error('Error loading best sellers:', error);
-        return of([]);
-      })
-    );
-  }
-
-  ngAfterViewInit() {
-    // Swiper initialization is handled in loadFeaturedProducts and loadBestSellers
-  }
-
   private loadProducts() {
     if (!this.hasMore || this.isLoading) return EMPTY;
 
@@ -209,8 +128,6 @@ export class ProductsComponent implements OnInit {
   wishlist: Set<number> = new Set();
 
   ngOnInit() {
-    this.loadFeaturedProducts();
-    this.loadBestSellers();
     const savedFilters = sessionStorage.getItem('selectedCategoryIds');
     if (savedFilters) {
       this.selectedCategoryIds = JSON.parse(savedFilters);

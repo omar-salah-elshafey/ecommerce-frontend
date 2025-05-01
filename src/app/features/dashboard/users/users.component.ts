@@ -23,6 +23,7 @@ import {
 } from '@angular/forms';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatInputModule } from '@angular/material/input';
+import { AuthService } from '../../../core/services/auth/auth.service';
 
 @Component({
   selector: 'app-users',
@@ -62,7 +63,8 @@ export class UsersComponent implements OnInit {
     private userService: UserProfileService,
     private cookieService: CookieService,
     private snackBar: MatSnackBar,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    public authService: AuthService
   ) {
     this.updateProfileForm = this.formBuilder.group({
       firstName: [
@@ -81,18 +83,18 @@ export class UsersComponent implements OnInit {
           Validators.maxLength(50),
         ],
       ],
-      maritalStatus: ['', Validators.required],
-      hasChildren: [false, Validators.required],
-      childrenCount: [0, Validators.required],
+      // maritalStatus: ['', Validators.required],
+      // hasChildren: [false, Validators.required],
+      // childrenCount: [0, Validators.required],
     });
 
-    this.updateProfileForm
-      .get('maritalStatus')
-      ?.valueChanges.subscribe(this.handleMaritalStatusChange.bind(this));
+    // this.updateProfileForm
+    //   .get('maritalStatus')
+    //   ?.valueChanges.subscribe(this.handleMaritalStatusChange.bind(this));
 
-    this.updateProfileForm
-      .get('hasChildren')
-      ?.valueChanges.subscribe(this.handleHasChildrenChange.bind(this));
+    // this.updateProfileForm
+    //   .get('hasChildren')
+    //   ?.valueChanges.subscribe(this.handleHasChildrenChange.bind(this));
   }
 
   ngOnInit(): void {
@@ -123,6 +125,7 @@ export class UsersComponent implements OnInit {
       userName: userName,
       refreshToken: this.cookieService.get('refreshToken'),
     };
+    this.isLoading = true;
     this.userService.deleteProfile(userData).subscribe({
       next: () => {
         this.snackBar.open('تم حذف الملف الشخصي', 'إغلاق', {
@@ -130,6 +133,17 @@ export class UsersComponent implements OnInit {
           verticalPosition: 'top',
           horizontalPosition: 'center',
         });
+        this.isLoading = false;
+        this.users = this.users.filter((user) => user.userName !== userName);
+      },
+      error: (error) => {
+        console.error('Error deleting user:', error);
+        this.snackBar.open('حدث خطأ أثناء الحذف', 'إغلاق', {
+          duration: 3000,
+          verticalPosition: 'top',
+          horizontalPosition: 'center',
+        });
+        this.isLoading = false;
       },
     });
   }
@@ -138,35 +152,62 @@ export class UsersComponent implements OnInit {
     this.resetEditState();
     this.editingUserName = user.userName;
     this.changeRoleMode = true;
-    this.selectedRole =
-      user.role.toLowerCase() === 'user' ? Role.User : Role.Admin;
+    switch (user.role.toLowerCase()) {
+      case 'user':
+        this.selectedRole = Role.User;
+        break;
+      case 'admin':
+        this.selectedRole = Role.Admin;
+        break;
+      case 'superadmin':
+        this.selectedRole = Role.SuperAdmin;
+        break;
+      case 'partner':
+        this.selectedRole = Role.Partner;
+        break;
+      default:
+        this.selectedRole = null;
+        console.warn(`Unknown role: ${user.role}`);
+    }
   }
 
   saveRoleChange(userName: string) {
-    if (this.selectedRole === null) return;
+    if (this.selectedRole === null) {
+      this.snackBar.open('يرجى اختيار صلاحية!', 'إغلاق', {
+        duration: 3000,
+        verticalPosition: 'top',
+        horizontalPosition: 'center',
+      });
+      return;
+    }
 
     const userData: ChangeUserRoleDto = {
       userName: userName,
       role: this.selectedRole,
     };
+    this.isLoading = true;
     this.userService.changeUserRole(userData).subscribe({
-      next: () => {
+      next: (response) => {
         const user = this.users.find((u) => u.userName === userName);
-        if (user)
-          user.role = this.selectedRole === Role.User ? 'user' : 'admin';
+        if (user) {
+          user.role = this.mapRoleToString(this.selectedRole);
+          this.users = [...this.users];
+        }
         this.snackBar.open('تم تغيير الصلاحية بنجاح', 'إغلاق', {
           duration: 3000,
           verticalPosition: 'top',
           horizontalPosition: 'center',
         });
+        this.isLoading = false;
         this.resetEditState();
       },
       error: (err) => {
-        this.snackBar.open('خطأ في تغيير الصلاحية', 'إغلاق', {
+        this.snackBar.open(err.error!.error, 'إغلاق', {
           duration: 3000,
           verticalPosition: 'top',
           horizontalPosition: 'center',
         });
+        this.isLoading = false;
         console.error('Error changing user role:', err);
       },
     });
@@ -180,13 +221,13 @@ export class UsersComponent implements OnInit {
     this.updateProfileForm.patchValue({
       firstName: user.firstName,
       lastName: user.lastName,
-      maritalStatus: this.translateMaritalStatus(user.maritalStatus),
-      hasChildren: user.hasChildren,
-      childrenCount: user.childrenCount,
+      // maritalStatus: this.translateMaritalStatus(user.maritalStatus),
+      // hasChildren: user.hasChildren,
+      // childrenCount: user.childrenCount,
     });
 
-    this.handleMaritalStatusChange(user.maritalStatus);
-    this.handleHasChildrenChange(user.hasChildren);
+    // this.handleMaritalStatusChange(user.maritalStatus);
+    // this.handleHasChildrenChange(user.hasChildren);
   }
 
   saveProfileChanges(userName: string) {
@@ -202,12 +243,13 @@ export class UsersComponent implements OnInit {
     const userData: UpdateUserDto = {
       firstName: this.updateProfileForm.value.firstName,
       lastName: this.updateProfileForm.value.lastName,
-      maritalStatus: this.getMaritalStatusEnum(
-        this.updateProfileForm.value.maritalStatus
-      ),
-      hasChildren: this.updateProfileForm.value.hasChildren,
-      childrenCount: this.updateProfileForm.value.childrenCount,
+      // maritalStatus: this.getMaritalStatusEnum(
+      //   this.updateProfileForm.value.maritalStatus
+      // ),
+      // hasChildren: this.updateProfileForm.value.hasChildren,
+      // childrenCount: this.updateProfileForm.value.childrenCount,
     };
+    this.isLoading = true;
 
     this.userService.updateProfile(userName, userData).subscribe({
       next: (response) => {
@@ -221,6 +263,7 @@ export class UsersComponent implements OnInit {
           verticalPosition: 'top',
           horizontalPosition: 'center',
         });
+        this.isLoading = false;
         this.resetEditState();
       },
       error: (error) => {
@@ -229,6 +272,7 @@ export class UsersComponent implements OnInit {
           verticalPosition: 'top',
           horizontalPosition: 'center',
         });
+        this.isLoading = false;
         console.error('Error updating profile:', error);
       },
     });
@@ -242,6 +286,21 @@ export class UsersComponent implements OnInit {
     this.updateProfileForm.reset();
   }
 
+  private mapRoleToString(role: Role | null): string {
+    switch (role) {
+      case Role.User:
+        return 'user';
+      case Role.Admin:
+        return 'admin';
+      case Role.SuperAdmin:
+        return 'superadmin';
+      case Role.Partner:
+        return 'partner';
+      default:
+        throw new Error(`Unknown role: ${role}`);
+    }
+  }
+
   @HostListener('window:scroll', ['$event'])
   onScroll(event: Event): void {
     const windowHeight = window.innerHeight;
@@ -253,67 +312,69 @@ export class UsersComponent implements OnInit {
     }
   }
 
-  handleMaritalStatusChange(maritalStatus: string) {
-    const hasChildrenControl = this.updateProfileForm.get('hasChildren');
-    const childrenCountControl = this.updateProfileForm.get('childrenCount');
-
-    if (maritalStatus.toLowerCase() === 'single') {
-      hasChildrenControl?.setValue(false);
-      hasChildrenControl?.disable();
-      childrenCountControl?.setValue(0);
-      childrenCountControl?.disable();
-    } else {
-      hasChildrenControl?.enable();
-      this.handleHasChildrenChange(hasChildrenControl?.value);
-    }
-  }
-
-  handleHasChildrenChange(hasChildren: boolean) {
-    const childrenCountControl = this.updateProfileForm.get('childrenCount');
-    if (hasChildren) {
-      childrenCountControl?.setValidators([
-        Validators.required,
-        Validators.min(1),
-      ]);
-      childrenCountControl?.enable();
-    } else {
-      childrenCountControl?.setValidators([Validators.required]);
-      childrenCountControl?.setValue(0);
-      childrenCountControl?.disable();
-    }
-    childrenCountControl?.updateValueAndValidity();
-  }
-
   translateRole(role: string): string {
     const translations: { [key: string]: string } = {
       user: 'عميل',
       admin: 'مسؤول',
+      superadmin: 'مسؤول عام',
+      partner: 'شريك نجاح',
     };
     return translations[role.toLowerCase()] || role;
   }
 
-  translateMaritalStatus(status: string): string {
-    const translations: { [key: string]: string } = {
-      single: 'أعزب',
-      married: 'متزوج',
-      divorced: 'مطلق',
-      widowed: 'أرمل',
-    };
-    return translations[status.toLowerCase()] || status;
-  }
+  // handleMaritalStatusChange(maritalStatus: string) {
+  //   const hasChildrenControl = this.updateProfileForm.get('hasChildren');
+  //   const childrenCountControl = this.updateProfileForm.get('childrenCount');
 
-  private getMaritalStatusEnum(value: string): MaritalStatus {
-    switch (value) {
-      case 'أعزب':
-        return MaritalStatus.Single;
-      case 'متزوج':
-        return MaritalStatus.Married;
-      case 'مطلق':
-        return MaritalStatus.Divorced;
-      case 'أرمل':
-        return MaritalStatus.Widowed;
-      default:
-        return MaritalStatus.Single;
-    }
-  }
+  //   if (maritalStatus.toLowerCase() === 'single') {
+  //     hasChildrenControl?.setValue(false);
+  //     hasChildrenControl?.disable();
+  //     childrenCountControl?.setValue(0);
+  //     childrenCountControl?.disable();
+  //   } else {
+  //     hasChildrenControl?.enable();
+  //     this.handleHasChildrenChange(hasChildrenControl?.value);
+  //   }
+  // }
+
+  // handleHasChildrenChange(hasChildren: boolean) {
+  //   const childrenCountControl = this.updateProfileForm.get('childrenCount');
+  //   if (hasChildren) {
+  //     childrenCountControl?.setValidators([
+  //       Validators.required,
+  //       Validators.min(1),
+  //     ]);
+  //     childrenCountControl?.enable();
+  //   } else {
+  //     childrenCountControl?.setValidators([Validators.required]);
+  //     childrenCountControl?.setValue(0);
+  //     childrenCountControl?.disable();
+  //   }
+  //   childrenCountControl?.updateValueAndValidity();
+  // }
+
+  // translateMaritalStatus(status: string): string {
+  //   const translations: { [key: string]: string } = {
+  //     single: 'أعزب',
+  //     married: 'متزوج',
+  //     divorced: 'مطلق',
+  //     widowed: 'أرمل',
+  //   };
+  //   return translations[status.toLowerCase()] || status;
+  // }
+
+  // private getMaritalStatusEnum(value: string): MaritalStatus {
+  //   switch (value) {
+  //     case 'أعزب':
+  //       return MaritalStatus.Single;
+  //     case 'متزوج':
+  //       return MaritalStatus.Married;
+  //     case 'مطلق':
+  //       return MaritalStatus.Divorced;
+  //     case 'أرمل':
+  //       return MaritalStatus.Widowed;
+  //     default:
+  //       return MaritalStatus.Single;
+  //   }
+  // }
 }
