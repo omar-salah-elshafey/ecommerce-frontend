@@ -53,7 +53,7 @@
 
       <!-- Username/Email Row -->
       <div class="form-row">
-        <mat-form-field appearance="outline">
+        <!-- <mat-form-field appearance="outline">
           <mat-label>اسم المستخدم</mat-label>
           <input matInput formControlName="userName" required appTrimInput />
           <mat-error *ngIf="registerForm.get('userName')?.hasError('required')">
@@ -69,13 +69,14 @@
           >
             لا يمكن أن يزيد اسم المستخدم عن 50 حرف
           </mat-error>
-        </mat-form-field>
+        </mat-form-field> -->
 
         <mat-form-field appearance="outline">
           <mat-label>البريد الإلكتروني</mat-label>
           <input
             matInput
             formControlName="email"
+            autocomplete="email"
             type="email"
             required
             appTrimInput
@@ -93,7 +94,13 @@
       <div class="form-row">
         <mat-form-field appearance="outline">
           <mat-label>رقم الهاتف</mat-label>
-          <input matInput formControlName="phoneNumber" required appTrimInput />
+          <input
+            matInput
+            formControlName="phoneNumber"
+            required
+            appTrimInput
+            autocomplete="tel"
+          />
           <mat-error
             *ngIf="registerForm.get('phoneNumber')?.hasError('required')"
           >
@@ -202,6 +209,7 @@
             formControlName="password"
             required
             appTrimInput
+            autocomplete="new-password"
           />
           <mat-icon matSuffix (click)="togglePasswordVisibility()">
             {{ hidePassword ? "visibility" : "visibility_off" }}
@@ -228,6 +236,7 @@
             formControlName="confirmPassword"
             required
             appTrimInput
+            autocomplete="new-password"
           />
           <mat-icon matSuffix (click)="toggleConfirmPasswordVisibility()">
             {{ hideConfirmPassword ? "visibility" : "visibility_off" }}

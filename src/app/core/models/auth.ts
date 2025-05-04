@@ -1,7 +1,6 @@
 export interface RegistrationDto {
   firstName: string;
   lastName: string;
-  userName: string;
   email: string;
   phoneNumber: string;
   role: Role;
@@ -33,7 +32,6 @@ export enum MaritalStatus {
 }
 
 export interface AuthResponseModel {
-  username: string;
   email: string;
   role: string;
   accessToken: string;
@@ -44,6 +42,6 @@ export interface AuthResponseModel {
 }
 
 export interface LoginDto {
-  emailOrUserName: string;
+  email: string;
   password: string;
 }

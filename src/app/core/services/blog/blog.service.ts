@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpEvent } from '@angular/common/http';
 import { catchError, Observable, tap, throwError } from 'rxjs';
 import { PaginatedResponse } from '../../models/pagination';
 import { CreatePostDto, PostDto, UpdatePostDto } from '../../models/blog';
@@ -40,30 +40,29 @@ export class BlogService {
     );
   }
 
-  createPost(postDto: CreatePostDto): Observable<PostDto> {
+  createPost(postDto: CreatePostDto): Observable<HttpEvent<PostDto>> {
     const formData = new FormData();
     formData.append('title', postDto.title);
     formData.append('content', postDto.content);
-    formData.append('readTime', postDto.readTime.toString());
     if (postDto.imageUrl) formData.append('imageUrl', postDto.imageUrl);
     if (postDto.videoUrl) formData.append('videoUrl', postDto.videoUrl);
-    console.log('Form Data:', formData);
-    return this.http.post<PostDto>(`${this.apiUrl}/create-post`, formData).pipe(
-      tap((post) => {
-        this.getFullUrl(post);
-      }),
-      catchError((error) => {
-        console.error('Error occurred while creating the post:', error);
-        return throwError(() => error);
+    return this.http
+      .post<PostDto>(`${this.apiUrl}/create-post`, formData, {
+        reportProgress: true, // Enable progress reporting
+        observe: 'events', // Observe all HTTP events
       })
-    );
+      .pipe(
+        catchError((error) => {
+          console.error('Error occurred while creating the post:', error);
+          return throwError(() => error);
+        })
+      );
   }
 
   updatePost(id: string, postDto: UpdatePostDto): Observable<PostDto> {
     const formData = new FormData();
     formData.append('title', postDto.title);
     formData.append('content', postDto.content);
-    formData.append('readTime', postDto.readTime.toString());
     if (postDto.imageUrl) formData.append('imageUrl', postDto.imageUrl);
     if (postDto.videoUrl) formData.append('videoUrl', postDto.videoUrl);
     if (postDto.deleteImage) formData.append('deleteImage', 'true');

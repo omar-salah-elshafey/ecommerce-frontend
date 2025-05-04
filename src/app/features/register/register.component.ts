@@ -78,14 +78,6 @@ export class RegisterComponent implements OnInit {
             Validators.maxLength(50),
           ],
         ],
-        userName: [
-          '',
-          [
-            Validators.required,
-            Validators.minLength(3),
-            Validators.maxLength(50),
-          ],
-        ],
         email: ['', [Validators.required, Validators.email]],
         phoneNumber: [
           '',
@@ -137,16 +129,16 @@ export class RegisterComponent implements OnInit {
       ...this.registerForm.value,
       role: Role.User,
       gender: this.getGenderEnum(this.registerForm.value.gender),
-    //   maritalStatus: this.getMaritalStatusEnum(
-    //     this.registerForm.value.maritalStatus
-    //   ),
+      //   maritalStatus: this.getMaritalStatusEnum(
+      //     this.registerForm.value.maritalStatus
+      //   ),
     };
-console.log(registrationData);
 
     this.authService.registerUser(registrationData).subscribe({
       next: () => {
         this.snackBar.open(
-          'تم التسجيل بنجاح! يرجى تفعيل حسابك باستخدام الكود المرسل لبريدك الإلكتروني.',
+          // 'تم التسجيل بنجاح! يرجى تفعيل حسابك باستخدام الكود المرسل لبريدك الإلكتروني.',
+          'تم التسجيل بنجاح.',
           'إغلاق',
           {
             duration: 3000,
@@ -155,7 +147,8 @@ console.log(registrationData);
           }
         );
         this.isLoading = false;
-        this.router.navigate(['/confirm-email']);
+        // this.router.navigate(['/confirm-email']);
+        this.router.navigate(['/login']);
       },
       error: (error) => {
         this.isLoading = false;

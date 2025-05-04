@@ -3,7 +3,7 @@ import { Component, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTabsModule } from '@angular/material/tabs';
-import { ActivatedRoute, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ProductDto } from '../../core/models/product';
@@ -77,6 +77,7 @@ export class ProductDetailsComponent {
   private wishlistService = inject(WishlistService);
   private cartService = inject(CartService);
   private snackBar = inject(MatSnackBar);
+  private router = inject(Router);
 
   ngOnInit() {
     const productId = this.route.snapshot.paramMap.get('id');
@@ -87,13 +88,13 @@ export class ProductDetailsComponent {
           this.selectedImage = product.mainImageUrl;
           this.loadReviews();
           this.initializeReviewForm();
+          this.loading = false;
           if (this.authService.getAccessToken()) this.loadWishlist();
         },
         error: (err) => {
           console.error('Failed to load product:', err);
-        },
-        complete: () => {
           this.loading = false;
+          this.router.navigate(['/not-found']);
         },
       });
     }

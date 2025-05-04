@@ -1,0 +1,173 @@
+$primary-color: #000;
+$secondary-color: #666;
+$bg-color: #f8f9fa;
+$tear-color: rgba(173, 216, 230, 0.8);
+
+.not-found-container {
+  min-height: calc(100vh - 104px);
+  background-color: $bg-color;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  @media (max-width: 768px) {
+    height: calc(100vh - 64px);
+  }
+
+  .content-wrapper {
+    text-align: center;
+    max-width: 600px;
+    width: 100%;
+    animation: fadeIn 1.5s ease-in-out;
+
+    .notfound-404 {
+      position: relative;
+      margin-bottom: 30px;
+      h1 {
+        font-family: "Montserrat", sans-serif;
+        font-size: 12rem;
+        font-weight: 900;
+        color: #c0392b;
+        margin: 0;
+        text-transform: uppercase;
+        letter-spacing: -20px;
+        span {
+          text-shadow: -8px 0px 0px #fff;
+        }
+      }
+    }
+
+    .icon-placeholder {
+      position: relative;
+      display: inline-block;
+      margin-bottom: 1.5rem;
+
+      .not-found-icon {
+        font-size: 5rem;
+        color: #c0392b;
+        animation: wobble 3s infinite;
+      }
+
+      // Crying Tears
+      .tear {
+        position: absolute;
+        width: 10px;
+        height: 15px;
+        background: $tear-color;
+        border-radius: 50%;
+        left: 25%;
+        top: 80%;
+        transform: translateX(-50%);
+        animation: fall 2s infinite ease-in-out;
+        &::after {
+          content: "";
+          position: absolute;
+          width: 15px;
+          height: 5px;
+          background: rgba(173, 216, 230, 0.6);
+          border-radius: 50%;
+          bottom: -5px;
+          right: -25%;
+          opacity: 0;
+          animation: splash 2s infinite ease-in-out;
+        }
+      }
+
+      .second-tear {
+        animation-delay: 0.5s;
+      }
+    }
+
+    .title {
+      font-size: 2.5rem;
+      color: $primary-color;
+      margin-bottom: 1rem;
+    }
+
+    .subtitle {
+      font-size: 1.2rem;
+      color: $secondary-color;
+      margin-bottom: 2rem;
+    }
+
+    button {
+      padding: 1rem 2rem;
+      font-weight: bold;
+    }
+  }
+}
+
+// Animations
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fall {
+  0% {
+    opacity: 0;
+    transform: translateY(0);
+  }
+  50% {
+    opacity: 1;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+}
+
+@keyframes wobble {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(-2deg);
+  }
+  50% {
+    transform: rotate(2deg);
+  }
+  75% {
+    transform: rotate(-2deg);
+  }
+}
+
+@keyframes splash {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.5;
+    transform: scale(1.5);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(2);
+  }
+}
+
+@media (max-width: 480px) {
+  .not-found-container .content-wrapper {
+    .error-code {
+      font-size: 4rem;
+    }
+    .title {
+      font-size: 2rem;
+    }
+    .subtitle {
+      font-size: 1rem;
+    }
+    button {
+      font-size: 0.8rem;
+    }
+  }
+}

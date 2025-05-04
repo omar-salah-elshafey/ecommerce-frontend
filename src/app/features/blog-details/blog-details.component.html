@@ -45,7 +45,6 @@
             <span class="date">{{
               blog.publishDate | date : "dd/MM/yyyy"
             }}</span>
-            <span class="read-time">{{ blog.readTime }} دقيقة قراءة</span>
           </div>
 
           <div class="content" [innerHTML]="blog.content"></div>
@@ -63,6 +62,18 @@
               formControlName="title"
               placeholder="العنوان"
             />
+            <mat-error *ngIf="editForm.get('title')?.hasError('required')">
+              هذا الحقل مطلوب.
+            </mat-error>
+            <mat-error *ngIf="editForm.get('title')?.hasError('minlength')">
+              يجب أن يكون العنوان على الأقل 1 حرف.
+            </mat-error>
+            <mat-error *ngIf="editForm.get('title')?.hasError('maxlength')">
+              لا يمكن أن يتجاوز العنوان 200 حرف.
+            </mat-error>
+            <mat-error *ngIf="editForm.get('title')?.hasError('pattern')">
+              لا يمكن أن يكون العنوان فارغًا أو يحتوي على مسافات فقط.
+            </mat-error>
           </mat-form-field>
           <mat-form-field appearance="outline">
             <mat-label> المحتوى </mat-label>
@@ -73,29 +84,19 @@
               formControlName="content"
               placeholder="المحتوى"
             ></textarea>
+            <mat-error *ngIf="editForm.get('content')?.hasError('required')">
+              هذا الحقل مطلوب.
+            </mat-error>
+            <mat-error *ngIf="editForm.get('content')?.hasError('minlength')">
+              يجب أن يكون العنوان على الأقل 1 حرف.
+            </mat-error>
+            <mat-error *ngIf="editForm.get('content')?.hasError('maxlength')">
+              لا يمكن أن يتجاوز العنوان 200 حرف.
+            </mat-error>
+            <mat-error *ngIf="editForm.get('content')?.hasError('pattern')">
+              لا يمكن أن يكون العنوان فارغًا أو يحتوي على مسافات فقط.
+            </mat-error>
           </mat-form-field>
-          <div class="reading-time-selector">
-            <label for="readTime">مدة القراءة:</label>
-            <div class="quantity-control">
-              <button
-                mat-icon-button
-                (click)="decreaseReadTime()"
-                [disabled]="editForm.get('readTime')?.value <= 1"
-              >
-                <mat-icon>remove</mat-icon>
-              </button>
-              <span id="readTime" class="quantity-value">
-                {{ editForm.get("readTime")?.value }} دقيقة
-              </span>
-              <button
-                mat-icon-button
-                (click)="increaseReadTime()"
-                [disabled]="editForm.get('readTime')?.value >= 30"
-              >
-                <mat-icon>add</mat-icon>
-              </button>
-            </div>
-          </div>
 
           <div class="upload-container">
             <label

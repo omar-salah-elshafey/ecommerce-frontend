@@ -5,7 +5,6 @@ export interface PostDto {
   publishDate: Date;
   imageUrl?: string;
   videoUrl?: string;
-  readTime: number;
 }
 
 export interface CreatePostDto {
@@ -13,7 +12,6 @@ export interface CreatePostDto {
   content: string;
   imageUrl?: File;
   videoUrl?: File;
-  readTime: number;
 }
 
 export interface UpdatePostDto {
@@ -21,7 +19,7 @@ export interface UpdatePostDto {
   content: string;
   imageUrl?: File;
   videoUrl?: File;
-  readTime: number;
+
   deleteImage?: boolean;
   deleteVideo?: boolean;
 }

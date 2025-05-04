@@ -78,14 +78,6 @@ export class AddUserComponent {
             Validators.maxLength(50),
           ],
         ],
-        userName: [
-          '',
-          [
-            Validators.required,
-            Validators.minLength(3),
-            Validators.maxLength(50),
-          ],
-        ],
         email: ['', [Validators.required, Validators.email]],
         phoneNumber: [
           '',
@@ -145,7 +137,7 @@ export class AddUserComponent {
 
     this.authService.addUser(registrationData).subscribe({
       next: () => {
-        this.snackBar.open('تم التسجيل بنجاح!.', 'إغلاق', {
+        this.snackBar.open('تم التسجيل بنجاح.', 'إغلاق', {
           duration: 3000,
           direction: 'rtl',
           verticalPosition: 'top',

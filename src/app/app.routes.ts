@@ -36,6 +36,8 @@ import { CarsComponent } from './features/cars/cars.component';
 import { InvestmentsComponent } from './features/investments/investments.component';
 import { RealEstateComponent } from './features/real-estate/real-estate.component';
 import { ServicesComponent } from './features/services/services.component';
+import { NotFoundComponent } from './features/not-found/not-found.component';
+import { ComingSoonComponent } from './features/coming-soon/coming-soon.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -127,6 +129,7 @@ export const routes: Routes = [
         component: ManageCitiesComponent,
         canActivate: [authGuard, adminGuard],
       },
+
       { path: '**', redirectTo: '', pathMatch: 'full' },
     ],
   },
@@ -140,5 +143,13 @@ export const routes: Routes = [
     component: RealEstateComponent,
   },
   { path: 'services', component: ServicesComponent },
+  {
+    path: 'not-found',
+    component: NotFoundComponent,
+  },
+  {
+    path: 'coming-soon',
+    component: ComingSoonComponent,
+  },
   { path: '**', redirectTo: '' },
 ];

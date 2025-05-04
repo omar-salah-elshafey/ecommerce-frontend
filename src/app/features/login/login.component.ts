@@ -47,7 +47,7 @@ export class LoginComponent implements OnInit {
   }
   ngOnInit(): void {
     this.loginForm = this.fb.group({
-      emailOrUserName: ['', [Validators.required]],
+      email: ['', [Validators.required, Validators.email]],
       password: ['', Validators.required],
     });
   }
@@ -67,7 +67,7 @@ export class LoginComponent implements OnInit {
         this.router.navigate(['/home']);
         this.cartService.mergeLocalCart().subscribe({
           next: (mergedCart: any) =>
-            console.log('Local cart merged successfully', mergedCart),
+            console.log('Local cart merged successfully'),
           error: (err: any) => console.error('Error merging local cart', err),
         });
         this.cartService.loadCart();

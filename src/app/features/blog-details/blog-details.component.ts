@@ -92,7 +92,7 @@ export class BlogDetailsComponent implements OnInit {
         '',
         [
           Validators.required,
-          Validators.minLength(10),
+          Validators.minLength(1),
           Validators.maxLength(200),
           Validators.pattern(/^(?!\s*$).+/),
         ],
@@ -102,11 +102,10 @@ export class BlogDetailsComponent implements OnInit {
         [
           Validators.required,
           Validators.maxLength(2000),
-          Validators.minLength(10),
+          Validators.minLength(1),
           Validators.pattern(/^(?!\s*$).+/),
         ],
       ],
-      readTime: [1, [Validators.required, Validators.min(1)]],
     });
   }
 
@@ -115,7 +114,6 @@ export class BlogDetailsComponent implements OnInit {
     this.editForm.patchValue({
       title: this.blog.title,
       content: this.blog.content,
-      readTime: this.blog.readTime,
     });
     this.imagePreviewUrl = this.blog.imageUrl;
     this.videoPreviewUrl = this.blog.videoUrl;
@@ -159,7 +157,6 @@ export class BlogDetailsComponent implements OnInit {
     const postDto: UpdatePostDto = {
       title: this.editForm.value.title.trim(),
       content: this.editForm.value.content.trim(),
-      readTime: this.editForm.value.readTime,
       imageUrl: this.imageFile,
       videoUrl: this.videoFile,
       deleteImage: this.deleteImage,

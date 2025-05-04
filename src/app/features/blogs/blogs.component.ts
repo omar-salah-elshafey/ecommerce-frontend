@@ -28,6 +28,9 @@ import { Title } from '@angular/platform-browser';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AuthService } from '../../core/services/auth/auth.service';
 import { MatIconModule } from '@angular/material/icon';
+import { HttpEvent, HttpEventType } from '@angular/common/http';
+import { environment } from '../../environments/environment';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 
 @Component({
   selector: 'app-blogs',
@@ -43,6 +46,7 @@ import { MatIconModule } from '@angular/material/icon';
     RouterModule,
     MatIconModule,
     ReactiveFormsModule,
+    MatProgressBarModule,
   ],
   templateUrl: './blogs.component.html',
   styleUrls: ['./blogs.component.scss'],
@@ -64,6 +68,7 @@ export class BlogsComponent implements OnInit {
 
   postForm!: FormGroup;
   posting = false;
+  uploadProgress: number = 0;
 
   imageFile?: File;
   videoFile?: File;
@@ -87,7 +92,7 @@ export class BlogsComponent implements OnInit {
         '',
         [
           Validators.required,
-          Validators.minLength(10),
+          Validators.minLength(1),
           Validators.maxLength(200),
           Validators.pattern(/^(?!\s*$).+/),
         ],
@@ -97,11 +102,10 @@ export class BlogsComponent implements OnInit {
         [
           Validators.required,
           Validators.maxLength(2000),
-          Validators.minLength(10),
+          Validators.minLength(1),
           Validators.pattern(/^(?!\s*$).+/),
         ],
       ],
-      readTime: [1, [Validators.required, Validators.min(1)]],
     });
   }
 
@@ -134,36 +138,49 @@ export class BlogsComponent implements OnInit {
       return;
     }
     this.posting = true;
+    this.uploadProgress = 0;
     this.postForm.disable();
     const postDto: CreatePostDto = {
       title: this.postForm.value.title.trim(),
       content: this.postForm.value.content.trim(),
-      readTime: this.postForm.value.readTime,
       imageUrl: this.imageFile,
       videoUrl: this.videoFile,
     };
     this.blogService.createPost(postDto).subscribe({
-      next: (response) => {
-        this.blogs.unshift(response);
-        this.snackBar.open('تم النشر بنجاح.', 'إغلاق', {
-          duration: 3000,
-          horizontalPosition: 'center',
-          verticalPosition: 'top',
-        });
-        this.resetFileInputs();
-        this.postForm.reset();
-        this.posting = false;
-        this.postForm.enable();
-        this.postForm.get('readTime')?.setValue(1);
+      next: (event: HttpEvent<PostDto>) => {
+        if (event.type === HttpEventType.UploadProgress && event.total) {
+          this.uploadProgress = Math.round((100 * event.loaded) / event.total);
+        } else if (event.type === HttpEventType.Response) {
+          const post = event.body;
+          if (post) {
+            // Since getFullUrl is private, replicate its logic here
+            if (post.imageUrl)
+              post.imageUrl = `${environment.apiUrl}${post.imageUrl}`;
+            if (post.videoUrl)
+              post.videoUrl = `${environment.apiUrl}${post.videoUrl}`;
+            this.blogs.unshift(post);
+            this.snackBar.open('تم النشر بنجاح.', 'إغلاق', {
+              duration: 3000,
+              horizontalPosition: 'center',
+              verticalPosition: 'top',
+            });
+            this.resetFileInputs();
+            this.postForm.reset();
+            this.posting = false;
+            this.uploadProgress = 0; // Reset progress on success
+            this.postForm.enable();
+          }
+        }
       },
       error: (err) => {
         console.error('Error creating post:', err);
-        this.snackBar.open('حدث خطا، برجاء المحاولة لاحقاً.', 'إغلاق', {
+        this.snackBar.open('حدث خطأ، برجاء المحاولة لاحقاً.', 'إغلاق', {
           duration: 3000,
           horizontalPosition: 'center',
           verticalPosition: 'top',
         });
         this.posting = false;
+        this.uploadProgress = 0; // Reset progress on error
         this.postForm.enable();
       },
     });
@@ -205,7 +222,6 @@ export class BlogsComponent implements OnInit {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files.length > 0) {
       const file = input.files[0];
-      console.log(`${fileType} selected:`, file);
       if (fileType === 'image') {
         this.imageFile = file;
         this.generateImagePreview(file);

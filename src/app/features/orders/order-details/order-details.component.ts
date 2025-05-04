@@ -5,7 +5,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { OrderDto, OrderItemDto } from '../../../core/models/order';
 import { OrdersService } from '../../../core/services/orders/orders.service';
 import { environment } from '../../../environments/environment';
@@ -26,6 +26,15 @@ import { MatTooltipModule } from '@angular/material/tooltip';
   styleUrl: './order-details.component.scss',
 })
 export class OrderDetailsComponent implements OnInit {
+  private snackBar = inject(MatSnackBar);
+  private orderService = inject(OrdersService);
+  private route = inject(ActivatedRoute);
+    private router = inject(Router);
+
+  order!: OrderDto;
+  orderItems: OrderItemDto[] = [];
+  isLoading = true;
+
   ngOnInit(): void {
     const orderId = this.route.snapshot.paramMap.get('id');
     if (orderId) {
@@ -33,24 +42,16 @@ export class OrderDetailsComponent implements OnInit {
         next: (order) => {
           this.order = order;
           this.orderItems = order.items;
+          this.isLoading = false;
         },
         error: (err) => {
           console.error('Failed to load order:', err);
-        },
-        complete: () => {
+          this.router.navigate(['/not-found']);
           this.isLoading = false;
         },
       });
     }
   }
-
-  private snackBar = inject(MatSnackBar);
-  private orderService = inject(OrdersService);
-  private route = inject(ActivatedRoute);
-
-  order!: OrderDto;
-  orderItems: OrderItemDto[] = [];
-  isLoading = true;
 
   cancelOrder(order: OrderDto) {
     if (!confirm('هل أنت متأكد من إلغاء الطلب؟')) return;

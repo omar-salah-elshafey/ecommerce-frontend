@@ -8,16 +8,16 @@
 
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
       <mat-form-field appearance="outline">
-        <mat-label>البريد الإلكتروني أو اسم المستخدم</mat-label>
+        <mat-label>البريد الإلكتروني</mat-label>
         <input
           matInput
-          formControlName="emailOrUserName"
+          formControlName="email"
           type="text"
           required
           appTrimInput
         />
         <mat-error
-          *ngIf="loginForm.get('emailOrUserName')?.hasError('required')"
+          *ngIf="loginForm.get('email')?.hasError('required')"
         >
           هذا الحقل مطلوب
         </mat-error>

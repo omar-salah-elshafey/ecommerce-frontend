@@ -108,7 +108,9 @@ export class ProductsComponent implements OnInit {
     const documentHeight = document.documentElement.scrollHeight;
     const scrollTop = window.scrollY || document.documentElement.scrollTop;
 
-    if (windowHeight + scrollTop >= documentHeight - 100 && this.hasMore) {
+    const offset = this.isMobile ? 500 : 100;
+
+    if (windowHeight + scrollTop >= documentHeight - offset && this.hasMore) {
       this.loadMore$.next();
     }
   }

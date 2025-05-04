@@ -60,6 +60,13 @@
   }
 }
 
+.progress-container {
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
 $primary-color: #007bff;
 $hover-color: #0056b3;
 .new-post-form {
@@ -194,42 +201,6 @@ $hover-color: #0056b3;
 
     i {
       margin-right: 5px;
-    }
-  }
-}
-
-.reading-time-selector {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  margin-bottom: 1.5rem;
-
-  @media (max-width: 400px) {
-    flex-direction: column;
-  }
-
-  label {
-    font-size: 1.1rem;
-    font-weight: bold;
-  }
-
-  .quantity-control {
-    display: flex;
-    align-items: center;
-    background: #f9f9f9;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    padding: 0.2rem 0.5rem;
-
-    button {
-      margin: 0 0.5rem;
-    }
-
-    .quantity-value {
-      font-size: 1rem;
-      font-weight: bold;
-      min-width: 30px;
-      text-align: center;
     }
   }
 }
