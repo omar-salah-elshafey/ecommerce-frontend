@@ -115,3 +115,169 @@
     padding: 1rem;
   }
 }
+
+// Delete Dialog Styles
+.delete-dialog-container {
+  margin: 0 auto;
+  padding: 1.5rem;
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  animation: fadeIn 0.3s ease-in-out;
+
+  .delete-dialog-title {
+    text-align: center;
+    font-size: 1.5rem;
+    color: #ef5350;
+    margin-bottom: 1rem;
+    display: block;
+  }
+
+  .delete-dialog-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 1rem 0;
+
+    .delete-warning-icon {
+      transform: scale(3);
+      color: #ef5350;
+      margin-bottom: 1.25rem;
+    }
+
+    .delete-confirmation-text {
+      font-size: 1.1rem;
+      color: #333;
+      margin-bottom: 2rem;
+      line-height: 1.6;
+      padding: 0 1rem;
+    }
+
+    .delete-password-form {
+      width: 100%;
+
+      .password-field {
+        width: 100%;
+
+        .password-toggle {
+          cursor: pointer;
+          color: rgba(0, 0, 0, 0.54);
+
+          &:hover {
+            color: rgba(0, 0, 0, 0.87);
+          }
+        }
+      }
+    }
+  }
+
+  .delete-dialog-actions {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: space-between;
+    padding: 1rem 0;
+
+    button {
+      flex: 1 1 45%;
+      min-width: 120px;
+      font-weight: 600;
+      padding: 0.75rem;
+
+      &.confirm-button {
+        background-color: #ef5350;
+        color: white;
+
+        &:hover {
+          background-color: #e53935;
+        }
+
+        &:disabled {
+          opacity: 0.6;
+        }
+      }
+
+      &.cancel-button {
+        color: #333;
+      }
+    }
+  }
+}
+
+// Responsive Adjustments
+@media (max-width: 600px) {
+  .delete-dialog-container {
+    padding: 1rem;
+    width: 100%;
+
+    .delete-dialog-title {
+      font-size: 1.25rem;
+    }
+
+    .delete-dialog-content {
+      .delete-confirmation-text {
+        font-size: 1rem;
+        margin-bottom: 1.5rem;
+      }
+    }
+
+    .delete-dialog-actions {
+      flex-direction: column-reverse;
+
+      button {
+        width: 100%;
+        margin: 0.5rem 0;
+      }
+    }
+  }
+
+  // Mobile-specific form field adjustments
+  .delete-dialog-container mat-form-field {
+    width: 100%;
+
+    .mat-form-field-infix {
+      width: 100%;
+    }
+  }
+}
+
+// Additional Visual Enhancements
+// .delete-dialog-container {
+//   @keyframes fadeIn {
+//     from {
+//       opacity: 0;
+//       transform: translateY(-10px);
+//     }
+//     to {
+//       opacity: 1;
+//       transform: translateY(0);
+//     }
+//   }
+
+//   transition: all 0.3s ease;
+
+//   &:hover {
+//     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+//   }
+
+//   // Add subtle glow on focus
+//   &:focus-within {
+//     box-shadow: 0 0 0 3px rgba(239, 83, 80, 0.3);
+//   }
+// }
+
+// Accessibility Enhancements
+// .delete-dialog-container {
+//   // Ensure sufficient contrast
+//   .delete-warning-icon {
+//     filter: saturate(1.2) contrast(1.1);
+//   }
+
+//   // Touch target size for mobile
+//   @media (max-width: 768px) {
+//     .confirm-button,
+//     .cancel-button {
+//       min-height: 48px;
+//     }
+//   }
+// }

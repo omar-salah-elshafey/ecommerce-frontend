@@ -3,7 +3,7 @@ import { MaritalStatus, Role } from './auth';
 export interface UserDto {
   firstName: string;
   lastName: string;
-  userName: string;
+  userId: string;
   email: string;
   role: string;
   gender: string;
@@ -18,11 +18,12 @@ export interface UpdateUserDto {
 }
 
 export interface DeleteProfile {
-  userName: string;
-  refreshToken: string;
+  userId: string;
+  refreshToken?: string;
+  password?: string;
 }
 
 export interface ChangeUserRoleDto {
-  userName: string;
+  userId: string;
   role: Role;
 }

@@ -4,7 +4,6 @@
       <tr>
         <th>الاسم الأول</th>
         <th>الاسم الأخير</th>
-        <th>اسم المستخدم</th>
         <th>البريد الإلكتروني</th>
         <th>الصلاحية</th>
         <th>النوع</th>
@@ -19,7 +18,7 @@
         <td>
           <ng-container
             *ngIf="
-              editingUserName !== user.userName || !updateProfileMode;
+              editingUserId !== user.userId || !updateProfileMode;
               else editFirstName
             "
           >
@@ -50,7 +49,7 @@
         <td>
           <ng-container
             *ngIf="
-              editingUserName !== user.userName || !updateProfileMode;
+              editingUserId !== user.userId || !updateProfileMode;
               else editLastName
             "
           >
@@ -78,12 +77,11 @@
             </form>
           </ng-template>
         </td>
-        <td>{{ user.userName }}</td>
         <td>{{ user.email }}</td>
         <td>
           <ng-container
             *ngIf="
-              editingUserName !== user.userName || !changeRoleMode;
+              editingUserId !== user.userId || !changeRoleMode;
               else editRole
             "
           >
@@ -106,7 +104,7 @@
         <!-- <td>
           <ng-container
             *ngIf="
-              editingUserName !== user.userName || !updateProfileMode;
+              editingUserId !== user.userId || !updateProfileMode;
               else editMaritalStatus
             "
           >
@@ -137,7 +135,7 @@
         <td>
           <ng-container
             *ngIf="
-              editingUserName !== user.userName || !updateProfileMode;
+              editingUserId !== user.userId || !updateProfileMode;
               else editHasChildren
             "
           >
@@ -157,7 +155,7 @@
         <td>
           <ng-container
             *ngIf="
-              editingUserName !== user.userName || !updateProfileMode;
+              editingUserId !== user.userId || !updateProfileMode;
               else editChildrenCount
             "
           >
@@ -196,7 +194,7 @@
           </ng-template>
         </td> -->
         <td>
-          <div class="actions" *ngIf="editingUserName !== user.userName">
+          <div class="actions" *ngIf="editingUserId !== user.userId">
             <button
               mat-raised-button
               color="primary"
@@ -209,9 +207,10 @@
               color="primary"
               (click)="startEditRole(user)"
               [disabled]="
-                (authService.isAdmin$ | async) &&
-                (user.role.toLowerCase() === 'admin' ||
-                  user.role.toLowerCase() === 'superadmin')
+                ((authService.isAdmin$ | async) &&
+                  (user.role.toLowerCase() === 'admin' ||
+                    user.role.toLowerCase() === 'superadmin')) ||
+                authService.currentUserId === user.userId
               "
             >
               تغيير الصلاحية
@@ -219,19 +218,25 @@
             <button
               mat-raised-button
               color="warn"
-              (click)="onDeleteAccount(user.userName)"
+              (click)="onDeleteAccount(user.userId)"
+              [disabled]="
+                ((authService.isAdmin$ | async) &&
+                  (user.role.toLowerCase() === 'admin' ||
+                    user.role.toLowerCase() === 'superadmin')) ||
+                authService.currentUserId === user.userId
+              "
             >
               حذف
             </button>
           </div>
           <div
             class="role-actions"
-            *ngIf="editingUserName === user.userName && changeRoleMode"
+            *ngIf="editingUserId === user.userId && changeRoleMode"
           >
             <button
               mat-raised-button
               color="primary"
-              (click)="saveRoleChange(user.userName)"
+              (click)="saveRoleChange(user.userId)"
             >
               حفظ التغييرات
             </button>
@@ -241,12 +246,12 @@
           </div>
           <div
             class="profile-actions"
-            *ngIf="editingUserName === user.userName && updateProfileMode"
+            *ngIf="editingUserId === user.userId && updateProfileMode"
           >
             <button
               mat-raised-button
               color="primary"
-              (click)="saveProfileChanges(user.userName)"
+              (click)="saveProfileChanges(user.userId)"
             >
               حفظ البيانات
             </button>
@@ -265,7 +270,7 @@
         <span class="card-label">الاسم الأول:</span>
         <ng-container
           *ngIf="
-            editingUserName !== user.userName || !updateProfileMode;
+            editingUserId !== user.userId || !updateProfileMode;
             else editFirstNameCard
           "
         >
@@ -295,7 +300,7 @@
         <span class="card-label">الاسم الأخير:</span>
         <ng-container
           *ngIf="
-            editingUserName !== user.userName || !updateProfileMode;
+            editingUserId !== user.userId || !updateProfileMode;
             else editLastNameCard
           "
         >
@@ -320,10 +325,6 @@
         </ng-template>
       </div>
       <div class="card-item">
-        <span class="card-label">اسم المستخدم:</span
-        ><span>{{ user.userName }}</span>
-      </div>
-      <div class="card-item">
         <span class="card-label">البريد الإلكتروني:</span
         ><span>{{ user.email }}</span>
       </div>
@@ -331,7 +332,7 @@
         <span class="card-label">الصلاحية:</span>
         <ng-container
           *ngIf="
-            editingUserName !== user.userName || !changeRoleMode;
+            editingUserId !== user.userId || !changeRoleMode;
             else editRoleCard
           "
         >
@@ -354,7 +355,7 @@
         <span class="card-label">الحالة الاجتماعية:</span>
         <ng-container
           *ngIf="
-            editingUserName !== user.userName || !updateProfileMode;
+            editingUserId !== user.userId || !updateProfileMode;
             else editMaritalStatusCard
           "
         >
@@ -386,7 +387,7 @@
         <span class="card-label">لديه أطفال:</span>
         <ng-container
           *ngIf="
-            editingUserName !== user.userName || !updateProfileMode;
+            editingUserId !== user.userId || !updateProfileMode;
             else editHasChildrenCard
           "
         >
@@ -407,7 +408,7 @@
         <span class="card-label">عدد الأطفال:</span>
         <ng-container
           *ngIf="
-            editingUserName !== user.userName || !updateProfileMode;
+            editingUserId !== user.userId || !updateProfileMode;
             else editChildrenCountCard
           "
         >
@@ -444,7 +445,7 @@
         </ng-template>
       </div> -->
       <div class="card-item">
-        <div class="actions" *ngIf="editingUserName !== user.userName">
+        <div class="actions" *ngIf="editingUserId !== user.userId">
           <button
             mat-raised-button
             color="primary"
@@ -456,25 +457,37 @@
             mat-raised-button
             color="primary"
             (click)="startEditRole(user)"
+            [disabled]="
+              ((authService.isAdmin$ | async) &&
+                (user.role.toLowerCase() === 'admin' ||
+                  user.role.toLowerCase() === 'superadmin')) ||
+              authService.currentUserId === user.userId
+            "
           >
             تغيير الصلاحية
           </button>
           <button
             mat-raised-button
             color="warn"
-            (click)="onDeleteAccount(user.userName)"
+            (click)="onDeleteAccount(user.userId)"
+            [disabled]="
+              ((authService.isAdmin$ | async) &&
+                (user.role.toLowerCase() === 'admin' ||
+                  user.role.toLowerCase() === 'superadmin')) ||
+              authService.currentUserId === user.userId
+            "
           >
             حذف
           </button>
         </div>
         <div
           class="profile-actions"
-          *ngIf="editingUserName === user.userName && updateProfileMode"
+          *ngIf="editingUserId === user.userId && updateProfileMode"
         >
           <button
             mat-raised-button
             color="primary"
-            (click)="saveProfileChanges(user.userName)"
+            (click)="saveProfileChanges(user.userId)"
           >
             حفظ البيانات
           </button>
@@ -484,12 +497,12 @@
         </div>
         <div
           class="role-actions"
-          *ngIf="editingUserName === user.userName && changeRoleMode"
+          *ngIf="editingUserId === user.userId && changeRoleMode"
         >
           <button
             mat-raised-button
             color="primary"
-            (click)="saveRoleChange(user.userName)"
+            (click)="saveRoleChange(user.userId)"
           >
             حفظ التغييرات
           </button>

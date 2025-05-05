@@ -2,6 +2,7 @@ import { Component, HostListener, OnInit } from '@angular/core';
 import { UserProfileService } from '../../../core/services/userProfile/user-profile.service';
 import {
   ChangeUserRoleDto,
+  DeleteProfile,
   UpdateUserDto,
   UserDto,
 } from '../../../core/models/user';
@@ -49,7 +50,7 @@ export class UsersComponent implements OnInit {
   private hasMore: boolean = true;
   isLoading: boolean = false;
 
-  editingUserName: string | null = null;
+  editingUserId: string | null = null;
   selectedRole: Role | null = null;
 
   changeRoleMode: boolean = false;
@@ -118,12 +119,11 @@ export class UsersComponent implements OnInit {
     });
   }
 
-  onDeleteAccount(userName: string) {
+  onDeleteAccount(userId: string) {
     if (!confirm('هل أنت متأكد من حذف الحساب')) return;
 
-    const userData = {
-      userName: userName,
-      refreshToken: this.cookieService.get('refreshToken'),
+    const userData: DeleteProfile = {
+      userId: userId,
     };
     this.isLoading = true;
     this.userService.deleteProfile(userData).subscribe({
@@ -134,7 +134,7 @@ export class UsersComponent implements OnInit {
           horizontalPosition: 'center',
         });
         this.isLoading = false;
-        this.users = this.users.filter((user) => user.userName !== userName);
+        this.users = this.users.filter((user) => user.userId !== userId);
       },
       error: (error) => {
         console.error('Error deleting user:', error);
@@ -150,7 +150,7 @@ export class UsersComponent implements OnInit {
 
   startEditRole(user: UserDto) {
     this.resetEditState();
-    this.editingUserName = user.userName;
+    this.editingUserId = user.userId;
     this.changeRoleMode = true;
     switch (user.role.toLowerCase()) {
       case 'user':
@@ -171,7 +171,7 @@ export class UsersComponent implements OnInit {
     }
   }
 
-  saveRoleChange(userName: string) {
+  saveRoleChange(userId: string) {
     if (this.selectedRole === null) {
       this.snackBar.open('يرجى اختيار صلاحية!', 'إغلاق', {
         duration: 3000,
@@ -182,13 +182,13 @@ export class UsersComponent implements OnInit {
     }
 
     const userData: ChangeUserRoleDto = {
-      userName: userName,
+      userId: userId,
       role: this.selectedRole,
     };
     this.isLoading = true;
     this.userService.changeUserRole(userData).subscribe({
       next: (response) => {
-        const user = this.users.find((u) => u.userName === userName);
+        const user = this.users.find((u) => u.userId === userId);
         if (user) {
           user.role = this.mapRoleToString(this.selectedRole);
           this.users = [...this.users];
@@ -215,7 +215,7 @@ export class UsersComponent implements OnInit {
 
   startEditProfile(user: UserDto) {
     this.resetEditState();
-    this.editingUserName = user.userName;
+    this.editingUserId = user.userId;
     this.updateProfileMode = true;
 
     this.updateProfileForm.patchValue({
@@ -253,7 +253,7 @@ export class UsersComponent implements OnInit {
 
     this.userService.updateProfile(userName, userData).subscribe({
       next: (response) => {
-        const userIndex = this.users.findIndex((u) => u.userName === userName);
+        const userIndex = this.users.findIndex((u) => u.userId === userName);
         if (userIndex !== -1) {
           this.users[userIndex] = { ...this.users[userIndex], ...response };
         }
@@ -279,7 +279,7 @@ export class UsersComponent implements OnInit {
   }
 
   resetEditState(): void {
-    this.editingUserName = null;
+    this.editingUserId = null;
     this.changeRoleMode = false;
     this.updateProfileMode = false;
     this.selectedRole = null;

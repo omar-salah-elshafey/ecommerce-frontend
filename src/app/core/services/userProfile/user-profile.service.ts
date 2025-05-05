@@ -22,19 +22,17 @@ export class UserProfileService {
   }
 
   updateProfile(
-    userName: string,
+    userId: string,
     updateUserDto: UpdateUserDto
   ): Observable<UserDto> {
     return this.http.put<any>(
-      `${this.baseUrl}/update-user/${userName}`,
+      `${this.baseUrl}/update-user/${userId}`,
       updateUserDto
     );
   }
 
   deleteProfile(userData: DeleteProfile) {
-    return this.http.delete(
-      `${this.baseUrl}/delete-user/${userData.userName}?refreshToken=${userData.refreshToken}`
-    );
+    return this.http.delete(`${this.baseUrl}/delete-user`, { body: userData });
   }
 
   getAllUsers(

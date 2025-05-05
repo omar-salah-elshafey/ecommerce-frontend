@@ -44,7 +44,6 @@
       <thead>
         <tr>
           <th>الاسم الكامل</th>
-          <th>اسم المستخدم</th>
           <th>البريد الإلكتروني</th>
           <th>الصلاحية</th>
         </tr>
@@ -52,7 +51,6 @@
       <tbody>
         <tr *ngFor="let user of recentUsers">
           <td>{{ user.firstName }} {{ user.lastName }}</td>
-          <td>{{ user.userName }}</td>
           <td>{{ user.email }}</td>
           <td>{{ translateRole(user.role) }}</td>
         </tr>
@@ -63,10 +61,6 @@
       <div class="card-item">
         <span class="card-label">الاسم:</span>
         <span class="card-value">{{ user.firstName }} {{ user.lastName }}</span>
-      </div>
-      <div class="card-item">
-        <span class="card-label">اسم المستخدم:</span>
-        <span class="card-value">{{ user.userName }}</span>
       </div>
       <div class="card-item">
         <span class="card-label">البريد الإلكتروني:</span>

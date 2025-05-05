@@ -1,6 +1,6 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { UserProfileService } from '../../core/services/userProfile/user-profile.service';
-import { UpdateUserDto, UserDto } from '../../core/models/user';
+import { DeleteProfile, UpdateUserDto, UserDto } from '../../core/models/user';
 import { CommonModule } from '@angular/common';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatListModule } from '@angular/material/list';
@@ -25,7 +25,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
-import { MatDialogModule } from '@angular/material/dialog';
+import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MaritalStatus } from '../../core/models/auth';
 import { PasswordService } from '../../core/services/password/password.service';
 
@@ -53,12 +53,11 @@ import { PasswordService } from '../../core/services/password/password.service';
   styleUrls: ['./profile.component.scss'],
 })
 export class ProfileComponent implements OnInit {
+  @ViewChild('deleteDialog') deleteDialog!: TemplateRef<any>;
   hideOldPassword = true;
   hideNewPassword = true;
   hideConfirmNewPassword = true;
-  ngOnInit(): void {
-    this.getCurrentUserProfile();
-  }
+  hideDeletePassword = true;
   userProfile!: UserDto;
   loading = true;
   error: string | null = null;
@@ -66,14 +65,28 @@ export class ProfileComponent implements OnInit {
   changePasswordMode = false;
   updateProfileForm!: FormGroup;
   changePasswordForm!: FormGroup;
+  deleteForm!: FormGroup;
+  dialogRef: MatDialogRef<any> | null = null;
   private userProfileService = inject(UserProfileService);
-  private authService = inject(AuthService);
+  authService = inject(AuthService);
   private snackBar = inject(MatSnackBar);
   private router = inject(Router);
   private cookieService = inject(CookieService);
   private cartService = inject(CartService);
   private formBuilder = inject(FormBuilder);
   private passwordService = inject(PasswordService);
+  private dialog = inject(MatDialog);
+
+  ngOnInit(): void {
+    this.getCurrentUserProfile();
+    this.initializeDeleteForm();
+  }
+
+  initializeDeleteForm() {
+    this.deleteForm = this.formBuilder.group({
+      password: ['', Validators.required],
+    });
+  }
 
   getCurrentUserProfile() {
     this.userProfileService.getCurrentUserProfile().subscribe({
@@ -155,7 +168,7 @@ export class ProfileComponent implements OnInit {
       // childrenCount: this.updateProfileForm.value.childrenCount,
     };
     this.userProfileService
-      .updateProfile(this.userProfile.userName, userData)
+      .updateProfile(this.userProfile.userId, userData)
       .subscribe({
         next: (response) => {
           this.userProfile = response;
@@ -231,11 +244,17 @@ export class ProfileComponent implements OnInit {
   toggleOldPasswordVisibility(): void {
     this.hideOldPassword = !this.hideOldPassword;
   }
+
   toggleNewPasswordVisibility(): void {
     this.hideNewPassword = !this.hideNewPassword;
   }
+
   toggleConfirmNewPasswordVisibility(): void {
     this.hideConfirmNewPassword = !this.hideConfirmNewPassword;
+  }
+
+  toggleDeletePasswordVisibility(): void {
+    this.hideDeletePassword = !this.hideDeletePassword;
   }
 
   onChangePassword() {
@@ -279,11 +298,62 @@ export class ProfileComponent implements OnInit {
     this.changePasswordMode = false;
   }
 
+  openDeleteDialog() {
+    this.dialogRef = this.dialog.open(this.deleteDialog, {
+      width: '400px',
+      disableClose: true,
+      direction: 'rtl',
+    });
+  }
+
+  closeDeleteDialog() {
+    if (this.dialogRef) {
+      this.dialogRef.close();
+      this.dialogRef = null;
+      this.deleteForm.reset();
+    }
+  }
+
+  confirmDelete() {
+    if (this.deleteForm.invalid) return;
+
+    const userData: DeleteProfile = {
+      userId: this.userProfile.userId,
+      refreshToken: this.cookieService.get('refreshToken'),
+      password: this.deleteForm.get('password')?.value,
+    };
+
+    this.userProfileService.deleteProfile(userData).subscribe({
+      next: () => {
+        this.authService.logout().subscribe();
+        this.cartService.clearCart();
+        this.router.navigate(['/home']);
+        this.snackBar.open('تم حذف الملف الشخصي', 'إغلاق', {
+          duration: 3000,
+          verticalPosition: 'top',
+          horizontalPosition: 'center',
+        });
+        this.closeDeleteDialog();
+      },
+      error: (error) => {
+        this.snackBar.open(
+          error.error?.error || 'خطأ أثناء حذف الحساب',
+          'إغلاق',
+          {
+            duration: 3000,
+            verticalPosition: 'top',
+            horizontalPosition: 'center',
+          }
+        );
+      },
+    });
+  }
+
   onDeleteAccount() {
     if (!confirm('هل أنت متأكد من حذف الحساب')) return;
 
-    const userData = {
-      userName: this.userProfile.userName,
+    const userData: DeleteProfile = {
+      userId: this.userProfile.userId,
       refreshToken: this.cookieService.get('refreshToken'),
     };
     this.userProfileService.deleteProfile(userData).subscribe({

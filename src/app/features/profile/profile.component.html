@@ -18,7 +18,11 @@
           <mat-icon>vpn_key</mat-icon>
           <span>تغيير كلمة السر</span>
         </button>
-        <button mat-menu-item (click)="onDeleteAccount()">
+        <button
+          mat-menu-item
+          [disabled]="authService.isSuperAdmin$ | async"
+          (click)="openDeleteDialog()"
+        >
           <mat-icon>delete_forever</mat-icon>
           <span>حذف الحساب</span>
         </button>
@@ -38,6 +42,11 @@
           <span class="title">النوع: </span>
           <span class="value">{{ translateGender(userProfile.gender) }}</span>
         </mat-list-item>
+
+        <mat-list-item>
+          <span class="title">البريد الإلكتروني: </span>
+          <span class="value">{{ userProfile.email }}</span>
+        </mat-list-item>
       </mat-list>
 
       <!-- <mat-divider></mat-divider>
@@ -55,18 +64,6 @@
         </mat-list-item>
       </mat-list> -->
 
-      <mat-divider></mat-divider>
-      <mat-list>
-        <mat-list-item>
-          <span class="title">اسم المستخدم: </span>
-          <span class="value">{{ userProfile.userName }}</span>
-        </mat-list-item>
-
-        <mat-list-item>
-          <span class="title">البريد الإلكتروني: </span>
-          <span class="value">{{ userProfile.email }}</span>
-        </mat-list-item>
-      </mat-list>
       <mat-card-actions>
         <button
           mat-raised-button
@@ -78,6 +75,58 @@
       </mat-card-actions>
     </mat-card-content>
   </mat-card>
+
+  <ng-template #deleteDialog>
+    <div class="delete-dialog-container">
+      <h2 mat-dialog-title class="delete-dialog-title">تأكيد حذف الحساب</h2>
+
+      <mat-dialog-content class="delete-dialog-content">
+        <mat-icon class="delete-warning-icon">warning</mat-icon>
+
+        <p class="delete-confirmation-text">
+          هل أنت متأكد من حذف حسابك؟ هذا الإجراء لا رجعة فيه وسيؤدي إلى فقدان
+          جميع بياناتك.
+        </p>
+
+        <form [formGroup]="deleteForm" class="delete-password-form">
+          <mat-form-field appearance="outline" class="password-field">
+            <mat-label>كلمة المرور</mat-label>
+            <input
+              matInput
+              [type]="hideDeletePassword ? 'password' : 'text'"
+              formControlName="password"
+              required
+            />
+            <mat-icon
+              matSuffix
+              (click)="toggleDeletePasswordVisibility()"
+              class="password-toggle"
+            >
+              {{ hideDeletePassword ? "visibility" : "visibility_off" }}
+            </mat-icon>
+            <mat-error *ngIf="deleteForm.get('password')?.hasError('required')">
+              كلمة المرور مطلوبة
+            </mat-error>
+          </mat-form-field>
+        </form>
+      </mat-dialog-content>
+
+      <mat-dialog-actions class="delete-dialog-actions">
+        <button mat-button class="cancel-button" (click)="closeDeleteDialog()">
+          إلغاء
+        </button>
+        <button
+          mat-raised-button
+          color="warn"
+          class="confirm-button"
+          [disabled]="deleteForm.invalid"
+          (click)="confirmDelete()"
+        >
+          تأكيد الحذف
+        </button>
+      </mat-dialog-actions>
+    </div>
+  </ng-template>
 
   <mat-card *ngIf="!loading && !error && updateMode && !changePasswordMode">
     <mat-card-header>

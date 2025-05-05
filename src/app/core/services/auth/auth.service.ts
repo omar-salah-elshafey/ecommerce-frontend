@@ -71,7 +71,12 @@ export class AuthService {
 
   get currentUserName(): string | null {
     const user = this.currentUserSubject.value;
-    return user ? user.userName : null;
+    return user ? `${user.firstName} ${user.lastName}` : null;
+  }
+
+  get currentUserId(): string {
+    const user = this.currentUserSubject.value;
+    return user.userId;
   }
 
   get isAdmin$(): Observable<boolean> {
