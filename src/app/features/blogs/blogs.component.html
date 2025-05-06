@@ -1,73 +1,77 @@
-<div class="main-container">
-  <div class="blogs-page">
-    <div
-      *ngIf="
-        (authService.isAdmin$ | async) || (authService.isSuperAdmin$ | async)
-      "
-      class="new-post-form"
-    >
-      <form [formGroup]="postForm">
-        <mat-form-field appearance="outline">
-          <mat-label> العنوان </mat-label>
+<div class="blogs-page">
+  <div
+    *ngIf="
+      (authService.isAdmin$ | async) || (authService.isSuperAdmin$ | async)
+    "
+    class="new-post-form"
+  >
+    <form [formGroup]="postForm">
+      <mat-form-field appearance="outline">
+        <mat-label> العنوان </mat-label>
+        <input
+          matInput
+          id="title"
+          formControlName="title"
+          placeholder="العنوان"
+        />
+        <mat-error *ngIf="postForm.get('title')?.hasError('required')">
+          هذا الحقل مطلوب.
+        </mat-error>
+        <mat-error *ngIf="postForm.get('title')?.hasError('minlength')">
+          يجب أن يكون العنوان على الأقل 1 حرف.
+        </mat-error>
+        <mat-error *ngIf="postForm.get('title')?.hasError('maxlength')">
+          لا يمكن أن يتجاوز العنوان 200 حرف.
+        </mat-error>
+        <mat-error *ngIf="postForm.get('title')?.hasError('pattern')">
+          لا يمكن أن يكون العنوان فارغًا أو يحتوي على مسافات فقط.
+        </mat-error>
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label> المحتوى </mat-label>
+        <textarea
+          id="content"
+          matInput
+          rows="5"
+          formControlName="content"
+          placeholder="المحتوى"
+        ></textarea>
+        <mat-error *ngIf="postForm.get('content')?.hasError('required')">
+          هذا الحقل مطلوب.
+        </mat-error>
+        <mat-error *ngIf="postForm.get('content')?.hasError('minlength')">
+          يجب أن يكون العنوان على الأقل 1 حرف.
+        </mat-error>
+        <mat-error *ngIf="postForm.get('content')?.hasError('maxlength')">
+          لا يمكن أن يتجاوز العنوان 200 حرف.
+        </mat-error>
+        <mat-error *ngIf="postForm.get('content')?.hasError('pattern')">
+          لا يمكن أن يكون العنوان فارغًا أو يحتوي على مسافات فقط.
+        </mat-error>
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label> فيديو يوتيوب </mat-label>
+        <input
+          matInput
+          id="videoUrl"
+          formControlName="videoUrl"
+          placeholder="فيديو يوتيوب"
+        />
+      </mat-form-field>
+
+      <div class="upload-container">
+        <label *ngIf="!imageFile" class="upload-btn" [class.disabled]="posting">
+          <mat-icon>image</mat-icon>
           <input
-            matInput
-            id="title"
-            formControlName="title"
-            placeholder="العنوان"
+            #imageInput
+            type="file"
+            (change)="onFileSelected($event, 'image')"
+            accept="image/*"
+            [disabled]="posting"
           />
-          <mat-error *ngIf="postForm.get('title')?.hasError('required')">
-            هذا الحقل مطلوب.
-          </mat-error>
-          <mat-error *ngIf="postForm.get('title')?.hasError('minlength')">
-            يجب أن يكون العنوان على الأقل 1 حرف.
-          </mat-error>
-          <mat-error *ngIf="postForm.get('title')?.hasError('maxlength')">
-            لا يمكن أن يتجاوز العنوان 200 حرف.
-          </mat-error>
-          <mat-error *ngIf="postForm.get('title')?.hasError('pattern')">
-            لا يمكن أن يكون العنوان فارغًا أو يحتوي على مسافات فقط.
-          </mat-error>
-        </mat-form-field>
-        <mat-form-field appearance="outline">
-          <mat-label> المحتوى </mat-label>
-          <textarea
-            id="content"
-            matInput
-            rows="5"
-            formControlName="content"
-            placeholder="المحتوى"
-          ></textarea>
-          <mat-error *ngIf="postForm.get('content')?.hasError('required')">
-            هذا الحقل مطلوب.
-          </mat-error>
-          <mat-error *ngIf="postForm.get('content')?.hasError('minlength')">
-            يجب أن يكون العنوان على الأقل 1 حرف.
-          </mat-error>
-          <mat-error *ngIf="postForm.get('content')?.hasError('maxlength')">
-            لا يمكن أن يتجاوز العنوان 200 حرف.
-          </mat-error>
-          <mat-error *ngIf="postForm.get('content')?.hasError('pattern')">
-            لا يمكن أن يكون العنوان فارغًا أو يحتوي على مسافات فقط.
-          </mat-error>
-        </mat-form-field>
+        </label>
 
-        <div class="upload-container">
-          <label
-            *ngIf="!imageFile"
-            class="upload-btn"
-            [class.disabled]="posting"
-          >
-            <mat-icon>image</mat-icon>
-            <input
-              #imageInput
-              type="file"
-              (change)="onFileSelected($event, 'image')"
-              accept="image/*"
-              [disabled]="posting"
-            />
-          </label>
-
-          <label
+        <!-- <label
             *ngIf="!videoFile"
             class="upload-btn"
             [class.disabled]="posting"
@@ -80,30 +84,30 @@
               accept="video/*"
               [disabled]="posting"
             />
-          </label>
+          </label> -->
+      </div>
+
+      <div class="selected-files">
+        <div *ngIf="imageFile" class="file-preview">
+          <div class="preview-container">
+            <img
+              [src]="imagePreviewUrl"
+              [alt]="imageFile.name"
+              class="preview-image"
+            />
+          </div>
+          <button
+            type="button"
+            class="remove-file"
+            (click)="removeFile('image')"
+            [disabled]="posting"
+            [class.disabled]="posting"
+          >
+            &times;
+          </button>
         </div>
 
-        <div class="selected-files">
-          <div *ngIf="imageFile" class="file-preview">
-            <div class="preview-container">
-              <img
-                [src]="imagePreviewUrl"
-                [alt]="imageFile.name"
-                class="preview-image"
-              />
-            </div>
-            <button
-              type="button"
-              class="remove-file"
-              (click)="removeFile('image')"
-              [disabled]="posting"
-              [class.disabled]="posting"
-            >
-              &times;
-            </button>
-          </div>
-
-          <div *ngIf="videoFile" class="file-preview">
+        <!-- <div *ngIf="videoFile" class="file-preview">
             <div class="preview-container">
               <img
                 [src]="videoPreviewUrl"
@@ -120,30 +124,50 @@
             >
               &times;
             </button>
+          </div> -->
+      </div>
+
+      <div *ngIf="posting" class="progress-container">
+        <mat-progress-bar
+          mode="determinate"
+          [value]="uploadProgress"
+        ></mat-progress-bar>
+        <span>{{ uploadProgress }}%</span>
+      </div>
+
+      <button
+        class="btn"
+        type="submit"
+        [disabled]="postForm.invalid || posting"
+        (click)="onCreatePost()"
+      >
+        {{ posting ? "جاري النشر..." : "نشر" }}
+      </button>
+    </form>
+  </div>
+  <main class="blogs-grid">
+    <div *ngFor="let blog of blogs" @fadeIn class="blog-card">
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title>
+            <div *ngIf="blog.title.length >= 10">
+              {{ blog.title | slice : 0 : 10 }}...
+            </div>
+            <div *ngIf="blog.title.length < 10">{{ blog.title }}</div>
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <p class="excerpt" *ngIf="blog.content.length >= 30">
+            {{ blog.content | slice : 0 : 30 }}...
+          </p>
+          <p class="excerpt" *ngIf="blog.content.length < 30">
+            {{ blog.content }}
+          </p>
+          <div class="meta-info">
+            <span class="date">{{
+              blog.publishDate | date : "dd/MM/yyyy"
+            }}</span>
           </div>
-        </div>
-
-        <div *ngIf="posting" class="progress-container">
-          <mat-progress-bar
-            mode="determinate"
-            [value]="uploadProgress"
-          ></mat-progress-bar>
-          <span>{{ uploadProgress }}%</span>
-        </div>
-
-        <button
-          class="btn"
-          type="submit"
-          [disabled]="postForm.invalid || posting"
-          (click)="onCreatePost()"
-        >
-          {{ posting ? "جاري النشر..." : "نشر" }}
-        </button>
-      </form>
-    </div>
-    <main class="blogs-grid">
-      <div *ngFor="let blog of blogs" @fadeIn class="blog-card">
-        <mat-card>
           <div class="media" *ngIf="blog.imageUrl || blog.videoUrl">
             <img
               *ngIf="blog.imageUrl"
@@ -151,35 +175,30 @@
               [alt]="blog.title"
               class="blog-image"
             />
-            <video *ngIf="blog.videoUrl" class="blog-video" controls>
-              <source [src]="blog.videoUrl" />
-              متصفحك لا يدعم تشغيل الفيديو.
-            </video>
-          </div>
-          <mat-card-header>
-            <mat-card-title>{{ blog.title | slice : 0 : 10 }}</mat-card-title>
-          </mat-card-header>
-          <mat-card-content>
-            <div class="meta-info">
-              <span class="date">{{
-                blog.publishDate | date : "dd/MM/yyyy"
-              }}</span>
+            <div *ngIf="blog.videoUrl" class="video-container">
+              <iframe
+                [src]="getEmbedVideoUrl(blog.videoUrl) | safeUrl"
+                [title]="blog.title"
+                frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                referrerpolicy="strict-origin-when-cross-origin"
+                allowfullscreen
+              ></iframe>
             </div>
-            <p class="excerpt">{{ blog.content | slice : 0 : 30 }}...</p>
-          </mat-card-content>
-          <mat-card-actions>
-            <button
-              mat-raised-button
-              color="primary"
-              [routerLink]="['/blogs', blog.id]"
-            >
-              اقرأ المزيد
-            </button>
-          </mat-card-actions>
-        </mat-card>
-      </div>
-    </main>
-  </div>
+          </div>
+        </mat-card-content>
+        <mat-card-actions>
+          <button
+            mat-raised-button
+            color="primary"
+            [routerLink]="['/content', blog.id]"
+          >
+            اقرأ المزيد
+          </button>
+        </mat-card-actions>
+      </mat-card>
+    </div>
+  </main>
 </div>
 <div *ngIf="loading" class="loading-overlay">
   <mat-spinner diameter="50"></mat-spinner>

@@ -119,8 +119,8 @@ export class ProductsComponent implements OnInit {
   onResize() {
     this.isMobile = window.innerWidth <= 768;
     if (!this.isMobile) {
-      this.showFilters = false;
-    }
+      this.showFilters = true;
+    } else this.showFilters = false;
   }
 
   toggleFilters() {

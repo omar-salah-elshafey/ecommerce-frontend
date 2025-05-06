@@ -91,7 +91,6 @@ export class BlogService {
 
   private getFullUrl(post: PostDto): PostDto {
     if (post.imageUrl) post.imageUrl = `${environment.apiUrl}${post.imageUrl}`;
-    if (post.videoUrl) post.videoUrl = `${environment.apiUrl}${post.videoUrl}`;
     return post;
   }
 }

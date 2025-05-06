@@ -3,7 +3,9 @@
   flex-direction: column;
   gap: 2rem;
   padding: 1rem;
-  min-height: 100vh;
+  width: 90%;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 .blogs-grid {
@@ -17,13 +19,12 @@
 .blog-card {
   mat-card {
     transition: transform 0.3s ease;
-    height: 100%;
     display: flex;
     flex-direction: column;
     padding: 2rem;
 
     &:hover {
-      transform: translateY(-5px);
+      transform: translateY(-2px);
     }
     .meta-info {
       display: flex;
@@ -71,7 +72,7 @@ $primary-color: #007bff;
 $hover-color: #0056b3;
 .new-post-form {
   width: 100%;
-  margin: 20px auto;
+  margin: 0 auto;
   padding: 20px;
   border: 1px solid #ddd;
   border-radius: 10px;
@@ -205,8 +206,26 @@ $hover-color: #0056b3;
   }
 }
 
+@media (max-width: 430px) {
+  .blogs-page {
+    width: 100%;
+    gap: 1rem;
+    padding: 1rem 0.5rem;
+    mat-card {
+      padding: 0rem;
+    }
+  }
+}
+
 @media (max-width: 768px) {
   .blogs-page {
     flex-direction: column;
+    mat-card {
+      padding: 1rem 0.5rem;
+      .mat-mdc-card-header,
+      .mat-mdc-card-content {
+        padding: 0.5rem;
+      }
+    }
   }
 }

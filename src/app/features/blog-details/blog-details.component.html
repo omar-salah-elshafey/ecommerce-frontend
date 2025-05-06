@@ -1,27 +1,36 @@
 <div class="blog-details">
-  <button mat-raised-button routerLink="/blogs" class="back-button">
+  <button mat-raised-button routerLink="/content" class="back-button">
     <mat-icon>arrow_back</mat-icon>
-    العودة إلى المدونات
+    العودة إلى المحتوى
   </button>
 
   <ng-container *ngIf="blog as blog; else loading">
     <ng-container *ngIf="!isEditing">
       <mat-card>
-        <div class="admin-actions" *ngIf="authService.isAdmin$ | async">
-          <button mat-icon-button [matMenuTriggerFor]="adminMenu">
-            <mat-icon>more_vert</mat-icon>
-          </button>
-          <mat-menu #adminMenu="matMenu">
-            <button mat-menu-item (click)="startEditing()">
-              <mat-icon>edit</mat-icon>
-              <span>تعديل</span>
+        <mat-card-header>
+          <div
+            class="admin-actions"
+            *ngIf="
+              (authService.isAdmin$ | async) ||
+              (authService.isSuperAdmin$ | async)
+            "
+          >
+            <button mat-icon-button [matMenuTriggerFor]="adminMenu">
+              <mat-icon>more_vert</mat-icon>
             </button>
-            <button mat-menu-item (click)="deleteBlog()">
-              <mat-icon>delete</mat-icon>
-              <span>حذف</span>
-            </button>
-          </mat-menu>
-        </div>
+            <mat-menu #adminMenu="matMenu">
+              <button mat-menu-item (click)="startEditing()">
+                <mat-icon>edit</mat-icon>
+                <span>تعديل</span>
+              </button>
+              <button mat-menu-item (click)="deleteBlog()">
+                <mat-icon>delete</mat-icon>
+                <span>حذف</span>
+              </button>
+            </mat-menu>
+          </div>
+          <mat-card-title>{{ blog.title }}</mat-card-title>
+        </mat-card-header>
         <!-- Media Container -->
         <div class="media" *ngIf="blog.imageUrl || blog.videoUrl">
           <img
@@ -30,15 +39,18 @@
             [alt]="blog.title"
             class="blog-image"
           />
-          <video *ngIf="blog.videoUrl" class="blog-video" controls>
-            <source [src]="blog.videoUrl" />
-            متصفحك لا يدعم تشغيل الفيديو.
-          </video>
-        </div>
 
-        <mat-card-header>
-          <mat-card-title>{{ blog.title }}</mat-card-title>
-        </mat-card-header>
+          <div *ngIf="blog.videoUrl" class="video-container">
+            <iframe
+              [src]="getEmbedVideoUrl(blog.videoUrl) | safeUrl"
+              [title]="blog.title"
+              frameborder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              referrerpolicy="strict-origin-when-cross-origin"
+              allowfullscreen
+            ></iframe>
+          </div>
+        </div>
 
         <mat-card-content>
           <div class="meta-info">
@@ -51,7 +63,12 @@
         </mat-card-content>
       </mat-card>
     </ng-container>
-    <ng-container *ngIf="isEditing && (authService.isAdmin$ | async)">
+    <ng-container
+      *ngIf="
+        isEditing &&
+        ((authService.isAdmin$ | async) || (authService.isSuperAdmin$ | async))
+      "
+    >
       <div class="edit-post-form">
         <form [formGroup]="editForm">
           <mat-form-field appearance="outline">
@@ -97,6 +114,15 @@
               لا يمكن أن يكون العنوان فارغًا أو يحتوي على مسافات فقط.
             </mat-error>
           </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label> فيديو يوتيوب </mat-label>
+            <input
+              matInput
+              id="videoUrl"
+              formControlName="videoUrl"
+              placeholder="فيديو يوتيوب"
+            />
+          </mat-form-field>
 
           <div class="upload-container">
             <label
@@ -114,7 +140,7 @@
               />
             </label>
 
-            <label
+            <!-- <label
               *ngIf="!videoFile && !videoPreviewUrl"
               class="upload-btn"
               [class.disabled]="updating"
@@ -127,7 +153,7 @@
                 accept="video/*"
                 [disabled]="updating"
               />
-            </label>
+            </label> -->
           </div>
 
           <div class="selected-files">
@@ -150,7 +176,7 @@
               </button>
             </div>
 
-            <div *ngIf="videoFile || videoPreviewUrl" class="file-preview">
+            <!-- <div *ngIf="videoFile || videoPreviewUrl" class="file-preview">
               <div class="preview-container">
                 <video
                   *ngIf="!videoFile && videoPreviewUrl"
@@ -177,7 +203,7 @@
               >
                 ×
               </button>
-            </div>
+            </div> -->
           </div>
 
           <div class="form-actions">

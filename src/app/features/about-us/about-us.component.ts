@@ -29,10 +29,10 @@ export class AboutUsComponent {
   ];
 
   team = [
-    { name: 'محمد رضا', role: 'المالك', icon: 'person' },
-    { name: 'م. محمد طاهر', role: 'المدير التنفيذي', icon: 'person' },
+    { name: 'محمد رضا', role: 'شريك', icon: 'person' },
+    { name: 'م. محمد طاهر الشافعي', role: 'شريك', icon: 'person' },
     { name: 'محمد سمير', role: 'صانع محتوى', icon: 'person' },
-    { name: 'عمر الشافعي', role: 'مهندس برمجيات', icon: 'person' },
+    { name: 'عمر صلاح الشافعي', role: 'مهندس برمجيات', icon: 'person' },
   ];
 
   timeline = [

@@ -31,6 +31,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { HttpEvent, HttpEventType } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { SafeUrlPipe } from '../../shared/pipes/safeUrl-pipe/safe-url.pipe';
 
 @Component({
   selector: 'app-blogs',
@@ -47,6 +48,7 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
     MatIconModule,
     ReactiveFormsModule,
     MatProgressBarModule,
+    SafeUrlPipe,
   ],
   templateUrl: './blogs.component.html',
   styleUrls: ['./blogs.component.scss'],
@@ -61,7 +63,7 @@ export class BlogsComponent implements OnInit {
   blogs: PostDto[] = [];
   loading: boolean = true;
   currentPage: number = 1;
-  pageSize: number = 2;
+  pageSize: number = 20;
   totalItems: number = 0;
   totalPages: number = 0;
   hasMore: boolean = true;
@@ -72,6 +74,7 @@ export class BlogsComponent implements OnInit {
 
   imageFile?: File;
   videoFile?: File;
+  videoURL?: string;
   @ViewChild('imageInput') imageInput!: ElementRef<HTMLInputElement>;
   @ViewChild('videoInput') videoInput!: ElementRef<HTMLInputElement>;
 
@@ -106,6 +109,7 @@ export class BlogsComponent implements OnInit {
           Validators.pattern(/^(?!\s*$).+/),
         ],
       ],
+      videoUrl: [''],
     });
   }
 
@@ -144,7 +148,7 @@ export class BlogsComponent implements OnInit {
       title: this.postForm.value.title.trim(),
       content: this.postForm.value.content.trim(),
       imageUrl: this.imageFile,
-      videoUrl: this.videoFile,
+      videoUrl: this.postForm.value.videoUrl.trim(),
     };
     this.blogService.createPost(postDto).subscribe({
       next: (event: HttpEvent<PostDto>) => {
@@ -153,11 +157,8 @@ export class BlogsComponent implements OnInit {
         } else if (event.type === HttpEventType.Response) {
           const post = event.body;
           if (post) {
-            // Since getFullUrl is private, replicate its logic here
             if (post.imageUrl)
               post.imageUrl = `${environment.apiUrl}${post.imageUrl}`;
-            if (post.videoUrl)
-              post.videoUrl = `${environment.apiUrl}${post.videoUrl}`;
             this.blogs.unshift(post);
             this.snackBar.open('تم النشر بنجاح.', 'إغلاق', {
               duration: 3000,
@@ -167,7 +168,7 @@ export class BlogsComponent implements OnInit {
             this.resetFileInputs();
             this.postForm.reset();
             this.posting = false;
-            this.uploadProgress = 0; // Reset progress on success
+            this.uploadProgress = 0;
             this.postForm.enable();
           }
         }
@@ -180,7 +181,7 @@ export class BlogsComponent implements OnInit {
           verticalPosition: 'top',
         });
         this.posting = false;
-        this.uploadProgress = 0; // Reset progress on error
+        this.uploadProgress = 0;
         this.postForm.enable();
       },
     });
@@ -232,18 +233,6 @@ export class BlogsComponent implements OnInit {
     }
   }
 
-  increaseReadTime() {
-    const current = this.postForm.get('readTime')?.value || 1;
-    this.postForm.get('readTime')?.setValue(current + 1);
-  }
-
-  decreaseReadTime() {
-    const current = this.postForm.get('readTime')?.value || 1;
-    if (current > 1) {
-      this.postForm.get('readTime')?.setValue(current - 1);
-    }
-  }
-
   generateImagePreview(file: File) {
     const reader = new FileReader();
     reader.onload = (e) => {
@@ -269,5 +258,41 @@ export class BlogsComponent implements OnInit {
         URL.revokeObjectURL(video.src);
       }, 100);
     };
+  }
+
+  getEmbedVideoUrl(videoUrl: string): string {
+    try {
+      const url = new URL(videoUrl);
+      if (
+        url.hostname === 'www.youtube.com' ||
+        url.hostname === 'youtube.com'
+      ) {
+        if (url.pathname.startsWith('/live/')) {
+          const videoId = url.pathname.split('/live/')[1]?.split('/')[0];
+          if (videoId) {
+            return `https://www.youtube.com/embed/${videoId}?autoplay=0&controls=1`;
+          }
+        } else if (url.pathname === '/watch') {
+          const videoId = url.searchParams.get('v');
+          if (videoId) {
+            return `https://www.youtube.com/embed/${videoId}?autoplay=0&controls=1`;
+          }
+        } else if (url.pathname.startsWith('/shorts/')) {
+          const videoId = url.pathname.split('/shorts/')[1]?.split('/')[0];
+          if (videoId) {
+            return `https://www.youtube.com/embed/${videoId}?autoplay=0&controls=1`;
+          }
+        }
+      }
+      // For shortened URLs (e.g., youtu.be)
+      if (url.hostname === 'youtu.be') {
+        const videoId = url.pathname.substring(1);
+        return `https://www.youtube.com/embed/${videoId}?autoplay=0&controls=1`;
+      }
+      return videoUrl; // Fallback if URL can't be parsed
+    } catch (e) {
+      console.error('Invalid YouTube URL:', videoUrl);
+      return videoUrl;
+    }
   }
 }

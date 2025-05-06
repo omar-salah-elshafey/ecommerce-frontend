@@ -25,6 +25,7 @@ import {
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { SafeUrlPipe } from '../../shared/pipes/safeUrl-pipe/safe-url.pipe';
 
 @Component({
   selector: 'app-blog-details',
@@ -41,6 +42,7 @@ import { MatInputModule } from '@angular/material/input';
     MatInputModule,
     ReactiveFormsModule,
     MatSnackBarModule,
+    SafeUrlPipe,
   ],
   templateUrl: './blog-details.component.html',
   styleUrls: ['./blog-details.component.scss'],
@@ -80,6 +82,7 @@ export class BlogDetailsComponent implements OnInit {
         error: (err) => {
           console.error('Error fetching blog post:', err);
           this.loading = false;
+          this.router.navigate(['/not-found']);
         },
       });
     }
@@ -106,6 +109,7 @@ export class BlogDetailsComponent implements OnInit {
           Validators.pattern(/^(?!\s*$).+/),
         ],
       ],
+      videoUrl: [''],
     });
   }
 
@@ -114,11 +118,11 @@ export class BlogDetailsComponent implements OnInit {
     this.editForm.patchValue({
       title: this.blog.title,
       content: this.blog.content,
+      videoUrl: this.blog.videoUrl,
     });
     this.imagePreviewUrl = this.blog.imageUrl;
     this.videoPreviewUrl = this.blog.videoUrl;
     this.deleteImage = false;
-    this.deleteVideo = false;
   }
 
   cancelEditing() {
@@ -158,7 +162,7 @@ export class BlogDetailsComponent implements OnInit {
       title: this.editForm.value.title.trim(),
       content: this.editForm.value.content.trim(),
       imageUrl: this.imageFile,
-      videoUrl: this.videoFile,
+      videoUrl: this.editForm.value.videoUrl.trim(),
       deleteImage: this.deleteImage,
       deleteVideo: this.deleteVideo,
     };
@@ -228,18 +232,6 @@ export class BlogDetailsComponent implements OnInit {
     this.deleteVideo = false;
   }
 
-  increaseReadTime() {
-    const current = this.editForm.get('readTime')?.value || 1;
-    this.editForm.get('readTime')?.setValue(current + 1);
-  }
-
-  decreaseReadTime() {
-    const current = this.editForm.get('readTime')?.value || 1;
-    if (current > 1) {
-      this.editForm.get('readTime')?.setValue(current - 1);
-    }
-  }
-
   generateImagePreview(file: File) {
     const reader = new FileReader();
     reader.onload = (e) => {
@@ -264,5 +256,41 @@ export class BlogDetailsComponent implements OnInit {
         URL.revokeObjectURL(video.src);
       }, 100);
     };
+  }
+
+  getEmbedVideoUrl(videoUrl: string): string {
+    try {
+      const url = new URL(videoUrl);
+      if (
+        url.hostname === 'www.youtube.com' ||
+        url.hostname === 'youtube.com'
+      ) {
+        if (url.pathname.startsWith('/live/')) {
+          const videoId = url.pathname.split('/live/')[1]?.split('/')[0];
+          if (videoId) {
+            return `https://www.youtube.com/embed/${videoId}?autoplay=0&controls=1`;
+          }
+        } else if (url.pathname === '/watch') {
+          const videoId = url.searchParams.get('v');
+          if (videoId) {
+            return `https://www.youtube.com/embed/${videoId}?autoplay=0&controls=1`;
+          }
+        } else if (url.pathname.startsWith('/shorts/')) {
+          const videoId = url.pathname.split('/shorts/')[1]?.split('/')[0];
+          if (videoId) {
+            return `https://www.youtube.com/embed/${videoId}?autoplay=0&controls=1`;
+          }
+        }
+      }
+      // For shortened URLs (e.g., youtu.be)
+      if (url.hostname === 'youtu.be') {
+        const videoId = url.pathname.substring(1);
+        return `https://www.youtube.com/embed/${videoId}?autoplay=0&controls=1`;
+      }
+      return videoUrl; // Fallback if URL can't be parsed
+    } catch (e) {
+      console.error('Invalid YouTube URL:', videoUrl);
+      return videoUrl;
+    }
   }
 }

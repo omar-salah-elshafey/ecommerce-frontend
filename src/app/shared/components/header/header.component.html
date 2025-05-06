@@ -7,7 +7,7 @@
   <div class="desktop-nav">
     <nav class="primary-nav">
       <a mat-button routerLink="/">الرئيسية</a>
-      <a mat-button routerLink="/products">المتجر</a>
+      <a mat-button routerLink="/store">المتجر</a>
       <a mat-button routerLink="/about-us">من نحن</a>
       <a mat-button routerLink="/contact-us">اتصل بنا</a>
       <button
@@ -31,7 +31,7 @@
       <a mat-button routerLink="/investments">الاستثمارات</a>
       <a mat-button routerLink="/real-estates">العقارات</a>
       <a mat-button routerLink="/cars">السيارات</a>
-      <a mat-button routerLink="/blogs">المحتوى</a>
+      <a mat-button routerLink="/content">المحتوى</a>
     </nav>
   </div>
 
@@ -100,7 +100,8 @@
   <div class="mobile-nav" *ngIf="isMenuOpen" #mobileNav>
     <nav>
       <a mat-button routerLink="/" (click)="toggleMenu()">الرئيسية</a>
-      <a mat-button routerLink="/products" (click)="toggleMenu()">المتجر</a>
+      <a mat-button routerLink="/store" (click)="toggleMenu()">المتجر</a>
+      <a mat-button routerLink="/content" (click)="toggleMenu()">المحتوى</a>
       <a mat-button routerLink="/media" (click)="toggleMenu()">ميديا</a>
       <a mat-button routerLink="/services" (click)="toggleMenu()">الخدمات</a>
       <a mat-button routerLink="/investments" (click)="toggleMenu()"
@@ -110,7 +111,6 @@
         >العقارات</a
       >
       <a mat-button routerLink="/cars" (click)="toggleMenu()">السيارات</a>
-      <a mat-button routerLink="/blogs" (click)="toggleMenu()">المحتوى</a>
       <a mat-button routerLink="/about-us" (click)="toggleMenu()">من نحن</a>
       <a mat-button routerLink="/contact-us" (click)="toggleMenu()">اتصل بنا</a>
       <a

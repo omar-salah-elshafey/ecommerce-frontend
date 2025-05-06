@@ -41,12 +41,12 @@ import { ComingSoonComponent } from './features/coming-soon/coming-soon.componen
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
-  { path: 'products', component: ProductsComponent },
+  { path: 'store', component: ProductsComponent },
   { path: 'media', component: MediaComponent },
-  { path: 'products/:id', component: ProductDetailsComponent },
+  { path: 'store/:id', component: ProductDetailsComponent },
   { path: 'cart', component: CartComponent },
-  { path: 'blogs', component: BlogsComponent },
-  { path: 'blogs/:id', component: BlogDetailsComponent },
+  { path: 'content', component: BlogsComponent },
+  { path: 'content/:id', component: BlogDetailsComponent },
   { path: 'about-us', component: AboutUsComponent },
   { path: 'contact-us', component: ContactUsComponent },
   { path: 'register', component: RegisterComponent, canActivate: [guestGuard] },

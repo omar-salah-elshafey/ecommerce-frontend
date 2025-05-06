@@ -3,7 +3,7 @@
   <div class="hero-content">
     <h1>مرحبًا بكم في متجرنا الإلكتروني</h1>
     <p>اكتشف أحدث المنتجات بأسعار مميزة</p>
-    <button mat-raised-button color="primary" routerLink="/products">
+    <button mat-raised-button color="primary" routerLink="/store">
       تصفح المنتجات
     </button>
   </div>
@@ -22,7 +22,7 @@
         <div class="swiper-slide" *ngFor="let product of products">
           <mat-card
             class="product-card"
-            [routerLink]="['/products', product.id]"
+            [routerLink]="['/store', product.id]"
           >
             <img
               [src]="product.mainImageUrl"
@@ -67,7 +67,7 @@
         <div class="swiper-slide" *ngFor="let product of products">
           <mat-card
             class="product-card"
-            [routerLink]="['/products', product.id]"
+            [routerLink]="['/store', product.id]"
           >
             <img
               [src]="product.mainImageUrl"
