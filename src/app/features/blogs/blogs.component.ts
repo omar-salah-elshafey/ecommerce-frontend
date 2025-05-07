@@ -80,6 +80,10 @@ export class BlogsComponent implements OnInit {
 
   imagePreviewUrl?: string;
   videoPreviewUrl?: string;
+  private readonly youtubeUrlRegex = new RegExp(
+    '^(https?:\\/\\/)?(www\\.)?(youtube\\.com\\/(watch\\?v=|shorts\\/|live\\/)|youtu\\.be\\/)([a-zA-Z0-9_-]{10,12})(\\?.*)?$',
+    'i'
+  );
 
   constructor() {
     this.initializeForm();
@@ -141,6 +145,17 @@ export class BlogsComponent implements OnInit {
       });
       return;
     }
+
+    const videoUrl = this.postForm.value.videoUrl?.trim();
+    if (videoUrl && !this.isValidYouTubeUrl(videoUrl)) {
+      this.snackBar.open('برجاء إدخال رابط يوتيوب صالح.', 'إغلاق', {
+        duration: 3000,
+        horizontalPosition: 'center',
+        verticalPosition: 'top',
+      });
+      return;
+    }
+
     this.posting = true;
     this.uploadProgress = 0;
     this.postForm.disable();
@@ -148,7 +163,7 @@ export class BlogsComponent implements OnInit {
       title: this.postForm.value.title.trim(),
       content: this.postForm.value.content.trim(),
       imageUrl: this.imageFile,
-      videoUrl: this.postForm.value.videoUrl.trim(),
+      videoUrl: videoUrl || null,
     };
     this.blogService.createPost(postDto).subscribe({
       next: (event: HttpEvent<PostDto>) => {
@@ -294,5 +309,15 @@ export class BlogsComponent implements OnInit {
       console.error('Invalid YouTube URL:', videoUrl);
       return videoUrl;
     }
+  }
+
+  private isValidYouTubeUrl(url: string): boolean {
+    if (!url) return true; // Allow empty or null values
+
+    if (!url.startsWith('http://') && !url.startsWith('https://')) {
+      url = 'https://' + url;
+    }
+
+    return this.youtubeUrlRegex.test(url);
   }
 }

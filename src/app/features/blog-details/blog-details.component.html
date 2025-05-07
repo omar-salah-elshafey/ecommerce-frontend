@@ -31,35 +31,34 @@
           </div>
           <mat-card-title>{{ blog.title }}</mat-card-title>
         </mat-card-header>
-        <!-- Media Container -->
-        <div class="media" *ngIf="blog.imageUrl || blog.videoUrl">
-          <img
-            *ngIf="blog.imageUrl"
-            [src]="blog.imageUrl"
-            [alt]="blog.title"
-            class="blog-image"
-          />
-
-          <div *ngIf="blog.videoUrl" class="video-container">
-            <iframe
-              [src]="getEmbedVideoUrl(blog.videoUrl) | safeUrl"
-              [title]="blog.title"
-              frameborder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-              referrerpolicy="strict-origin-when-cross-origin"
-              allowfullscreen
-            ></iframe>
-          </div>
-        </div>
 
         <mat-card-content>
+          <div class="content" [innerHTML]="blog.content"></div>
           <div class="meta-info">
             <span class="date">{{
               blog.publishDate | date : "dd/MM/yyyy"
             }}</span>
           </div>
+          <!-- Media Container -->
+          <div class="media" *ngIf="blog.imageUrl || blog.videoUrl">
+            <img
+              *ngIf="blog.imageUrl"
+              [src]="blog.imageUrl"
+              [alt]="blog.title"
+              class="blog-image"
+            />
 
-          <div class="content" [innerHTML]="blog.content"></div>
+            <div *ngIf="blog.videoUrl" class="video-container">
+              <iframe
+                [src]="getEmbedVideoUrl(blog.videoUrl) | safeUrl"
+                [title]="blog.title"
+                frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                referrerpolicy="strict-origin-when-cross-origin"
+                allowfullscreen
+              ></iframe>
+            </div>
+          </div>
         </mat-card-content>
       </mat-card>
     </ng-container>

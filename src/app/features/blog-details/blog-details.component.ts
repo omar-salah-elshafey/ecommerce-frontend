@@ -67,6 +67,10 @@ export class BlogDetailsComponent implements OnInit {
   videoPreviewUrl?: string;
   deleteImage: boolean = false;
   deleteVideo: boolean = false;
+  private readonly youtubeUrlRegex = new RegExp(
+    '^(https?:\\/\\/)?(www\\.)?(youtube\\.com\\/(watch\\?v=|shorts\\/|live\\/)|youtu\\.be\\/)([a-zA-Z0-9_-]{11})(\\?.*)?$',
+    'i'
+  );
 
   @ViewChild('imageInput') imageInput!: ElementRef<HTMLInputElement>;
   @ViewChild('videoInput') videoInput!: ElementRef<HTMLInputElement>;
@@ -136,7 +140,7 @@ export class BlogDetailsComponent implements OnInit {
       this.loading = true;
       this.blogService.deletePost(this.blog.id).subscribe({
         next: () => {
-          this.router.navigate(['/blogs']);
+          this.router.navigate(['/content']);
         },
         error: (err) => {
           console.error('Error deleting blog post:', err);
@@ -155,6 +159,17 @@ export class BlogDetailsComponent implements OnInit {
       });
       return;
     }
+
+    const videoUrl = this.editForm.value.videoUrl?.trim();
+    if (videoUrl && !this.isValidYouTubeUrl(videoUrl)) {
+      this.snackBar.open('برجاء إدخال رابط يوتيوب صالح.', 'إغلاق', {
+        duration: 3000,
+        horizontalPosition: 'center',
+        verticalPosition: 'top',
+      });
+      return;
+    }
+
     this.updating = true;
     this.editForm.disable();
 
@@ -162,7 +177,7 @@ export class BlogDetailsComponent implements OnInit {
       title: this.editForm.value.title.trim(),
       content: this.editForm.value.content.trim(),
       imageUrl: this.imageFile,
-      videoUrl: this.editForm.value.videoUrl.trim(),
+      videoUrl: videoUrl || null,
       deleteImage: this.deleteImage,
       deleteVideo: this.deleteVideo,
     };
@@ -292,5 +307,15 @@ export class BlogDetailsComponent implements OnInit {
       console.error('Invalid YouTube URL:', videoUrl);
       return videoUrl;
     }
+  }
+
+  private isValidYouTubeUrl(url: string): boolean {
+    if (!url) return true; // Allow empty or null values
+
+    if (!url.startsWith('http://') && !url.startsWith('https://')) {
+      url = 'https://' + url;
+    }
+
+    return this.youtubeUrlRegex.test(url);
   }
 }
