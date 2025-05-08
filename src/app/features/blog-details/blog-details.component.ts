@@ -26,6 +26,7 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { SafeUrlPipe } from '../../shared/pipes/safeUrl-pipe/safe-url.pipe';
+import { ImageCroppedEvent, ImageCropperComponent } from 'ngx-image-cropper';
 
 @Component({
   selector: 'app-blog-details',
@@ -43,6 +44,7 @@ import { SafeUrlPipe } from '../../shared/pipes/safeUrl-pipe/safe-url.pipe';
     ReactiveFormsModule,
     MatSnackBarModule,
     SafeUrlPipe,
+    ImageCropperComponent,
   ],
   templateUrl: './blog-details.component.html',
   styleUrls: ['./blog-details.component.scss'],
@@ -74,6 +76,9 @@ export class BlogDetailsComponent implements OnInit {
 
   @ViewChild('imageInput') imageInput!: ElementRef<HTMLInputElement>;
   @ViewChild('videoInput') videoInput!: ElementRef<HTMLInputElement>;
+
+  imageChangedEvent: any = '';
+  croppedImage: any = '';
 
   ngOnInit() {
     const postId = this.route.snapshot.paramMap.get('id');
@@ -129,10 +134,69 @@ export class BlogDetailsComponent implements OnInit {
     this.deleteImage = false;
   }
 
+  imageCropped(event: ImageCroppedEvent): void {
+    this.croppedImage = event.base64;
+  }
+
+  uploadCroppedImage(): void {
+    const img = new Image();
+    img.src = this.croppedImage!;
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      const MAX_WIDTH = 1200;
+      const scaleSize = MAX_WIDTH / img.width;
+      canvas.width = MAX_WIDTH;
+      canvas.height = img.height * scaleSize;
+
+      const ctx = canvas.getContext('2d');
+      ctx?.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+      canvas.toBlob(
+        (initialBlob) => {
+          if (!initialBlob) return;
+
+          const originalSizeKB = initialBlob.size / 1024;
+          let targetQuality = 1.0;
+
+          if (originalSizeKB > 800) targetQuality = 0.6;
+          else if (originalSizeKB > 600) targetQuality = 0.7;
+          else if (originalSizeKB > 400) targetQuality = 0.8;
+
+          canvas.toBlob(
+            (finalBlob) => {
+              if (!finalBlob) return;
+
+              this.imageFile = new File([finalBlob], 'compressed-image.jpg', {
+                type: 'image/jpeg',
+              });
+              this.imagePreviewUrl = URL.createObjectURL(this.imageFile);
+              this.imageChangedEvent = null;
+            },
+            'image/jpeg',
+            targetQuality
+          );
+        },
+        'image/jpeg',
+        1.0
+      );
+    };
+  }
+
+  cancelCropping() {
+    this.imageChangedEvent = null;
+    this.croppedImage = null;
+  }
+
   cancelEditing() {
     this.isEditing = false;
     this.resetFileInputs();
     this.editForm.reset();
+
+    this.imageChangedEvent = null;
+    this.croppedImage = null;
+    this.imageFile = undefined;
+    this.imagePreviewUrl = this.blog.imageUrl; // restore original image
+    this.deleteImage = false;
   }
 
   deleteBlog() {
@@ -213,7 +277,12 @@ export class BlogDetailsComponent implements OnInit {
     if (input.files && input.files.length > 0) {
       const file = input.files[0];
       if (fileType === 'image') {
-        this.imageFile = file;
+        // this.imageFile = file;
+        // this.deleteImage = false;
+
+        this.imageChangedEvent = event;
+        this.imageFile = undefined;
+        this.imagePreviewUrl = undefined;
         this.deleteImage = false;
         this.generateImagePreview(file);
       } else if (fileType === 'video') {

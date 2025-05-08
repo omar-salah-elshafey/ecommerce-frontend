@@ -60,7 +60,11 @@
       </mat-form-field>
 
       <div class="upload-container">
-        <label *ngIf="!imageFile" class="upload-btn" [class.disabled]="posting">
+        <label
+          *ngIf="!imageChangedEvent && !imageFile"
+          class="upload-btn"
+          [class.disabled]="posting"
+        >
           <mat-icon>image</mat-icon>
           <input
             #imageInput
@@ -70,6 +74,38 @@
             [disabled]="posting"
           />
         </label>
+
+        <!-- Cropping tool appears only when an image is selected -->
+        <div *ngIf="imageChangedEvent" class="cropper-container">
+          <image-cropper
+            [imageChangedEvent]="imageChangedEvent"
+            [maintainAspectRatio]="true"
+            [aspectRatio]="1 / 1"
+            (imageCropped)="imageCropped($event)"
+            format="jpeg"
+            output="base64"
+          ></image-cropper>
+
+          <!-- Action buttons -->
+          <div class="cropper-actions">
+            <button
+              mat-button
+              color="primary"
+              (click)="uploadCroppedImage()"
+              [disabled]="!croppedImage || posting"
+            >
+              حفظ
+            </button>
+            <button
+              mat-button
+              color="warn"
+              (click)="cancelCropping()"
+              [disabled]="posting"
+            >
+              إلغاء
+            </button>
+          </div>
+        </div>
 
         <!-- <label
             *ngIf="!videoFile"
@@ -88,11 +124,30 @@
       </div>
 
       <div class="selected-files">
-        <div *ngIf="imageFile" class="file-preview">
+        <!-- <div *ngIf="imageFile" class="file-preview">
           <div class="preview-container">
             <img
               [src]="imagePreviewUrl"
               [alt]="imageFile.name"
+              class="preview-image"
+            />
+          </div>
+          <button
+            type="button"
+            class="remove-file"
+            (click)="removeFile('image')"
+            [disabled]="posting"
+            [class.disabled]="posting"
+          >
+            &times;
+          </button>
+        </div> -->
+
+        <div *ngIf="imageFile" class="file-preview">
+          <div class="preview-container">
+            <img
+              [src]="croppedImage || imagePreviewUrl"
+              alt="Cropped Image Preview"
               class="preview-image"
             />
           </div>

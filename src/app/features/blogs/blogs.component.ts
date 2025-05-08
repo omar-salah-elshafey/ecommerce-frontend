@@ -24,7 +24,6 @@ import { fadeIn } from '../../shared/animations/animations';
 import { RouterModule } from '@angular/router';
 import { BlogService } from '../../core/services/blog/blog.service';
 import { CreatePostDto, PostDto } from '../../core/models/blog';
-import { Title } from '@angular/platform-browser';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AuthService } from '../../core/services/auth/auth.service';
 import { MatIconModule } from '@angular/material/icon';
@@ -32,6 +31,7 @@ import { HttpEvent, HttpEventType } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { SafeUrlPipe } from '../../shared/pipes/safeUrl-pipe/safe-url.pipe';
+import { ImageCroppedEvent, ImageCropperComponent } from 'ngx-image-cropper';
 
 @Component({
   selector: 'app-blogs',
@@ -49,6 +49,7 @@ import { SafeUrlPipe } from '../../shared/pipes/safeUrl-pipe/safe-url.pipe';
     ReactiveFormsModule,
     MatProgressBarModule,
     SafeUrlPipe,
+    ImageCropperComponent,
   ],
   templateUrl: './blogs.component.html',
   styleUrls: ['./blogs.component.scss'],
@@ -84,6 +85,9 @@ export class BlogsComponent implements OnInit {
     '^(https?:\\/\\/)?(www\\.)?(youtube\\.com\\/(watch\\?v=|shorts\\/|live\\/)|youtu\\.be\\/)([a-zA-Z0-9_-]{10,12})(\\?.*)?$',
     'i'
   );
+
+  imageChangedEvent: any = '';
+  croppedImage: any = '';
 
   constructor() {
     this.initializeForm();
@@ -134,6 +138,78 @@ export class BlogsComponent implements OnInit {
         return of(null);
       },
     });
+  }
+
+  onFileChange(event: any): void {
+    this.imageChangedEvent = event;
+  }
+
+  imageCropped(event: ImageCroppedEvent): void {
+    this.croppedImage = event.base64;
+  }
+
+  cancelCropping(): void {
+    this.imageChangedEvent = null;
+    this.croppedImage = null;
+    this.imageFile = undefined;
+    this.imagePreviewUrl = undefined;
+  }
+
+  uploadCroppedImage(): void {
+    const img = new Image();
+    img.src = this.croppedImage;
+
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      const MAX_WIDTH = 1200;
+      const scaleSize = MAX_WIDTH / img.width;
+      canvas.width = MAX_WIDTH;
+      canvas.height = img.height * scaleSize;
+
+      const ctx = canvas.getContext('2d');
+      ctx?.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+      canvas.toBlob(
+        (initialBlob) => {
+          if (!initialBlob) return;
+
+          const originalSizeKB = initialBlob.size / 1024;
+
+          // Set target quality based on size
+          let targetQuality = 1.0;
+          if (originalSizeKB > 800) targetQuality = 0.6;
+          else if (originalSizeKB > 600) targetQuality = 0.7;
+          else if (originalSizeKB > 400) targetQuality = 0.8;
+
+          canvas.toBlob(
+            (finalBlob) => {
+              if (!finalBlob) return;
+
+              this.imageFile = new File([finalBlob], 'compressed-image.jpg', {
+                type: 'image/jpeg',
+              });
+              this.imagePreviewUrl = URL.createObjectURL(this.imageFile);
+              this.imageChangedEvent = null;
+            },
+            'image/jpeg',
+            targetQuality
+          );
+        },
+        'image/jpeg',
+        1.0
+      );
+    };
+  }
+
+  dataURItoBlob(dataURI: string): Blob {
+    const byteString = atob(dataURI.split(',')[1]);
+    const mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
+    const arrayBuffer = new ArrayBuffer(byteString.length);
+    const uintArray = new Uint8Array(arrayBuffer);
+    for (let i = 0; i < byteString.length; i++) {
+      uintArray[i] = byteString.charCodeAt(i);
+    }
+    return new Blob([uintArray], { type: mimeString });
   }
 
   onCreatePost(): void {
@@ -239,8 +315,11 @@ export class BlogsComponent implements OnInit {
     if (input.files && input.files.length > 0) {
       const file = input.files[0];
       if (fileType === 'image') {
-        this.imageFile = file;
-        this.generateImagePreview(file);
+        // this.imageFile = file;
+        // this.generateImagePreview(file);
+        this.imageChangedEvent = event;
+        this.imageFile = undefined;
+        this.imagePreviewUrl = undefined;
       } else if (fileType === 'video') {
         this.videoFile = file;
         this.generateVideoPreview(file);

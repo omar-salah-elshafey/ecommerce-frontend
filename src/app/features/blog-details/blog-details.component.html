@@ -124,7 +124,7 @@
           </mat-form-field>
 
           <div class="upload-container">
-            <label
+            <!-- <label
               *ngIf="!imageFile && !imagePreviewUrl"
               class="upload-btn"
               [class.disabled]="updating"
@@ -137,7 +137,54 @@
                 accept="image/*"
                 [disabled]="updating"
               />
+            </label> -->
+
+            <label
+              *ngIf="!imageChangedEvent && !imageFile && !imagePreviewUrl"
+              class="upload-btn"
+              [class.disabled]="updating"
+            >
+              <mat-icon>image</mat-icon>
+              <input
+                #imageInput
+                type="file"
+                (change)="onFileSelected($event, 'image')"
+                accept="image/*"
+                [disabled]="updating"
+              />
             </label>
+
+            <!-- Cropping tool appears only when an image is selected -->
+            <div *ngIf="imageChangedEvent" class="cropper-container">
+              <image-cropper
+                [imageChangedEvent]="imageChangedEvent"
+                [maintainAspectRatio]="true"
+                [aspectRatio]="1 / 1"
+                (imageCropped)="imageCropped($event)"
+                format="jpeg"
+                output="base64"
+              ></image-cropper>
+
+              <!-- Action buttons -->
+              <div class="cropper-actions">
+                <button
+                  mat-button
+                  color="primary"
+                  (click)="uploadCroppedImage()"
+                  [disabled]="!croppedImage || updating"
+                >
+                  حفظ
+                </button>
+                <button
+                  mat-button
+                  color="warn"
+                  (click)="cancelCropping()"
+                  [disabled]="updating"
+                >
+                  إلغاء
+                </button>
+              </div>
+            </div>
 
             <!-- <label
               *ngIf="!videoFile && !videoPreviewUrl"
@@ -156,7 +203,7 @@
           </div>
 
           <div class="selected-files">
-            <div *ngIf="imageFile || imagePreviewUrl" class="file-preview">
+            <!-- <div *ngIf="imageFile || imagePreviewUrl" class="file-preview">
               <div class="preview-container">
                 <img
                   [src]="imagePreviewUrl"
@@ -173,6 +220,52 @@
               >
                 ×
               </button>
+            </div> -->
+
+            <div class="selected-files">
+              <div
+                *ngIf="imageFile || croppedImage || imagePreviewUrl"
+                class="file-preview"
+              >
+                <div class="preview-container">
+                  <img
+                    [src]="croppedImage || imagePreviewUrl"
+                    alt="Cropped or new image"
+                    class="preview-image"
+                  />
+                </div>
+                <button
+                  type="button"
+                  class="remove-file"
+                  (click)="removeFile('image')"
+                  [disabled]="updating"
+                  [class.disabled]="updating"
+                >
+                  &times;
+                </button>
+              </div>
+
+              <!-- <div
+                *ngIf="!imageFile && !croppedImage && blog.imageUrl"
+                class="file-preview"
+              >
+                <div class="preview-container">
+                  <img
+                    [src]="blog.imageUrl"
+                    alt="Current image from server"
+                    class="preview-image"
+                  />
+                </div>
+                <button
+                  type="button"
+                  class="remove-file"
+                  (click)="removeFile('image')"
+                  [disabled]="updating"
+                  [class.disabled]="updating"
+                >
+                  ×
+                </button>
+              </div> -->
             </div>
 
             <!-- <div *ngIf="videoFile || videoPreviewUrl" class="file-preview">
