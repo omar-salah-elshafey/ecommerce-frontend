@@ -86,7 +86,7 @@
       <mat-card
         *ngFor="let product of recentProducts"
         class="product-card"
-        [routerLink]="['/products', product.id]"
+        [routerLink]="['/store', product.id]"
       >
         <div class="image">
           <img [src]="product.mainImageUrl" alt="{{ product.name }}" />

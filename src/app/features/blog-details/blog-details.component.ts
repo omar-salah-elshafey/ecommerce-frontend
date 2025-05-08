@@ -297,6 +297,7 @@ export class BlogDetailsComponent implements OnInit {
     if (type === 'image') {
       this.imageFile = undefined;
       this.imagePreviewUrl = undefined;
+      this.croppedImage = null;
       this.deleteImage = true;
     } else {
       this.videoFile = undefined;

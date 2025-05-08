@@ -27,6 +27,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { AuthService } from '../../../core/services/auth/auth.service';
 import { combineLatest } from 'rxjs';
+import { ImageCroppedEvent, ImageCropperComponent } from 'ngx-image-cropper';
 
 const ALLOWED_EXTENSIONS = ['.jpg', '.jpeg', '.png'];
 const ALLOWED_MIME_TYPES = ['image/jpeg', 'image/png', 'image/jpg'];
@@ -63,6 +64,10 @@ export class ManageProductsComponent implements OnInit {
   editingProduct: ProductDto | null = null;
   existingImageUrls: string[] = [];
   imagesToDelete: string[] = [];
+
+  // imageChangedEvents: any[] = [];
+  // croppedImages: string[] = [];
+  // currentImageIndex: number | null = null;
 
   private currentPage: number = 1;
   private pageSize: number = 20;
@@ -200,6 +205,8 @@ export class ManageProductsComponent implements OnInit {
     this.imagePreviews = [];
     this.existingImageUrls = [];
     this.imagesToDelete = [];
+    // this.imageChangedEvents = [];
+    // this.croppedImages = [];
     this.productForm.reset();
   }
 
@@ -210,6 +217,103 @@ export class ManageProductsComponent implements OnInit {
       this.productForm.get('images')?.updateValueAndValidity();
     }
   }
+
+  // onFileSelected(event: any): void {
+  //   const files: FileList = event.target.files;
+  //   if (files && files.length > 0) {
+  //     for (let i = 0; i < files.length; i++) {
+  //       const file = files[i];
+  //       const isValid = ALLOWED_MIME_TYPES.includes(file.type.toLowerCase());
+  //       if (!isValid) continue;
+
+  //       this.imageChangedEvents.push(event); // Use real event
+  //       this.croppedImages.push('');
+  //       this.selectedFiles.push(file);
+  //     }
+  //     this.generateImagePreviews();
+  //   }
+  // }
+
+  // onFileSelected(event: any): void {
+  //   const files = event.target.files;
+  //   if (files && files.length > 0) {
+  //     for (let i = 0; i < files.length; i++) {
+  //       const file = files[i];
+  //       // Create a fake event for each file
+  //       const fakeEvent = { target: { files: [file] } };
+  //       this.imageChangedEvents.push(fakeEvent);
+  //       this.croppedImages.push('');
+  //       this.selectedFiles.push(file);
+  //     }
+  //     this.generateImagePreviews();
+  //   }
+  // }
+
+  // onImageCropped(event: ImageCroppedEvent, index: number): void {
+  //   console.log('Image cropped:', event.base64);
+  //   if (event.base64) {
+  //     this.croppedImages[index] = event.base64;
+  //   }
+  // }
+
+  // applyCrop(index: number): void {
+  //   const img = new Image();
+  //   img.src = this.croppedImages[index];
+
+  //   img.onload = () => {
+  //     const canvas = document.createElement('canvas');
+  //     const MAX_WIDTH = 1200;
+  //     const scaleSize = MAX_WIDTH / img.width;
+  //     canvas.width = MAX_WIDTH;
+  //     canvas.height = img.height * scaleSize;
+
+  //     const ctx = canvas.getContext('2d');
+  //     ctx?.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+  //     canvas.toBlob(
+  //       (initialBlob) => {
+  //         if (!initialBlob) return;
+
+  //         const originalSizeKB = initialBlob.size / 1024;
+  //         let targetQuality = 1.0;
+
+  //         if (originalSizeKB > 800) targetQuality = 0.6;
+  //         else if (originalSizeKB > 600) targetQuality = 0.7;
+  //         else if (originalSizeKB > 400) targetQuality = 0.8;
+
+  //         canvas.toBlob(
+  //           (finalBlob) => {
+  //             if (!finalBlob) return;
+
+  //             const compressedFile = new File(
+  //               [finalBlob],
+  //               `image-${index}.jpg`,
+  //               {
+  //                 type: 'image/jpeg',
+  //               }
+  //             );
+
+  //             this.selectedFiles[index] = compressedFile;
+  //             this.imagePreviews[index] = URL.createObjectURL(compressedFile);
+  //             this.imageChangedEvents.splice(index, 1);
+  //             this.croppedImages.splice(index, 1);
+  //           },
+  //           'image/jpeg',
+  //           targetQuality
+  //         );
+  //       },
+  //       'image/jpeg',
+  //       1.0
+  //     );
+  //   };
+  // }
+
+  // cancelCrop(index: number): void {
+  //   this.imageChangedEvents.splice(index, 1);
+  //   this.croppedImages.splice(index, 1);
+  //   this.selectedFiles.splice(index, 1);
+  //   this.imagePreviews.splice(index, 1);
+  // }
 
   saveNewProduct(): void {
     const fileErrors = this.fileArrayValidator(this.selectedFiles);
@@ -448,4 +552,16 @@ export class ManageProductsComponent implements OnInit {
       reader.readAsDataURL(file);
     });
   }
+
+  // private generateImagePreviews(): void {
+  //   this.imagePreviews = [];
+
+  //   for (let i = 0; i < this.selectedFiles.length; i++) {
+  //     if (this.croppedImages[i]) {
+  //       this.imagePreviews[i] = this.croppedImages[i]; // Use cropped version
+  //     } else {
+  //       this.imagePreviews[i] = URL.createObjectURL(this.selectedFiles[i]); // Fallback
+  //     }
+  //   }
+  // }
 }

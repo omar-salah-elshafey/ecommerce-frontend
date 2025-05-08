@@ -169,6 +169,7 @@
               <div class="cropper-actions">
                 <button
                   mat-button
+                  type="button"
                   color="primary"
                   (click)="uploadCroppedImage()"
                   [disabled]="!croppedImage || updating"
@@ -177,6 +178,7 @@
                 </button>
                 <button
                   mat-button
+                  type="button"
                   color="warn"
                   (click)="cancelCropping()"
                   [disabled]="updating"

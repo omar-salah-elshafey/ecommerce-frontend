@@ -51,7 +51,7 @@
 }
 
 .add-product-container {
-  margin: 1rem auto ;
+  margin: 1rem auto;
   max-width: 800px;
 
   mat-card {
@@ -168,7 +168,7 @@ textarea {
 
     .image-preview {
       width: 100px;
-      height: 100px;
+      height: 90px;
       overflow: hidden;
 
       img {
@@ -198,6 +198,19 @@ textarea {
         background: #cc0000;
       }
     }
+  }
+}
+
+.cropper-container {
+  margin: 1rem 0;
+  border: 1px solid #ccc;
+  background: #f9f9f9;
+  max-width: 400px;
+
+  .cropper-actions {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
   }
 }
 

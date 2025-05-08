@@ -82,11 +82,11 @@
             </mat-form-field>
           </div>
           <div class="form-row">
-            <div
-              class="upload-container"
-              *ngIf="existingImageUrls.length + selectedFiles.length < 6"
-            >
-              <label class="upload-btn">
+            <div class="upload-container">
+              <label
+                class="upload-btn"
+                *ngIf="existingImageUrls.length + selectedFiles.length < 6"
+              >
                 <mat-icon>image</mat-icon>
                 <input
                   type="file"
@@ -95,7 +95,42 @@
                   multiple
                 />
               </label>
+
+              <!-- Cropper per image -->
+              <!-- <div *ngFor="let event of imageChangedEvents; let i = index">
+                <div class="cropper-container" *ngIf="event">
+                  <image-cropper
+                    [imageChangedEvent]="event"
+                    [maintainAspectRatio]="true"
+                    [aspectRatio]="1 / 1"
+                    (imageCropped)="onImageCropped($event, i)"
+                    format="jpeg"
+                    output="base64"
+                  ></image-cropper>
+                  <div class="cropper-actions">
+                    <button
+                      type="button"
+                      mat-button
+                      color="primary"
+                      (click)="applyCrop(i)"
+                      [disabled]="!croppedImages[i]"
+                    >
+                      حفظ
+                    </button>
+                    <button
+                      type="button"
+                      mat-button
+                      color="warn"
+                      (click)="cancelCrop(i)"
+                    >
+                      إلغاء
+                    </button>
+                  </div>
+                </div>
+              </div> -->
             </div>
+          </div>
+          <div class="form-row">
             <div
               class="selected-files"
               *ngIf="existingImageUrls.length > 0 || selectedFiles.length > 0"
@@ -198,7 +233,7 @@
               matTooltip="عرض التفاصيل"
               matTooltipPosition="above"
               matTooltipShowDelay="100"
-              [routerLink]="['/products', product.id]"
+              [routerLink]="['/store', product.id]"
             >
               <mat-icon>visibility</mat-icon>
             </button>

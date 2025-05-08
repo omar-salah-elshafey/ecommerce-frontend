@@ -201,17 +201,6 @@ export class BlogsComponent implements OnInit {
     };
   }
 
-  dataURItoBlob(dataURI: string): Blob {
-    const byteString = atob(dataURI.split(',')[1]);
-    const mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
-    const arrayBuffer = new ArrayBuffer(byteString.length);
-    const uintArray = new Uint8Array(arrayBuffer);
-    for (let i = 0; i < byteString.length; i++) {
-      uintArray[i] = byteString.charCodeAt(i);
-    }
-    return new Blob([uintArray], { type: mimeString });
-  }
-
   onCreatePost(): void {
     if (this.postForm.invalid) {
       this.snackBar.open('برجاء إدخال قيم صالحة.', 'إغلاق', {
